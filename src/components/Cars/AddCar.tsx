@@ -11,17 +11,18 @@ interface AddCarProps {
 
 export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
 
-    const { register, handleSubmit, formState: { errors }, reset, control } = useForm<CarAddRequest>();
+    const { handleSubmit, formState: { errors }, reset, control } = useForm<CarAddRequest>();
 
     const [modal, setModal] = useState(false);
 
     let brandModelList = brandModelsStore.brandModels.map(model =>
-        <MenuItem key={model.id} value={model.id}>
+        <MenuItem key={model.carModelId} value={model.carModelId}>
             {model.brand} {model.model}
         </MenuItem>);
 
     const createCar = (newCar: CarAddRequest) => {
-        let brandModel = brandModelsStore.brandModels.find(elem => elem.id == newCar.carModelId);
+        console.log(newCar);
+        let brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId == newCar.carModelId);
         if (brandModel) {
             onAdd({ ...newCar, brand: brandModel, carId: Math.trunc(Math.random() * 1000) })
         }
@@ -33,9 +34,6 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
         setModal(false);
         reset();
     }
-
-    // const getValue = (brandModelId: number) => 
-    //     brandModelId ? brandModelList.find(brandModel => brandModel.value === brandModelId) : 0;
 
     return (
         <>
@@ -51,6 +49,7 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
                     <Controller
                         control={control}
                         name="carModelId"
+                        defaultValue={1}
                         render={({ field: { onChange, value } }) => (
                             <TextField
                                 select
@@ -63,6 +62,7 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
                     <Controller
                         control={control}
                         name="color"
+                        rules={{maxLength: {value: 128, message: 'Поле не должно содержать более 128 символов'} }}
                         render={({ field: { onChange, value } }) => (
                             <TextField
                                 label="Цвет"
@@ -75,8 +75,8 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button type="submit">Добавить</Button>
-                    <Button type="reset">Закрыть</Button>
+                    <Button type="submit" onClick={handleSubmit(createCar)}>Добавить</Button>
+                    <Button type="reset" onClick={closeForm}>Закрыть</Button>
                 </DialogActions>
             </Dialog>
         </>

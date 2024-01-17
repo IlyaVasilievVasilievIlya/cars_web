@@ -13,7 +13,7 @@ import EditIcon from '@mui/icons-material/Edit'
 
 export const CarList: React.FC = observer(() => {
 
-  const [car, setCar] = useState<Car>({ carId: 0, brand: { id: 0, brand: '', model: '' } });
+  const [car, setCar] = useState<Car>({ carId: 0, brand: { carModelId: 0, brand: '', model: '' } });
 
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
 
@@ -102,8 +102,8 @@ export const CarList: React.FC = observer(() => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button type="submit">Да</Button>
-          <Button type="reset">Нет</Button>
+          <Button type="submit" onClick={() => deleteCar()}>Да</Button>
+          <Button type="reset" onClick={() => setIsOpenDeleteModal(false)}>Нет</Button>
         </DialogActions>
       </Dialog>
 

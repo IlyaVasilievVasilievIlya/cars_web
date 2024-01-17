@@ -18,19 +18,19 @@ interface EditCarProps {
 export const EditCar: React.FC<EditCarProps> = ({car, onDone, onEdit}: EditCarProps) => {
     
     const { handleSubmit, formState: {errors}, reset, control} = useForm<CarEditRequest>(
-        {defaultValues: {...car, carModelId: car.brand.id}}
+        {defaultValues: {...car, carModelId: car.brand.carModelId}}
     );
 
     const [error, setError] = useState(false);
 
 
     let brandModelList = brandModelsStore.brandModels.map(model =>  
-        <MenuItem key={model.id} value={model.id}>
+        <MenuItem key={model.carModelId} value={model.carModelId}>
             {model.brand} {model.model}
         </MenuItem>);
     
     const editCar = (editedCar: CarEditRequest) => {
-        let brandModel = brandModelsStore.brandModels.find(elem => elem.id == editedCar.carModelId);
+        let brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId == editedCar.carModelId);
         if (brandModel){
             onEdit({...editedCar, brand: brandModel});
         }
@@ -41,9 +41,6 @@ export const EditCar: React.FC<EditCarProps> = ({car, onDone, onEdit}: EditCarPr
         reset();
         onDone();
     }
-
-    // const getValue = (brandModelId: number) => 
-    //     brandModelId ? brandModelList.find(brandModel => brandModel.value === brandModelId) : null
 
     return (
         <Dialog
@@ -67,6 +64,7 @@ export const EditCar: React.FC<EditCarProps> = ({car, onDone, onEdit}: EditCarPr
             <Controller
                 control={control}
                 name="color"           
+                rules={{maxLength: {value: 128, message: 'Поле не должно содержать более 128 символов'} }}
                 render={({ field: { onChange, value } }) => (
                     <TextField
                         label="Цвет"
@@ -79,8 +77,8 @@ export const EditCar: React.FC<EditCarProps> = ({car, onDone, onEdit}: EditCarPr
             />
         </DialogContent>
         <DialogActions>
-            <Button type="submit">Сохранить</Button>
-            <Button type="reset">Закрыть</Button>
+            <Button type="submit" onClick={handleSubmit(editCar)}>Сохранить</Button>
+            <Button type="reset" onClick={closeForm}>Закрыть</Button>
         </DialogActions>
     </Dialog>)
 }

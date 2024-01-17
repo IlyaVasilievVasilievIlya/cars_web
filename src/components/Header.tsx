@@ -2,7 +2,7 @@ import React from 'react';
 import './styles.css';
 import { NavLink } from 'react-router-dom';
 import { navInfos } from '../public/consts';
-import { AppBar, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
+import { AppBar, Button, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 
 interface Props {
   children?: React.ReactNode;
@@ -11,11 +11,9 @@ interface Props {
 export const Header: React.FC<Props> = ({ children }: Props) => {
 
   const navMenu = navInfos.map(link =>
-    <MenuItem key={link.path}>
       <NavLink to={link.path} key={link.path}>
         {link.text}
-      </NavLink>
-    </MenuItem>);
+      </NavLink>);
 
   return (
     <AppBar position="static">
@@ -23,10 +21,7 @@ export const Header: React.FC<Props> = ({ children }: Props) => {
         <Typography>
           Cars Project
         </Typography>
-        <Menu
-          open={true}>
-          {navMenu}
-        </Menu>
+        {navMenu}
         {children}
       </Toolbar>
     </AppBar>

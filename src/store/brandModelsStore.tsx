@@ -4,10 +4,10 @@ import { makeAutoObservable } from 'mobx';
 
 
 const staticData:BrandModel[] = [
-    {id: 1, brand: 'Toyota', model: 'Camry'},
-    {id: 2, brand: 'Renault', model: 'Logan'},
-    {id: 3, brand: 'Mercedes', model: 'Benz'},
-    {id: 4, brand: 'Lada', model: 'Granta'}
+    {carModelId: 1, brand: 'Toyota', model: 'Camry'},
+    {carModelId: 2, brand: 'Renault', model: 'Logan'},
+    {carModelId: 3, brand: 'Mercedes', model: 'Benz'},
+    {carModelId: 4, brand: 'Lada', model: 'Granta'}
 ]
 
 class BrandModelsStore {
@@ -16,6 +16,7 @@ class BrandModelsStore {
     constructor(){
         makeAutoObservable(this);
     }
+    
 };
 
 export const brandModelsStore = new BrandModelsStore();
