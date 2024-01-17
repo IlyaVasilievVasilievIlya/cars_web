@@ -49,13 +49,12 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
                     <Controller
                         control={control}
                         name="carModelId"
-                        defaultValue={1}
                         render={({ field: { onChange, value } }) => (
                             <TextField
                                 select
                                 label="Модель машины"
                                 placeholder='Выберите модель машины'
-                                value={value}
+                                value={value ?? 1}
                                 onChange={onChange}>
                                 {brandModelList}
                             </TextField>)} />

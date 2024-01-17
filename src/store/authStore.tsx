@@ -1,9 +1,9 @@
-import { BrandModel, Car, AuthInfo, LoginRequest } from '../components/model';
+import { BrandModel, Car, AuthInfo, LoginRequest, RegisterRequest } from '../components/model';
 import { API_URL } from '../public/consts';
 import { makeAutoObservable } from 'mobx';
 
 class AuthStore {
-    authData: AuthInfo | undefined = undefined;
+    authData: AuthInfo | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -16,7 +16,7 @@ class AuthStore {
     getRole(authInfo: AuthInfo) { //вынести в отд метод как обобщение (ну или хотя бы типизировать)
         
         let encodedClaims = authInfo.accessToken.split(".")[1];
-        let role = JSON.parse(encodedClaims).role;
+        let role = JSON.parse(atob(encodedClaims)).role;
         this.authData = {...authInfo, role: role};
         console.log(this.authData);
     }
@@ -35,8 +35,22 @@ class AuthStore {
         this.getRole(body);
     }
 
+    async register(registerInfo: RegisterRequest) {
+        let response = await fetch(`${API_URL}/Identity/signup`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+
+            },
+            body: JSON.stringify(registerInfo)
+        });
+
+        let body: AuthInfo = await response.json();
+        this.getRole(body);
+    }
+
     logout(){
-        this.authData = undefined;
+        this.authData = null;
     }
 };
 
