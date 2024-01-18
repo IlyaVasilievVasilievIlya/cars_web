@@ -9,7 +9,7 @@ interface RequireAuthProps {
 export const RequireAuth = ({allowedRoles}: RequireAuthProps) => {
 
     return (
-        (allowedRoles.find(role => role == authStore.authData?.role)) 
+        (allowedRoles.find(role => {console.log(authStore.authData); return role == authStore.authData?.role})) 
             ? <Outlet/>
             : authStore.authData 
                 ? <Navigate to="/unauthorized" />

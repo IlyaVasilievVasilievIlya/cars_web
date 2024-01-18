@@ -87,9 +87,9 @@ export const CarList: React.FC = observer(() => {
 
       <AddCar onAdd={addCar}/>
 
-      <List>
+      {!carsStore.error && <List>
         {carList}
-      </List>
+      </List>}
 
       <Dialog 
         open={isOpenDeleteModal}

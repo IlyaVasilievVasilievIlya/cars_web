@@ -20,8 +20,7 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
             {model.brand} {model.model}
         </MenuItem>);
 
-    const createCar = (newCar: CarAddRequest) => {
-        console.log(newCar);
+    const createCar = (newCar: CarAddRequest) => { 
         let brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId == newCar.carModelId);
         if (brandModel) {
             onAdd({ ...newCar, brand: brandModel, carId: Math.trunc(Math.random() * 1000) })

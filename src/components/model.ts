@@ -38,5 +38,6 @@ export interface RegisterRequest {
 
 export interface AuthInfo {
     accessToken: string;
+    refreshToken: string;
     role: string;
 }

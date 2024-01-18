@@ -2,6 +2,8 @@ import { Box, Button, TextField } from "@mui/material"
 import { Controller, useForm } from 'react-hook-form';
 import { LoginRequest } from '../../model'
 import { authStore } from '../../../store/authStore'
+import { Navigate } from "react-router-dom";
+import { useState } from "react";
 
 const EMAIL_REGEX = /^([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)$/;
 //const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8, 24}$/;
@@ -12,15 +14,21 @@ export const Login: React.FC = () => {
 
     const { handleSubmit, formState: { errors }, reset, control } = useForm<LoginRequest>();
 
-    const tryLogin = (request: LoginRequest) => {
+    const [login, setLogin] = useState(false);
 
-        authStore.login(request);
+    const tryLogin = async (request: LoginRequest) =>  {
 
-        //redirect + ошибки
+        await authStore.login(request);
+
+        console.log(authStore.authData);
+
+        setLogin(true);
     }
     
 
     return (
+        <>
+        {login &&  <Navigate to="/cars" />}
         <Box component="form" onSubmit={handleSubmit(tryLogin)}>          
             <Controller
                 control={control}
@@ -31,8 +39,8 @@ export const Login: React.FC = () => {
                         value: EMAIL_REGEX,
                         message: 'Некорректный адрес почты'
                     }}}
-                render={({ field: { onChange, value } }) => (
-                    <TextField
+                    render={({ field: { onChange, value } }) => (
+                        <TextField
                         label="Email"
                         placeholder='Введите email'
                         value={value}
@@ -49,17 +57,18 @@ export const Login: React.FC = () => {
                         value: PWD_REGEX, 
                         message: 'Пароль должен содержать заглавные и строчные латинские символы, служебные символы и цифры'
                     }}}
-                render={({ field: { onChange, value } }) => (
-                    <TextField
+                    render={({ field: { onChange, value } }) => (
+                        <TextField
                         label="Пароль"
                         value={value}
                         onChange={onChange}
                         placeholder='Введите пароль'
                         helperText={errors.password?.message?.toString()}
-                    />)}
-                    />
+                        />)}
+                        />
             <Button type="submit" onClick={handleSubmit(tryLogin)}>Добавить</Button>
             <Button type="reset">Закрыть</Button>
         </Box>
+                        </>
     )
 }
