@@ -10,6 +10,8 @@ import { NotFoundPage } from "../pages/NotFoundPage";
 
 export const API_URL = "https://localhost:7154/api";
 
+
+
 interface NavInfo {
     path: string;
     text: string;

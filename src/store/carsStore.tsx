@@ -14,10 +14,22 @@ const testData: Car[] = [
 class CarsStore {
     cars: Car[] = testData;
 
+
+
     error?: String;
 
     constructor(){
         makeAutoObservable(this);
+    }
+
+    async handleUnathorized() {
+        if (authStore.authData){
+            await authStore.refreshToken();
+            if (authStore.error)
+                throw new Error('refresh token is invalid or exprired');
+        } else {
+            throw new Error('not authenticated');
+        }
     }
 
     setCars(cars: Car[]) {
@@ -25,6 +37,7 @@ class CarsStore {
     }
 
     async deleteCar(id: number) {
+        this.error = undefined;
         try{
             let response = await fetch(`${API_URL}/Cars/${id}`, {
                 method: 'DELETE',
@@ -34,9 +47,14 @@ class CarsStore {
                     }
             });
             
-            if (!response.ok) {
-                throw new Error("failed to delete car"); //401, 403, 400,
+            if (response.status == 401) {
+                this.handleUnathorized();
+                this.deleteCar(id);
+                return;
             }
+
+            if (response.status == 400)
+                throw new Error('bad request');
 
             this.setCars(this.cars.filter((elem:Car) => elem.carId != id));
             
@@ -46,7 +64,7 @@ class CarsStore {
     }
 
     async addCar(newCar: Car) {
-
+        this.error = undefined;
         try{
             let response = await fetch(`${API_URL}/Cars`, {
                 method: 'POST',
@@ -57,9 +75,14 @@ class CarsStore {
                 body: JSON.stringify({carModelId: newCar.brand.carModelId, color: newCar.color})
             });
             
-            if (!response.ok) {
-                throw new Error("failed to add car");
+            if (response.status == 401) {
+                this.handleUnathorized();
+                this.addCar(newCar);
+                return;
             }
+
+            if (response.status == 400)
+                throw new Error('bad request');
 
             const responseData: Car = await response.json();
 
@@ -71,7 +94,7 @@ class CarsStore {
     }
 
     async editCar(editedCar: Car) {
-
+        this.error = undefined;
         try{
             let response = await fetch(`${API_URL}/Cars/${editedCar.carId}`, {
                 method: 'PUT',
@@ -82,9 +105,14 @@ class CarsStore {
                     body: JSON.stringify({carModelId: editedCar.brand.carModelId, color: editedCar.color})
             });
             
-            if (!response.ok) {
-                throw new Error("failed to delete car"); 
+            if (response.status == 401) {
+                this.handleUnathorized();
+                this.editCar(editedCar);
+                return;
             }
+
+            if (response.status == 400)
+                throw new Error('bad request');
 
             this.cars = this.cars.map((elem:Car) => (
                 elem.carId == editedCar.carId) ? editedCar : elem);
@@ -96,13 +124,22 @@ class CarsStore {
     }
 
     async fetchCars() {
-       
+        this.error = undefined;
         try{
             let response = await fetch(`${API_URL}/Cars`, {
                 headers: {Authorization:
                      `bearer ${authStore.authData?.accessToken}`}
             });
-            
+
+            if (response.status == 401) {
+                this.handleUnathorized();
+                this.fetchCars();
+                return;
+            }
+
+            if (response.status == 400)
+                throw new Error('bad request');
+
             let body: Car[] = await response.json();
     
             this.setCars(body);

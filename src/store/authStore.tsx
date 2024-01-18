@@ -5,6 +5,8 @@ import { makeAutoObservable } from 'mobx';
 class AuthStore {
     authData: AuthInfo | null = null;
 
+    error?: String;
+
     constructor() {
         makeAutoObservable(this);
     }
@@ -13,7 +15,7 @@ class AuthStore {
         this.authData = newAuthInfo;
     }
 
-    getRole(authInfo: AuthInfo) { //вынести в отд метод как обобщение (ну или хотя бы типизировать)
+    createAuth(authInfo: AuthInfo) { //вынести в отд метод как обобщение (ну или хотя бы типизировать)
         
         const encodedClaims = authInfo.accessToken.split(".")[1];
         const role = JSON.parse(atob(encodedClaims)).role;
@@ -23,46 +25,75 @@ class AuthStore {
     }
 
     async login(loginCreds: LoginRequest){
-
-        const response = await fetch(`${API_URL}/Identity/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify(loginCreds)
-        });
-        
-        let body: AuthInfo = await response.json();
-        this.getRole(body);
+        this.error = undefined;
+        try {
+            const response = await fetch(`${API_URL}/Identity/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(loginCreds)
+            });
+            
+            if (response.status == 401){
+                const errors: string[] = await response.json();
+                throw new Error(errors[0]);
+            }
+            
+            const body: AuthInfo = await response.json();
+            this.createAuth(body);
+        } catch (e: unknown) {
+            this.error = (e as Error).message;
+        }
     }
 
     async register(registerInfo: RegisterRequest) {
-        const response = await fetch(`${API_URL}/Identity/signup`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify(registerInfo)
-        });
+        this.error = undefined;
+        try {
+            const response = await fetch(`${API_URL}/Identity/signup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(registerInfo)
+            });
 
-        const body: AuthInfo = await response.json();
-        this.getRole(body);
+            if (response.status == (401 || 400)){
+                const errors: string[] = await response.json();
+                throw new Error(errors[0]);
+            }
+    
+            const body: AuthInfo = await response.json();
+            this.createAuth(body);
+        } catch (e: unknown) {
+            this.error = (e as Error).message;
+        }
     }
 
     async refreshToken() {
+        this.error = undefined;
         if (!this.authData)
             return;
 
-        const response = await fetch(`${API_URL}/Identity/token/refreshing`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({refreshToken: this.authData?.refreshToken})
-        });
-        
-        let body: AuthInfo = await response.json();
-        this.setAuthInfo(body);
+        try{
+            const response = await fetch(`${API_URL}/Identity/token/refreshing`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({refreshToken: this.authData.refreshToken})
+            });
+            
+            if (response.status == 401){
+                const errors: string[] = await response.json();
+                throw new Error(errors[0]);
+            }
+
+            let body: AuthInfo = await response.json();
+            this.setAuthInfo(body);
+        } catch (e: unknown) {
+            this.error = (e as Error).message;
+        }
     }
 
     logout(){
