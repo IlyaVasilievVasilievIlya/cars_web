@@ -3,7 +3,6 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { API_URL } from '../../public/consts';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { MenuItem } from '@mui/material';
 

@@ -19,20 +19,31 @@ export const CarList: React.FC = observer(() => {
 
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
 
-  //const [isOpenAddModal, setIsOpenAddModal] = useState(false);
+  const [error, setError] = useState<string | undefined>();
 
-  const deleteCar = () => {
+  const deleteCar = async () => {
 
-    carsStore.deleteCar(car.carId);
+    await carsStore.deleteCar(car.carId);
+
+    if (!carsStore.error) {
+      setError(carsStore.error)
+    }
+
     setIsOpenDeleteModal(false);
   }
 
-  const editCar = (editedCar: Car) => {
-    carsStore.editCar(editedCar);
+  const editCar = async (editedCar: Car) => {
+    await carsStore.editCar(editedCar);
+
+    console.log(carsStore.cars);
+
+    if (!carsStore.error) {
+      setError(carsStore.error);
+    }
   }
 
-  const addCar = (newCar: Car) => {
-    carsStore.addCar(newCar);
+  const addCar = async (newCar: Car) => {
+    await carsStore.addCar(newCar);
   }
 
   function openDeleteModal(id: number) {
@@ -81,9 +92,9 @@ export const CarList: React.FC = observer(() => {
 
   return (
     <>
-      {/* {error && <ErrorMessage error={error}/>}
+      {error && <ErrorMessage error={error}/>}
       
-      {loading && <Loader />} */}
+      {/* {loading && <Loader />} */}
 
       <AddCar onAdd={addCar}/>
 

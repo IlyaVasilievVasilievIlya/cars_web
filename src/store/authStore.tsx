@@ -1,19 +1,22 @@
 import { BrandModel, Car, AuthInfo, LoginRequest, RegisterRequest } from '../components/model';
-import { API_URL } from '../public/consts';
 import { makeAutoObservable } from 'mobx';
+import { AuthService } from '../services/AuthService';
 
 class AuthStore {
-    authData: AuthInfo | null = null;
+    authData?: AuthInfo;
+
+    error?: string;
+
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    setAuthInfo(newAuthInfo: AuthInfo){
+    setAuthInfo(newAuthInfo?: AuthInfo){
         this.authData = newAuthInfo;
     }
 
-    getRole(authInfo: AuthInfo) { //вынести в отд метод как обобщение (ну или хотя бы типизировать)
+    setAuth(authInfo: AuthInfo) {
         
         const encodedClaims = authInfo.accessToken.split(".")[1];
         const role = JSON.parse(atob(encodedClaims)).role;
@@ -24,49 +27,40 @@ class AuthStore {
 
     async login(loginCreds: LoginRequest){
 
-        const response = await fetch(`${API_URL}/Identity/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify(loginCreds)
-        });
-        
-        let body: AuthInfo = await response.json();
-        this.getRole(body);
+        try {
+            const response = await AuthService.login(loginCreds);
+            this.setAuth(response.data);
+        } catch (e) {
+            console.log('login error '.concat((e as Error).message));
+            this.error = (e as Error).message;
+        }
     }
 
     async register(registerInfo: RegisterRequest) {
-        const response = await fetch(`${API_URL}/Identity/signup`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify(registerInfo)
-        });
 
-        const body: AuthInfo = await response.json();
-        this.getRole(body);
+        try {
+            const response = await AuthService.register(registerInfo);
+            this.setAuth(response.data);
+        } catch (e) {
+            console.log('register error '.concat((e as Error).message));
+            this.error = (e as Error).message;
+        }
     }
 
     async refreshToken() {
         if (!this.authData)
             return;
-
-        const response = await fetch(`${API_URL}/Identity/token/refreshing`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({refreshToken: this.authData?.refreshToken})
-        });
-        
-        let body: AuthInfo = await response.json();
-        this.setAuthInfo(body);
+        try {
+            const response = await AuthService.refresh(this.authData.refreshToken);
+            this.setAuth(response.data);
+        } catch (e) {
+            console.log('refresh token error '.concat((e as Error).message));
+            this.error = (e as Error).message;
+        }
     }
 
     logout(){
-        this.authData = null;
+        this.setAuthInfo();
     }
 };
 

@@ -1,5 +1,4 @@
 import { BrandModel, Car } from '../components/model';
-import { API_URL } from '../public/consts';
 import { makeAutoObservable } from 'mobx';
 
 

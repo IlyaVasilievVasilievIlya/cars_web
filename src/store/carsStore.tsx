@@ -1,20 +1,19 @@
 import { Car } from '../components/model';
-import { API_URL } from '../public/consts';
 import { makeAutoObservable } from 'mobx';
-import { authStore } from './authStore';
+import { CarsService } from '../services/CarsService';
 
 
-const testData: Car[] = [
-    {carId: 1, brand: {carModelId: 1, brand: 'Toyota', model: 'Camry'}, color:'melon yellow'},
-    {carId: 2, brand: {carModelId: 2, brand: 'Renault', model: 'Logan'}, color:'black'},
-    {carId: 3, brand: {carModelId: 3, brand: 'Mercedes', model: 'Benz'}, color:'red'},
-    {carId: 4, brand: {carModelId: 4, brand: 'Lada', model: 'Granta'}, color:'white'}
-]
+// const testData: Car[] = [
+//     {carId: 1, brand: {carModelId: 1, brand: 'Toyota', model: 'Camry'}, color:'melon yellow'},
+//     {carId: 2, brand: {carModelId: 2, brand: 'Renault', model: 'Logan'}, color:'black'},
+//     {carId: 3, brand: {carModelId: 3, brand: 'Mercedes', model: 'Benz'}, color:'red'},
+//     {carId: 4, brand: {carModelId: 4, brand: 'Lada', model: 'Granta'}, color:'white'}
+// ]
 
 class CarsStore {
-    cars: Car[] = testData;
+    cars: Car[] = [];
 
-    error?: String;
+    error?: string;
 
     constructor(){
         makeAutoObservable(this);
@@ -24,91 +23,53 @@ class CarsStore {
         this.cars = cars;
     }
 
-    async deleteCar(id: number) {
-        try{
-            let response = await fetch(`${API_URL}/Cars/${id}`, {
-                method: 'DELETE',
-                headers: {Authorization:
-                     `bearer ${authStore.authData?.accessToken}`,
-                     'Content-Type': 'application/json;charset=utf-8'
-                    }
-            });
-            
-            if (!response.ok) {
-                throw new Error("failed to delete car"); //401, 403, 400,
-            }
+    setError(error?: string) {
+        this.error = error;
+    }
 
+    async deleteCar(id: number) {
+        this.setError();
+        try{
+            await CarsService.deleteCar(id);
             this.setCars(this.cars.filter((elem:Car) => elem.carId != id));
             
-        } catch (error: unknown) {
-            error = (error as Error).message; //mobx сделает? иначе setstate
+        } catch (e) {
+            console.log('deletecar error '.concat((e as Error).message));
+           this.setError((e as Error).message);
         }
     }
 
     async addCar(newCar: Car) {
-
-        try{
-            let response = await fetch(`${API_URL}/Cars`, {
-                method: 'POST',
-                headers: {Authorization:
-                     `bearer ${authStore.authData?.accessToken}`,
-                     'Content-Type': 'application/json;charset=utf-8'
-                    },
-                body: JSON.stringify({carModelId: newCar.brand.carModelId, color: newCar.color})
-            });
-            
-            if (!response.ok) {
-                throw new Error("failed to add car");
-            }
-
-            const responseData: Car = await response.json();
-
-            this.cars.push(responseData);
-            
-        } catch (error: unknown) {
-            error = (error as Error).message; //mobx сделает? иначе setstate
+        this.setError();
+        try {
+            const response = await CarsService.addCar(newCar);
+            this.cars.push(response.data);
+        } catch (e) {
+            console.log('addcar error '.concat((e as Error).message));
+            this.setError((e as Error).message);
         }
     }
 
     async editCar(editedCar: Car) {
-
-        try{
-            let response = await fetch(`${API_URL}/Cars/${editedCar.carId}`, {
-                method: 'PUT',
-                headers: {Authorization:
-                     `bearer ${authStore.authData?.accessToken}`,
-                     'Content-Type': 'application/json;charset=utf-8'
-                    },
-                    body: JSON.stringify({carModelId: editedCar.brand.carModelId, color: editedCar.color})
-            });
-            
-            if (!response.ok) {
-                throw new Error("failed to delete car"); 
-            }
-
+        this.setError();
+        try {
+            await CarsService.editCar(editedCar);
             this.cars = this.cars.map((elem:Car) => (
                 elem.carId == editedCar.carId) ? editedCar : elem);
-            
-        } catch (error: unknown) {
-            error = (error as Error).message; //mobx сделает? иначе setstate
+        } catch (e) {
+            console.log('editcar error '.concat((e as Error).message));
+            this.setError((e as Error).message);
         }
-
     }
 
     async fetchCars() {
-       
-        try{
-            let response = await fetch(`${API_URL}/Cars`, {
-                headers: {Authorization:
-                     `bearer ${authStore.authData?.accessToken}`}
-            });
-            
-            let body: Car[] = await response.json();
-    
-            this.setCars(body);
-            
-        } catch (error: unknown) {
-            error = (error as Error).message;
+        this.setError();
+        try {
+            const response = await CarsService.fetchCars();
+            this.setCars(response.data);
+        } catch (e) {
+            console.log('fetchcars error '.concat((e as Error).message));
+            this.setError((e as Error).message);
         }
     }
 };
