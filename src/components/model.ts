@@ -41,3 +41,11 @@ export interface AuthInfo {
     refreshToken: string;
     role: string;
 }
+
+export interface User {
+    id: number;
+    fullName: string;
+    email: string;
+    birthDate: string;
+    role: string;
+}

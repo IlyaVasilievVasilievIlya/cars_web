@@ -48,6 +48,7 @@ class AuthStore {
     }
 
     async refreshToken() {
+        this.error = undefined;
         if (!this.authData)
             return;
         try {
