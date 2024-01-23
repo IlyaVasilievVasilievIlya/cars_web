@@ -25,8 +25,12 @@ class AuthStore {
         console.log(this.authData);
     }
 
-    async login(loginCreds: LoginRequest){
+    setError(error?: string) {
+        this.error = error;
+    }
 
+    async login(loginCreds: LoginRequest){
+        this.setError();
         try {
             const response = await AuthService.login(loginCreds);
             this.setAuth(response.data);
@@ -37,7 +41,7 @@ class AuthStore {
     }
 
     async register(registerInfo: RegisterRequest) {
-
+        this.setError();
         try {
             const response = await AuthService.register(registerInfo);
             this.setAuth(response.data);
@@ -48,7 +52,7 @@ class AuthStore {
     }
 
     async refreshToken() {
-        this.error = undefined;
+        this.setError();
         if (!this.authData)
             return;
         try {
