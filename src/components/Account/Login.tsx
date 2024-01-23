@@ -1,10 +1,12 @@
 import { Box, Button, TextField } from "@mui/material"
-import { Controller, useForm } from 'react-hook-form';
-import { LoginRequest } from '../../model'
-import { authStore } from '../../../store/authStore'
+import { LoginRequest } from '../model'
+import { authStore } from '../../store/authStore'
 import { Navigate } from "react-router-dom";
 import { useState } from "react";
-
+import { object, string } from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Controller, useForm } from "react-hook-form";
+import { Header } from "../Header";
 
 
 const EMAIL_REGEX = /^([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)$/;
@@ -12,15 +14,22 @@ const EMAIL_REGEX = /^([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)$/;
 const PWD_REGEX = /^.{4,24}$/;
 
 
-export const Login: React.FC = () => {
 
-    const { handleSubmit, formState: { errors }, reset, control } = useForm<LoginRequest>();
+
+export const Login: React.FC = () => {
+    
+    const schema = object({
+        email: string().required('Это обязательное поле').matches(EMAIL_REGEX, 'Некорректный адрес почты'),
+        password: string().required('Это обязательное поле').matches(PWD_REGEX, 'Пароль должен содержать заглавные и строчные латинские символы, служебные символы и цифры')
+    });
+    
+    const { handleSubmit, formState: {errors}, control } = useForm({
+        resolver: yupResolver(schema)
+    });
 
     const [login, setLogin] = useState(false);
 
-
     const tryLogin = async (request: LoginRequest) => {
-
         await authStore.login(request);
 
         console.log(authStore.authData);
@@ -33,19 +42,13 @@ export const Login: React.FC = () => {
 
     return (
         <>
+            <Header/>
             {login && <Navigate to="/cars" />}
             {authStore.error}
             <Box component="form" onSubmit={handleSubmit(tryLogin)}>
                 <Controller
                     control={control}
                     name="email"
-                    rules={{
-                        required: 'Это обязательное поле',
-                        pattern: {
-                            value: EMAIL_REGEX,
-                            message: 'Некорректный адрес почты'
-                        }
-                    }}
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             label="Email"
@@ -58,13 +61,6 @@ export const Login: React.FC = () => {
                 <Controller
                     control={control}
                     name="password"
-                    rules={{
-                        required: 'Это обязательное поле',
-                        pattern: {
-                            value: PWD_REGEX,
-                            message: 'Пароль должен содержать заглавные и строчные латинские символы, служебные символы и цифры'
-                        }
-                    }}
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             label="Пароль"

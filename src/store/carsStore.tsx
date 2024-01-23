@@ -1,6 +1,6 @@
 import { Car } from '../components/model';
 import { makeAutoObservable } from 'mobx';
-import { CarsService } from '../services/CarsService';
+import { CarsService } from '../services/CarService';
 
 
 // const testData: Car[] = [

@@ -1,9 +1,9 @@
 import React from 'react';
 import './App.css';
 import { Route, RouterProvider, Routes } from 'react-router-dom';
-import { Login } from './components/Account/Users/Login';
-import { Register } from './components/Account/Users/Register';
-import { RequireAuth } from './components/Account/Users/RequireAuth';
+import { Login } from './components/Account/Login';
+import { Register } from './components/Account/Register';
+import { RequireAuth } from './components/Account/RequireAuth';
 import { CarsPage } from './pages/Cars/CarsPage';
 import { HomePage } from './pages/HomePage';
 import { ROLES } from './public/consts';

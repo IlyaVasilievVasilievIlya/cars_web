@@ -1,6 +1,6 @@
 
 import { useLocation, Navigate, Outlet } from 'react-router-dom'
-import { authStore } from '../../../store/authStore'
+import { authStore } from '../../store/authStore'
 
 interface RequireAuthProps {
     allowedRoles: string[]

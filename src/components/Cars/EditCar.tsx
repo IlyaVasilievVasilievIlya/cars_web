@@ -1,10 +1,12 @@
-import { BrandModel, Car, CarEditRequest } from '../model'
+import { BrandModel, Car, EditCarRequest } from '../model'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { MenuItem } from '@mui/material';
+import { number, object, string } from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 
 
@@ -15,10 +17,17 @@ interface EditCarProps {
 }
 
 export const EditCar: React.FC<EditCarProps> = ({car, onDone, onEdit}: EditCarProps) => {
-    
-    const { handleSubmit, formState: {errors}, reset, control} = useForm<CarEditRequest>(
-        {defaultValues: {...car, carModelId: car.brand.carModelId}}
-    );
+ 
+    const schema = object({
+        carModelId: number().required('Это обязательное поле'),
+        color: string().max(128, 'Поле не должно содержать более 128 символов'),
+        carId: number().required()
+    })
+
+    const { handleSubmit, formState: {errors}, reset, control} = useForm<EditCarRequest>(
+        {defaultValues: {...car, carModelId: car.brand.carModelId},
+        resolver: yupResolver(schema)
+    });
 
     const [error, setError] = useState(false);
 
@@ -28,7 +37,7 @@ export const EditCar: React.FC<EditCarProps> = ({car, onDone, onEdit}: EditCarPr
             {model.brand} {model.model}
         </MenuItem>);
     
-    const editCar = (editedCar: CarEditRequest) => {
+    const editCar = (editedCar: EditCarRequest) => {
         let brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId == editedCar.carModelId);
         if (brandModel){
             onEdit({...editedCar, brand: brandModel});

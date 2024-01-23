@@ -1,9 +1,12 @@
 import { Box, Button, TextField } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { RegisterRequest } from "../../model";
-import { authStore } from "../../../store/authStore";
+import { RegisterRequest } from "../model";
+import { authStore } from "../../store/authStore";
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
+import { date, object, ref, string } from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Header } from "../Header";
 
 const EMAIL_REGEX = /^([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)$/;
 const PWD_REGEX = /^.*$/;
@@ -12,10 +15,21 @@ const PWD_REGEX = /^.*$/;
 
 //pattern: /[A-Za-z]{3}/ либо как pattern в hookform либо внутрь textfield (лучше первое)к
 
-export const Register = () => {
+export const Register: React.FC = () => {
 
+    const schema = object({
+        email: string().required('Это обязательное поле').matches(EMAIL_REGEX, 'Некорректный адрес почты'),
+        password: string().required('Это обязательное поле').matches(PWD_REGEX, 'Пароль должен содержать заглавные и строчные латинские символы, служебные символы и цифры'),
+        confirmPassword: string().required('').oneOf([ref("password")], 'Пароли не совпадают'),
+        name: string().required('Это обязательное поле').max(128, 'Имя не должно содержать более 128 символов'),
+        surname: string().required('Это обязательное поле').max(128, 'Фамилия не должна содержать более 128 символов'),
+        patronymic: string().max(128, 'Отчество не должно содержать более 128 символов'),
+        birthDate: date().required('Это обязательное поле')
+    });
 
-    const { handleSubmit, formState: { errors }, reset, watch, control } = useForm<RegisterRequest>();
+    const { handleSubmit, formState: { errors }, reset, watch, control } = useForm({
+        resolver: yupResolver(schema)
+    });
 
     const [register, setRegister] = useState(false);
 
@@ -32,19 +46,13 @@ export const Register = () => {
 
     return (
         <>
+        <Header/>
         {register && <Navigate to="/cars" />}
         {authStore.error}
             <Box component="form" onSubmit={handleSubmit(tryRegister)}>
                 <Controller
                     control={control}
                     name="email"
-                    rules={{
-                        required: 'Это обязательное поле',
-                        pattern: {
-                            value: EMAIL_REGEX,
-                            message: 'Некорректный адрес почты'
-                        }
-                    }}
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             label="Email"
@@ -58,13 +66,6 @@ export const Register = () => {
                 <Controller
                     control={control}
                     name="password"
-                    rules={{
-                        required: 'Это обязательное поле',
-                        pattern: {
-                            value: PWD_REGEX,
-                            message: 'Пароль должен содержать заглавные и строчные латинские символы, служебные символы и цифры'
-                        }
-                    }}
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             label="Пароль"
@@ -77,14 +78,6 @@ export const Register = () => {
                 <Controller
                     control={control}
                     name="confirmPassword"
-                    rules={{
-                        required: 'Это обязательное поле',
-                        validate: (value: string) => {
-                            if (watch('password') != value) {
-                                return 'Пароли не совпадают';
-                            }
-                        }
-                    }}
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             label="Подтвердите пароль"
@@ -97,10 +90,6 @@ export const Register = () => {
                 <Controller
                     control={control}
                     name="name"
-                    rules={{
-                        required: 'Это обязательное поле',
-                        maxLength: { value: 128, message: 'Имя не должно содержать более 128 символов' }
-                    }}
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             label="Имя"
@@ -112,10 +101,6 @@ export const Register = () => {
                 <Controller
                     control={control}
                     name="surname"
-                    rules={{
-                        required: 'Это обязательное поле',
-                        maxLength: { value: 128, message: 'Фамилия не должна содержать более 128 символов' }
-                    }}
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             label="Фамилия"
@@ -127,10 +112,6 @@ export const Register = () => {
                 <Controller
                     control={control}
                     name="patronymic"
-                    rules={{
-                        required: false,
-                        maxLength: { value: 128, message: 'Отчество не должно содержать более 128 символов' }
-                    }}
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             label="Отчество"
@@ -142,9 +123,6 @@ export const Register = () => {
                 <Controller
                     control={control}
                     name="birthDate"
-                    rules={{
-                        required: 'Это обязательное поле'
-                    }}
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             label="Дата рождения"

@@ -7,7 +7,7 @@ import { observer } from 'mobx-react-lite';
 import { carsStore } from '../../store/carsStore';
 import { Car } from '../model';
 import { AddCar } from './AddCar';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, List, ListItem, ListItemText } from '@mui/material';
+import { Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, List, ListItem, ListItemText, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 
@@ -66,23 +66,26 @@ export const CarList: React.FC = observer(() => {
 
 
   let carList = carsStore.cars.map(carElem =>
-    <ListItem key={carElem.carId}
-      secondaryAction={
-        <>
+    <Card key={carElem.carId}>
+      <CardContent>
+        <Typography>
+          {carElem.brand.brand} {carElem.brand.model}
+        </Typography>
+        <Typography>
+          {carElem.color}
+        </Typography>
+        <CardActions disableSpacing={true}>
+
+
           <IconButton onClick={() => openEditModal(carElem.carId)}>
             <EditIcon />
           </IconButton>
           <IconButton onClick={() => openDeleteModal(carElem.carId)}>
             <DeleteIcon />
           </IconButton>
-        </>
-      }>
-      <ListItemText
-        primary={`${carElem.brand.brand} ${carElem.brand.model}`}
-        secondary={carElem.color}
-      >
-      </ListItemText>
-    </ListItem>);
+        </CardActions>
+      </CardContent>
+    </Card>);
 
 
   useEffect(() => {
@@ -92,17 +95,17 @@ export const CarList: React.FC = observer(() => {
 
   return (
     <>
-      {error && <ErrorMessage error={error}/>}
-      
+      {error && <ErrorMessage error={error} />}
+
       {/* {loading && <Loader />} */}
 
-      <AddCar onAdd={addCar}/>
+      <AddCar onAdd={addCar} />
 
       {!carsStore.error && <List>
         {carList}
       </List>}
 
-      <Dialog 
+      <Dialog
         open={isOpenDeleteModal}
         onSubmit={() => deleteCar()}
         onClose={() => setIsOpenDeleteModal(false)}>

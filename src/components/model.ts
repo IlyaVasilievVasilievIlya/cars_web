@@ -1,3 +1,5 @@
+import { roleList } from "../public/consts";
+
 export interface BrandModel {
     carModelId: number;
     brand: string;
@@ -10,12 +12,12 @@ export interface Car {
     color?: string;
 }
 
-export interface CarAddRequest {
+export interface AddCarRequest {
     carModelId: number;
     color?: string;
 }
 
-export interface CarEditRequest {
+export interface EditCarRequest {
     carId: number;
     carModelId: number;
     color?: string;
@@ -42,10 +44,25 @@ export interface AuthInfo {
     role: string;
 }
 
+export type UserRole = typeof roleList[number]
+
 export interface User {
-    id: number;
-    fullName: string;
+    id: string;
+    name: string;
+    surname: string;
+    patronymic?: string;
     email: string;
-    birthDate: string;
-    role: string;
+    birthDate: Date;
+    role: UserRole;
+}
+
+export interface EditUserRequest {
+    name: string;
+    surname: string;
+    patronymic?: string;
+    birthDate: Date;
+}
+
+export interface ChangeUserRoleRequest {
+    role: UserRole;
 }

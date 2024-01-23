@@ -1,8 +1,10 @@
-import { Car, CarAddRequest } from '../model'
+import { Car, AddCarRequest } from '../model'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem, TextField } from '@mui/material';
 import { brandModelsStore } from '../../store/brandModelsStore';
+import { object, string, number } from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 
 interface AddCarProps {
@@ -11,7 +13,15 @@ interface AddCarProps {
 
 export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
 
-    const { handleSubmit, formState: { errors }, reset, control } = useForm<CarAddRequest>();
+
+    const schema = object({
+        carModelId: number().required('Это обязательное поле'),
+        color: string().max(128, 'Поле не должно содержать более 128 символов')
+    })
+
+    const { handleSubmit, formState: { errors }, reset, control } = useForm<AddCarRequest>({
+        resolver: yupResolver(schema)
+    });
 
     const [modal, setModal] = useState(false);
 
@@ -20,7 +30,7 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
             {model.brand} {model.model}
         </MenuItem>);
 
-    const createCar = (newCar: CarAddRequest) => { 
+    const createCar = (newCar: AddCarRequest) => { 
         let brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId == newCar.carModelId);
         if (brandModel) {
             onAdd({ ...newCar, brand: brandModel, carId: 0 })
@@ -60,7 +70,6 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
                     <Controller
                         control={control}
                         name="color"
-                        rules={{maxLength: {value: 128, message: 'Поле не должно содержать более 128 символов'} }}
                         render={({ field: { onChange, value } }) => (
                             <TextField
                                 label="Цвет"

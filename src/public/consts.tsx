@@ -1,28 +1,21 @@
 
 import { createBrowserRouter } from "react-router-dom";
-import { Login } from "../components/Account/Users/Login";
-import { Register } from "../components/Account/Users/Register";
-import { RequireAuth } from "../components/Account/Users/RequireAuth";
+import { Login } from "../components/Account/Login";
+import { Register } from "../components/Account/Register";
+import { RequireAuth } from "../components/Account/RequireAuth";
 import { CarsPage } from "../pages/Cars/CarsPage";
 import { HomePage } from "../pages/HomePage";
 import { UsersPage } from '../pages/Users/UsersPage';
 import { NotFoundPage } from "../pages/NotFoundPage";
-
-
-
+import { Logout } from "../components/Account/Logout";
 
 interface NavInfo {
     path: string;
     text: string;
     element: React.ReactElement;
     key: string;
+    allowedRoles?: string[];
 }
-
-export const navInfos: NavInfo[] = [
-    {path: "/", text: "", element:<CarsPage />, key: "/"},
-    {path: "/cars", text: "Cars", element:<UsersPage />, key: "/cars"},
-    {path: "/users", text: "Users", element:<UsersPage />, key: "/users"}
-];
 
 export const ROLES = {
     'Admin': "Administrator",
@@ -30,6 +23,18 @@ export const ROLES = {
     'Manager': "Manager",
     'User': "User"
 }
+
+export const roleList = ['Administrator', 'SuperUser', 'Manager', 'User'] as const;
+
+
+export const navInfos: NavInfo[] = [
+    {path: "/", text: "", element:<CarsPage />, key: "/", allowedRoles: [ROLES.User, ROLES.SuperUser, ROLES.Admin, ROLES.Manager]},
+    {path: "/cars", text: "Cars", element:<CarsPage />, key: "/cars", allowedRoles: [ROLES.User, ROLES.SuperUser, ROLES.Admin, ROLES.Manager]},
+    {path: "/users", text: "Users", element:<UsersPage />, key: "/users", allowedRoles: [ROLES.SuperUser, ROLES.Admin]},
+    {path: "/register", text: "Register", element:<Register/>, key:"/register" },
+    {path: "/logout", text: "Logout", element:<Logout/>, key:"/logout", allowedRoles: [ROLES.User, ROLES.SuperUser, ROLES.Admin, ROLES.Manager]}
+];
+
 
 export const router = createBrowserRouter([
     {
@@ -63,6 +68,10 @@ export const router = createBrowserRouter([
             {
                 path: "*",
                 element: <NotFoundPage/>
+            },
+            {
+                path: "/logout",
+                element: <Logout/>
             }
         ]
     }
