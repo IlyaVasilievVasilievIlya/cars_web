@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { navInfos } from '../public/consts';
 import { AppBar, Toolbar, Typography } from '@mui/material';
 import { authStore } from '../store/authStore';
+import { AuthActions } from './Account/AuthActions';
 
 interface Props {
   children?: React.ReactNode;
@@ -12,7 +13,7 @@ interface Props {
 export const Header: React.FC<Props> = ({ children }: Props) => {
 
   const navMenu = navInfos.map(link =>
-    (link.allowedRoles?.find(role => role == authStore.authData?.role)) ? 
+    (authStore.checkRole(link.allowedRoles)) ? 
   
     <NavLink to={link.path} key={link.path}>
       {link.text}
@@ -30,7 +31,7 @@ export const Header: React.FC<Props> = ({ children }: Props) => {
           Cars Project
         </Typography>
         {navMenu}
-        {children}
+        <AuthActions/>
       </Toolbar>
     </AppBar>
   );

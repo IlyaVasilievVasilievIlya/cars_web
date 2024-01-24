@@ -6,5 +6,5 @@ export const Logout: React.FC = () => {
     
     authStore.setAuthInfo();
     
-    return <Navigate to="/login" />
+    return <Navigate to="/login" replace={true}/>
 }

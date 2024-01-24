@@ -7,6 +7,9 @@ import { Navigate } from "react-router-dom";
 import { date, object, ref, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Header } from "../Header";
+import { DateField } from '@mui/x-date-pickers/DateField';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from "@mui/x-date-pickers";
 
 const EMAIL_REGEX = /^([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)$/;
 const PWD_REGEX = /^.*$/;
@@ -24,7 +27,7 @@ export const Register: React.FC = () => {
         name: string().required('Это обязательное поле').max(128, 'Имя не должно содержать более 128 символов'),
         surname: string().required('Это обязательное поле').max(128, 'Фамилия не должна содержать более 128 символов'),
         patronymic: string().max(128, 'Отчество не должно содержать более 128 символов'),
-        birthDate: date().required('Это обязательное поле')
+        birthDate: date().required('Это обязательное поле').min("1923-01-01", 'дата должна быть не ранее 1923.01.01').max(new Date(), `Дата должна быть ранее ${new Date()}`)
     });
 
     const { handleSubmit, formState: { errors }, reset, watch, control } = useForm({
@@ -46,9 +49,9 @@ export const Register: React.FC = () => {
 
     return (
         <>
-        <Header/>
-        {register && <Navigate to="/cars" />}
-        {authStore.error}
+            <Header />
+            {register && <Navigate to="/cars" />}
+            {authStore.error}
             <Box component="form" onSubmit={handleSubmit(tryRegister)}>
                 <Controller
                     control={control}
@@ -102,13 +105,15 @@ export const Register: React.FC = () => {
                     control={control}
                     name="surname"
                     render={({ field: { onChange, value } }) => (
+
                         <TextField
                             label="Фамилия"
                             value={value}
                             onChange={onChange}
                             placeholder='Введите фамилию'
                             helperText={errors.surname?.message?.toString()}
-                        />)} />
+                        />
+                    )} />
                 <Controller
                     control={control}
                     name="patronymic"
@@ -124,14 +129,16 @@ export const Register: React.FC = () => {
                     control={control}
                     name="birthDate"
                     render={({ field: { onChange, value } }) => (
-                        <TextField
-                            label="Дата рождения"
-                            type="date"
-                            value={value}
-                            onChange={onChange}
-                            placeholder='Введите дату рождения'
-                            helperText={errors.birthDate?.message?.toString()}
-                        />)} />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DateField
+                                label="Дата рождения"
+                                value={value}
+                                onChange={onChange}
+                                helperText={errors.birthDate?.message?.toString()}
+                                format="DD-MM-YYYY"
+                            />
+                        </LocalizationProvider>
+                    )} />
                 <Button type="submit" onClick={handleSubmit(tryRegister)}>Добавить</Button>
                 <Button type="reset">Закрыть</Button>
             </Box>

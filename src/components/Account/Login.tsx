@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from "@mui/material"
 import { LoginRequest } from '../model'
 import { authStore } from '../../store/authStore'
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -18,6 +18,12 @@ const PWD_REGEX = /^.{4,24}$/;
 
 export const Login: React.FC = () => {
     
+
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const fromPage = location.state?.from?.pathname || '/';
+
     const schema = object({
         email: string().required('Это обязательное поле').matches(EMAIL_REGEX, 'Некорректный адрес почты'),
         password: string().required('Это обязательное поле').matches(PWD_REGEX, 'Пароль должен содержать заглавные и строчные латинские символы, служебные символы и цифры')
@@ -43,7 +49,7 @@ export const Login: React.FC = () => {
     return (
         <>
             <Header/>
-            {login && <Navigate to="/cars" />}
+            {login && <Navigate to={fromPage} replace={true}/>}
             {authStore.error}
             <Box component="form" onSubmit={handleSubmit(tryLogin)}>
                 <Controller
@@ -64,6 +70,7 @@ export const Login: React.FC = () => {
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             label="Пароль"
+                            type="password"
                             value={value}
                             onChange={onChange}
                             placeholder='Введите пароль'
@@ -71,7 +78,6 @@ export const Login: React.FC = () => {
                         />)}
                 />
                 <Button type="submit" onClick={handleSubmit(tryLogin)}>Добавить</Button>
-                <Button type="reset">Закрыть</Button>
             </Box>
         </>
     )

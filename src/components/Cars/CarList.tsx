@@ -10,6 +10,8 @@ import { AddCar } from './AddCar';
 import { Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, List, ListItem, ListItemText, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
+import { authStore } from '../../store/authStore';
+import { ROLES } from '../../public/consts';
 
 export const CarList: React.FC = observer(() => {
 
@@ -74,16 +76,15 @@ export const CarList: React.FC = observer(() => {
         <Typography>
           {carElem.color}
         </Typography>
-        <CardActions disableSpacing={true}>
-
-
-          <IconButton onClick={() => openEditModal(carElem.carId)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton onClick={() => openDeleteModal(carElem.carId)}>
-            <DeleteIcon />
-          </IconButton>
-        </CardActions>
+        { authStore.checkRole([ROLES.Manager, ROLES.Admin, ROLES.SuperUser]) &&
+          <CardActions disableSpacing={true}>
+            <IconButton onClick={() => openEditModal(carElem.carId)}>
+              <EditIcon />
+            </IconButton>
+            <IconButton onClick={() => openDeleteModal(carElem.carId)}>
+              <DeleteIcon />
+            </IconButton>
+          </CardActions> }
       </CardContent>
     </Card>);
 
@@ -97,9 +98,9 @@ export const CarList: React.FC = observer(() => {
     <>
       {error && <ErrorMessage error={error} />}
 
-      {/* {loading && <Loader />} */}
+      {/* {loading && <Loader />}  checkRole(список ролей)*/}
 
-      <AddCar onAdd={addCar} />
+      {authStore.checkRole([ROLES.Manager, ROLES.Admin, ROLES.SuperUser]) && <AddCar onAdd={addCar} />}
 
       {!carsStore.error && <List>
         {carList}

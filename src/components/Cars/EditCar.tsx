@@ -50,6 +50,10 @@ export const EditCar: React.FC<EditCarProps> = ({car, onDone, onEdit}: EditCarPr
         onDone();
     }
 
+    useEffect( () => {
+        brandModelsStore.fetchBrandModels();
+    }, [])
+
     return (
         <Dialog
         open={true}

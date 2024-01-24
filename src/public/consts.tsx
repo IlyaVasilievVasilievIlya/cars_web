@@ -8,6 +8,7 @@ import { HomePage } from "../pages/HomePage";
 import { UsersPage } from '../pages/Users/UsersPage';
 import { NotFoundPage } from "../pages/NotFoundPage";
 import { Logout } from "../components/Account/Logout";
+import { Unauthorized } from "../components/Account/Unauthorized";
 
 interface NavInfo {
     path: string;
@@ -24,15 +25,13 @@ export const ROLES = {
     'User': "User"
 }
 
-export const roleList = ['Administrator', 'SuperUser', 'Manager', 'User'] as const;
+export const roleList = ['Administrator', 'Manager', 'User'] as const;
 
 
 export const navInfos: NavInfo[] = [
     {path: "/", text: "", element:<CarsPage />, key: "/", allowedRoles: [ROLES.User, ROLES.SuperUser, ROLES.Admin, ROLES.Manager]},
     {path: "/cars", text: "Cars", element:<CarsPage />, key: "/cars", allowedRoles: [ROLES.User, ROLES.SuperUser, ROLES.Admin, ROLES.Manager]},
     {path: "/users", text: "Users", element:<UsersPage />, key: "/users", allowedRoles: [ROLES.SuperUser, ROLES.Admin]},
-    {path: "/register", text: "Register", element:<Register/>, key:"/register" },
-    {path: "/logout", text: "Logout", element:<Logout/>, key:"/logout", allowedRoles: [ROLES.User, ROLES.SuperUser, ROLES.Admin, ROLES.Manager]}
 ];
 
 
@@ -72,6 +71,10 @@ export const router = createBrowserRouter([
             {
                 path: "/logout",
                 element: <Logout/>
+            },
+            {
+                path: "/unauthorized",
+                element: <Unauthorized/>
             }
         ]
     }

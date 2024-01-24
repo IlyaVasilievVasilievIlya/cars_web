@@ -8,11 +8,13 @@ interface RequireAuthProps {
 
 export const RequireAuth = ({allowedRoles}: RequireAuthProps) => {
 
+    const location = useLocation();
+
     return (
         (allowedRoles.find(role => {console.log(authStore.authData); return role == authStore.authData?.role})) 
             ? <Outlet/>
             : authStore.authData 
                 ? <Navigate to="/unauthorized" />
-                : <Navigate to="/login" />
+                : <Navigate to="/login" state={{from: location}} replace={true}/>
     )
 }

@@ -1,7 +1,7 @@
 import { Car, AddCarRequest } from '../model'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem, Select, TextField } from '@mui/material';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { object, string, number } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -44,8 +44,13 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
         reset();
     }
 
+    useEffect( () => {
+        brandModelsStore.fetchBrandModels();
+    }, [])
+
     return (
         <>
+
             <Button type="button" onClick={() => setModal(true)}>
                 Добавить
             </Button>
@@ -58,15 +63,11 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
                     <Controller
                         control={control}
                         name="carModelId"
-                        render={({ field: { onChange, value } }) => (
-                            <TextField
-                                select
-                                label="Модель машины"
-                                placeholder='Выберите модель машины'
-                                value={value ?? 1}
-                                onChange={onChange}>
+                        defaultValue={1}
+                        render={({ field }) => (
+                            <Select labelId="Модель машины" label="Модель машины" {...field} placeholder='Выберите модель машины'>
                                 {brandModelList}
-                            </TextField>)} />
+                            </Select>)} />
                     <Controller
                         control={control}
                         name="color"
@@ -82,6 +83,7 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
                     />
                 </DialogContent>
                 <DialogActions>
+
                     <Button type="submit" onClick={handleSubmit(createCar)}>Добавить</Button>
                     <Button type="reset" onClick={closeForm}>Закрыть</Button>
                 </DialogActions>
