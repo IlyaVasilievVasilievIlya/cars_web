@@ -66,3 +66,8 @@ export interface EditUserRequest {
 export interface ChangeUserRoleRequest {
     role: UserRole;
 }
+
+export interface CartItem {
+    count: number;
+    product: Car;
+}
