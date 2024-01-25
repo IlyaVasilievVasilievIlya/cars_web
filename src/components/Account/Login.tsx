@@ -18,8 +18,6 @@ const PWD_REGEX = /^.{4,24}$/;
 
 export const Login: React.FC = () => {
     
-
-    const navigate = useNavigate();
     const location = useLocation();
 
     const fromPage = location.state?.from?.pathname || '/';
@@ -44,7 +42,6 @@ export const Login: React.FC = () => {
             setLogin(true);
         }
     }
-
 
     return (
         <>

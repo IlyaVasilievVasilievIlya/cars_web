@@ -7,6 +7,7 @@ class AuthStore {
 
     error?: string;
 
+    errorCode?: number;
 
     constructor() {
         const accessToken = localStorage.getItem('accessToken');
@@ -36,8 +37,9 @@ class AuthStore {
         console.log(this.authData);
     }
 
-    setError(error?: string) {
+    setError(error?: string, errorCode?: number) {
         this.error = error;
+        this.errorCode = errorCode;
     }
 
     async login(loginCreds: LoginRequest){
@@ -47,7 +49,7 @@ class AuthStore {
             this.setAuth(response.data);
         } catch (e) {
             console.log('login error '.concat((e as Error).message));
-            this.error = (e as Error).message;
+            this.setError((e as Error).message, this.errorCode);
         }
     }
 
@@ -58,7 +60,7 @@ class AuthStore {
             this.setAuth(response.data);
         } catch (e) {
             console.log('register error '.concat((e as Error).message));
-            this.error = (e as Error).message;
+            this.setError((e as Error).message, this.errorCode);
         }
     }
 
@@ -71,7 +73,7 @@ class AuthStore {
             this.setAuth(response.data);
         } catch (e) {
             console.log('refresh token error '.concat((e as Error).message));
-            this.error = (e as Error).message;
+            this.setError((e as Error).message, this.errorCode);
         }
     }
 

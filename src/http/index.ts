@@ -38,11 +38,17 @@ api.interceptors.request.use( config => {
 api.interceptors.response.use( config => {
     return config;
 },  (async error =>  {
-    const prevRequest = error?.config;
-    if (error?.response.status === 401 && !prevRequest?.sent) {
-        prevRequest.sent = true;
-        await authStore.refreshToken();
-        return api(prevRequest);
+    const prevRequest = error.config;
+
+    if (error?.response?.status === 401) {
+        if (prevRequest.sent) {
+            authStore.logout();
+            authStore.setError(undefined, 401);
+        } else {
+            prevRequest.sent = true;
+            await authStore.refreshToken();
+            return api(prevRequest);
+        }
     }
     return Promise.reject(error); 
 }))

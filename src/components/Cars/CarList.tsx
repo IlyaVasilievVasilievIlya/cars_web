@@ -12,6 +12,8 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import { authStore } from '../../store/authStore';
 import { ROLES } from '../../public/consts';
+import { DeleteCar } from './DeleteCar';
+import { useNavigate } from 'react-router-dom';
 
 export const CarList: React.FC = observer(() => {
 
@@ -21,31 +23,10 @@ export const CarList: React.FC = observer(() => {
 
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
 
-  const [error, setError] = useState<string | undefined>();
+  const navigate = useNavigate();
 
-  const deleteCar = async () => {
-
-    await carsStore.deleteCar(car.carId);
-
-    if (!carsStore.error) {
-      setError(carsStore.error)
-    }
-
-    setIsOpenDeleteModal(false);
-  }
-
-  const editCar = async (editedCar: Car) => {
-    await carsStore.editCar(editedCar);
-
-    console.log(carsStore.cars);
-
-    if (!carsStore.error) {
-      setError(carsStore.error);
-    }
-  }
-
-  const addCar = async (newCar: Car) => {
-    await carsStore.addCar(newCar);
+  if (authStore.errorCode == 401){
+    navigate("/login");
   }
 
   function openDeleteModal(id: number) {
@@ -96,33 +77,18 @@ export const CarList: React.FC = observer(() => {
 
   return (
     <>
-      {error && <ErrorMessage error={error} />}
+      {carsStore.fetchError && <ErrorMessage error={carsStore.fetchError} />}
 
-      {/* {loading && <Loader />}  checkRole(список ролей)*/}
+      {authStore.checkRole([ROLES.Manager, ROLES.Admin, ROLES.SuperUser]) && <AddCar />}
 
-      {authStore.checkRole([ROLES.Manager, ROLES.Admin, ROLES.SuperUser]) && <AddCar onAdd={addCar} />}
-
-      {!carsStore.error && <List>
+      {!carsStore.fetchError && <List>
         {carList}
       </List>}
 
-      <Dialog
-        open={isOpenDeleteModal}
-        onSubmit={() => deleteCar()}
-        onClose={() => setIsOpenDeleteModal(false)}>
-        <DialogTitle>Удаление машины</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Вы уверены, что хотите удалить машину "{`${car.brand.brand} ${car.brand.model}`}"?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button type="submit" onClick={() => deleteCar()}>Да</Button>
-          <Button type="reset" onClick={() => setIsOpenDeleteModal(false)}>Нет</Button>
-        </DialogActions>
-      </Dialog>
+      {isOpenDeleteModal && <DeleteCar car={car} onDone={() => setIsOpenDeleteModal(false)} />}
 
-      {isOpenEditModal && <EditCar car={car} onDone={() => setIsOpenEditModal(false)} onEdit={editCar} />}
+
+      {isOpenEditModal && <EditCar car={car} onDone={() => setIsOpenEditModal(false)} />}
     </>
   );
 });

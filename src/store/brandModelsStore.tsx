@@ -6,7 +6,7 @@ import { BrandModelService } from '../services/BrandModelService';
 class BrandModelsStore {
     brandModels: BrandModel[] = [];
 
-    error?: string;
+    fetchError?: string;
 
     constructor(){
         makeAutoObservable(this);
@@ -16,21 +16,20 @@ class BrandModelsStore {
         this.brandModels = brandModels;
     }
     
-    setError(error?: string) {
-        this.error = error;
+    setFetchError(fetchError?: string) {
+        this.fetchError = fetchError;
     }
 
     async fetchBrandModels() {
-        this.setError();
+        this.setFetchError();
         try {
             const response = await BrandModelService.fetchBrandModels();
             this.setBrandModels(response.data);
         } catch (e) {
             console.log('fetchbrandmodels error '.concat((e as Error).message));
-            this.setError((e as Error).message);
+            this.setFetchError((e as Error).message);
         }
     }
-
 };
 
 export const brandModelsStore = new BrandModelsStore();

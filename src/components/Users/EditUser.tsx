@@ -6,19 +6,25 @@ import { MenuItem } from '@mui/material';
 import { roleList } from '../../public/consts';
 import { date, mixed, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { usersStore } from '../../store/usersStore';
+import { carsStore } from '../../store/carsStore';
+import { authStore } from '../../store/authStore';
+import { useNavigate } from 'react-router-dom';
 
 
 
 interface EditUserProps {
     user: User
-    onEdit: (id: string, user: EditUserRequest) => void
-    onRoleChange: (id: string, user: ChangeUserRoleRequest) => void
     onDone: () => void
 }
 
-export const EditUser: React.FC<EditUserProps> = ({ user, onDone, onEdit, onRoleChange }: EditUserProps) => {
-
-    const [error, setError] = useState(false);
+export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProps) => {
+    
+    const [error, setError] = useState<string | undefined>();
+    
+    const [loading, setLoading] = useState(false);
+    
+    const navigate = useNavigate();
 
     const editUserSchema = object({
         name: string().required('Это обязательное поле'),
@@ -50,14 +56,36 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone, onEdit, onRole
             {model}
         </MenuItem>);
 
-    const editUser = (editedUser: EditUserRequest) => {
-        onEdit(user.id, editedUser);
-        closeForm();
-    }
+    const editUser = async (editedUser: EditUserRequest) => {
+        setLoading(true);
 
-    const editRole = (newRole: ChangeUserRoleRequest) => {
-        onRoleChange(user.id, newRole);
-        closeForm();
+        await usersStore.editUser(user.id, editedUser);
+
+        if (!usersStore.actionError) {
+            closeForm();
+            return;
+        }
+
+        if (authStore.errorCode == 401){
+            navigate("/login");
+        }
+
+        setError(carsStore.actionError);
+        setLoading(false);
+    }
+    
+    const editRole = async (newRole: ChangeUserRoleRequest) => {
+        setLoading(true);
+
+        await usersStore.changeUserRole(user.id, newRole);
+
+        if (!usersStore.actionError) {
+            closeForm();
+            return;
+        }
+
+        setError(carsStore.actionError);
+        setLoading(false);
     }
 
     const closeForm = () => {

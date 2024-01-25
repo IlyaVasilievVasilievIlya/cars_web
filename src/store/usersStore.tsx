@@ -5,7 +5,9 @@ import { UserService } from '../services/UserService';
 class UsersStore {
     users: User[] = [];
 
-    error?: string;
+    fetchError?: string;
+
+    actionError?: string;
 
     constructor(){
         makeAutoObservable(this);
@@ -15,42 +17,46 @@ class UsersStore {
         this.users = users;
     }
 
-    setError(error?: string) {
-        this.error = error;
+    setFetchError(error?: string) {
+        this.fetchError = error;
+    }
+
+    setActionError(error?: string) {
+        this.actionError = error;
     }
 
     async editUser(id: string, editedUser: EditUserRequest) {
-        this.setError();
+        this.setActionError();
         try {
             await UserService.editUser(id, editedUser);
             this.users = this.users.map((elem:User) => (
                 elem.id == id) ? {...editedUser, id: id, email: elem.email, role: elem.role } : elem);
         } catch (e) {
             console.log('edituser error '.concat((e as Error).message));
-            this.setError((e as Error).message);
+            this.setActionError((e as Error).message);
         }
     }
 
     async changeUserRole(id: string, newRole: ChangeUserRoleRequest) {
-        this.setError();
+        this.setActionError();
         try {
             await UserService.changeUserRole(id, newRole);
             this.users = this.users.map((elem:User) => (
                 elem.id == id) ? {...elem, role: newRole.role} : elem);
         } catch (e) {
             console.log('changerole error '.concat((e as Error).message));
-            this.setError((e as Error).message);
+            this.setActionError((e as Error).message);
         }
     }
 
     async fetchUsers() {
-        this.setError();
+        this.setFetchError();
         try {
             const response = await UserService.fetchUsers();
             this.setUsers(response.data);
         } catch (e) {
             console.log('fetchusers error '.concat((e as Error).message));
-            this.setError((e as Error).message);
+            this.setFetchError((e as Error).message);
         }
     }
 };

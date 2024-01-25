@@ -1,18 +1,19 @@
 import { Car, AddCarRequest } from '../model'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem, Select, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { object, string, number } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { carsStore } from '../../store/carsStore';
+import { ErrorMessage } from '../ErrorMessage';
+import { authStore } from '../../store/authStore';
+import { useNavigate } from 'react-router-dom';
 
 
-interface AddCarProps {
-    onAdd: (car: Car) => void
-}
+export const AddCar: React.FC = () => {
 
-export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
-
+    const navigate = useNavigate();
 
     const schema = object({
         carModelId: number().required('Это обязательное поле'),
@@ -23,23 +24,49 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
         resolver: yupResolver(schema)
     });
 
+    const [error, setError] = useState<string | undefined>();
+
+    const [loading, setLoading] = useState(false);
+
     const [modal, setModal] = useState(false);
+
 
     let brandModelList = brandModelsStore.brandModels.map(model =>
         <MenuItem key={model.carModelId} value={model.carModelId}>
             {model.brand} {model.model}
         </MenuItem>);
 
-    const createCar = (newCar: AddCarRequest) => { 
-        let brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId == newCar.carModelId);
-        if (brandModel) {
-            onAdd({ ...newCar, brand: brandModel, carId: 0 })
+    const createCar = async (newCar: AddCarRequest) => { 
+
+        setLoading(true);
+
+        const brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId == newCar.carModelId);
+
+        if (!brandModel) {
+            setError('car model not found');
+            setLoading(false);
+            return;
+        }
+        
+        await carsStore.addCar({...newCar, brand: brandModel, carId: 0});
+
+
+        if (!carsStore.actionError) {
+            closeForm();
+            return;
         }
 
-        closeForm();
+        if (authStore.errorCode == 401) {
+            navigate("/login");
+        }
+
+        setError(carsStore.actionError);
+        setLoading(false);
     }
 
     const closeForm = () => {
+        setLoading(false);
+        setError(undefined);
         setModal(false);
         reset();
     }
@@ -50,7 +77,6 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
 
     return (
         <>
-
             <Button type="button" onClick={() => setModal(true)}>
                 Добавить
             </Button>
@@ -71,6 +97,7 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
                     <Controller
                         control={control}
                         name="color"
+                        defaultValue=''
                         render={({ field: { onChange, value } }) => (
                             <TextField
                                 label="Цвет"
@@ -82,8 +109,10 @@ export const AddCar: React.FC<AddCarProps> = ({ onAdd }: AddCarProps) => {
                             />)}
                     />
                 </DialogContent>
+                <Typography>
+                    {error && <ErrorMessage error={error}/>}
+                </Typography>
                 <DialogActions>
-
                     <Button type="submit" onClick={handleSubmit(createCar)}>Добавить</Button>
                     <Button type="reset" onClick={closeForm}>Закрыть</Button>
                 </DialogActions>

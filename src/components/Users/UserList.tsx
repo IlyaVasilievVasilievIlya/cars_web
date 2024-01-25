@@ -8,6 +8,8 @@ import { usersStore } from '../../store/usersStore';
 import { ChangeUserRoleRequest, EditUserRequest, User } from '../model';
 import { Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, List, ListItem, ListItemText, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit'
+import { useNavigate } from 'react-router-dom';
+import { authStore } from '../../store/authStore';
 
 export const UserList: React.FC = observer(() => {
 
@@ -15,37 +17,10 @@ export const UserList: React.FC = observer(() => {
 
     const [isOpenEditModal, setIsOpenEditModal] = useState(false);
 
-    const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
+    const navigate = useNavigate();
 
-    const [error, setError] = useState<string | undefined>();
-
-    const editUser = async (id: string, editedUser: EditUserRequest) => {
-        await usersStore.editUser(id, editedUser);
-
-        console.log(usersStore.users);
-
-        if (!usersStore.error) {
-            setError(usersStore.error);
-        }
-    }
-
-    const changeRole = async (id: string, newRole: ChangeUserRoleRequest) => {
-        await usersStore.changeUserRole(id, newRole);
-
-        console.log( usersStore.users);
-
-        if (!usersStore.error) {
-            setError(usersStore.error);
-        }
-    }
-
-    function openDeleteModal(id: string) {
-        const selectedUser = usersStore.users.find(el => el.id == id);
-
-        if (selectedUser) {
-            setUser(selectedUser);
-            setIsOpenDeleteModal(true);
-        }
+    if (authStore.errorCode == 401){
+        navigate("/login");
     }
 
     function openEditModal(id: string) {
@@ -56,7 +31,6 @@ export const UserList: React.FC = observer(() => {
             setIsOpenEditModal(true);
         }
     }
-
 
     let userList = usersStore.users.map(userElem =>
         <Card key={userElem.id}>
@@ -85,15 +59,15 @@ export const UserList: React.FC = observer(() => {
 
     return (
         <>
-            {error && <ErrorMessage error={error} />}
+            {usersStore.fetchError && <ErrorMessage error={usersStore.fetchError} />}
 
             {/* {loading && <Loader />} */}
 
-            {!usersStore.error && <List>
+            {!usersStore.fetchError && <List>
                 {userList}
             </List>}
 
-            {isOpenEditModal && user && <EditUser user={user} onDone={() => setIsOpenEditModal(false)} onEdit={editUser} onRoleChange={changeRole}/>}
+            {isOpenEditModal && user && <EditUser user={user} onDone={() => setIsOpenEditModal(false)} />}
         </>
     );
 });
