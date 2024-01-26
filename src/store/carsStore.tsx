@@ -3,14 +3,6 @@ import { makeAutoObservable } from 'mobx';
 import { CarsService } from '../services/CarService';
 import { AxiosError } from 'axios';
 
-
-// const testData: Car[] = [
-//     {carId: 1, brand: {carModelId: 1, brand: 'Toyota', model: 'Camry'}, color:'melon yellow'},
-//     {carId: 2, brand: {carModelId: 2, brand: 'Renault', model: 'Logan'}, color:'black'},
-//     {carId: 3, brand: {carModelId: 3, brand: 'Mercedes', model: 'Benz'}, color:'red'},
-//     {carId: 4, brand: {carModelId: 4, brand: 'Lada', model: 'Granta'}, color:'white'}
-// ]
-
 class CarsStore {
     cars: Car[] = [];
 

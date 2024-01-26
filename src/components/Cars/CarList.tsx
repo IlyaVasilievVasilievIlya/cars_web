@@ -14,6 +14,8 @@ import { authStore } from '../../store/authStore';
 import { ROLES } from '../../public/consts';
 import { DeleteCar } from './DeleteCar';
 import { useNavigate } from 'react-router-dom';
+import { CarFilters } from './CarFilters';
+import { CarListItem } from './CarListItem';
 
 export const CarList: React.FC = observer(() => {
 
@@ -23,9 +25,17 @@ export const CarList: React.FC = observer(() => {
 
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
 
+  const [carSearch, setCarSearch] = useState('');
+
+  const [colorSearch, setColorSearch] = useState('');
+
+  const [brandSearch, setBrandSearch] = useState('');
+
+  const [modelSearch, setModelSearch] = useState('');
+
   const navigate = useNavigate();
 
-  if (authStore.errorCode == 401){
+  if (authStore.errorCode == 401) {
     navigate("/login");
   }
 
@@ -47,36 +57,27 @@ export const CarList: React.FC = observer(() => {
     }
   }
 
+  const carFilteredList = carsStore.cars.filter(item => ((item.color ?? '').includes(colorSearch ? colorSearch : ''))
+    && ((item.brand.brand.toLowerCase()).includes((brandSearch ? brandSearch : '').toLowerCase())) 
+    && ((item.brand.model.toLowerCase()).includes((modelSearch ? modelSearch : '').toLowerCase())) 
+    && (carSearch == '' 
+      || (item.brand.brand.toLowerCase()).includes(carSearch.toLowerCase()) 
+      || (item.brand.model.toLowerCase()).includes(carSearch.toLowerCase())));
 
-  let carList = carsStore.cars.map(carElem =>
-    <Card key={carElem.carId}>
-      <CardContent>
-        <Typography>
-          {carElem.brand.brand} {carElem.brand.model}
-        </Typography>
-        <Typography>
-          {carElem.color}
-        </Typography>
-        { authStore.checkRole([ROLES.Manager, ROLES.Admin, ROLES.SuperUser]) &&
-          <CardActions disableSpacing={true}>
-            <IconButton onClick={() => openEditModal(carElem.carId)}>
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={() => openDeleteModal(carElem.carId)}>
-              <DeleteIcon />
-            </IconButton>
-          </CardActions> }
-      </CardContent>
-    </Card>);
+
+  const carList = carFilteredList.map(carElem =>
+    <CarListItem car={carElem} openEdit={openEditModal} openDelete={openDeleteModal} />
+  );
 
 
   useEffect(() => {
     carsStore.fetchCars();
   }, [])
 
-
   return (
     <>
+      <CarFilters filterCar={setCarSearch} filterColor={setColorSearch} filterBrand={setBrandSearch} filterModel={setModelSearch}/>
+
       {carsStore.fetchError && <ErrorMessage error={carsStore.fetchError} />}
 
       {authStore.checkRole([ROLES.Manager, ROLES.Admin, ROLES.SuperUser]) && <AddCar />}
@@ -86,7 +87,6 @@ export const CarList: React.FC = observer(() => {
       </List>}
 
       {isOpenDeleteModal && <DeleteCar car={car} onDone={() => setIsOpenDeleteModal(false)} />}
-
 
       {isOpenEditModal && <EditCar car={car} onDone={() => setIsOpenEditModal(false)} />}
     </>

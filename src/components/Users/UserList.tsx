@@ -10,6 +10,7 @@ import { Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogCo
 import EditIcon from '@mui/icons-material/Edit'
 import { useNavigate } from 'react-router-dom';
 import { authStore } from '../../store/authStore';
+import { UserListItem } from './UserListItem';
 
 export const UserList: React.FC = observer(() => {
 
@@ -33,24 +34,7 @@ export const UserList: React.FC = observer(() => {
     }
 
     let userList = usersStore.users.map(userElem =>
-        <Card key={userElem.id}>
-            <CardContent>
-                <Typography>
-                    {userElem.name} {userElem.surname} {userElem.patronymic}
-                </Typography>
-                <Typography>
-                    {userElem.role}
-                </Typography>
-                <Typography>
-                    {userElem.birthDate.toString()}
-                </Typography>
-                <CardActions disableSpacing={true}>
-                    <IconButton onClick={() => openEditModal(userElem.id)}>
-                        <EditIcon />
-                    </IconButton>
-                </CardActions>
-            </CardContent>
-        </Card>);
+        <UserListItem user={userElem} openEdit={openEditModal}/>);
 
     useEffect(() => {
         usersStore.fetchUsers();

@@ -1,10 +1,13 @@
+import { Typography } from "@mui/material"
 
 interface ErrorMessageProps {
     error: string
 }
 
-export function ErrorMessage({error}:ErrorMessageProps) {
+export function ErrorMessage({ error }: ErrorMessageProps) {
     return (
-        <span className="errorMsg">{error}</span> 
+        <Typography>
+            {error}
+        </Typography>
     )
 }

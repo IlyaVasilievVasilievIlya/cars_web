@@ -67,7 +67,8 @@ export interface ChangeUserRoleRequest {
     role: UserRole;
 }
 
-export interface CartItem {
+export interface BasketItem {
     count: number;
-    product: Car;
+    name: string;
+    id: number;
 }

@@ -1,38 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './styles.css';
 import { NavLink } from 'react-router-dom';
 import { navInfos } from '../public/consts';
-import { AppBar, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material';
 import { authStore } from '../store/authStore';
 import { AuthActions } from './Account/AuthActions';
+import { ShoppingBasket } from "@mui/icons-material"
+import { Basket } from './Basket/Basket';
 
-interface Props {
-  children?: React.ReactNode;
-}
-
-export const Header: React.FC<Props> = ({ children }: Props) => {
+export const Header: React.FC = () => {
 
   const navMenu = navInfos.map(link =>
-    (authStore.checkRole(link.allowedRoles)) ? 
-  
-    <NavLink to={link.path} key={link.path}>
-      {link.text}
-    </NavLink>
-    : link.allowedRoles ? 
-    null 
-     : <NavLink to={link.path} key={link.path}>
+    (authStore.checkRole(link.allowedRoles)) ?
+
+      <NavLink to={link.path} key={link.path}>
         {link.text}
-      </NavLink>);
+      </NavLink>
+      : link.allowedRoles ?
+        null
+        : <NavLink to={link.path} key={link.path}>
+          {link.text}
+        </NavLink>);
+
+  const [isBasketOpen, setIsBasketOpen] = useState(false);
 
   return (
-    <AppBar position="static">
-      <Toolbar>
-        <Typography>
-          Cars Project
-        </Typography>
-        {navMenu}
-        <AuthActions/>
-      </Toolbar>
-    </AppBar>
+    <>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography>
+            Cars Project
+          </Typography>
+          <Box sx={{ flexGrow: 1 }}>
+            {navMenu}
+          </Box>
+          {authStore.authData &&
+            <IconButton color="inherit" onClick={() => setIsBasketOpen(!isBasketOpen)}>
+              <ShoppingBasket />
+            </IconButton>
+          }
+          <AuthActions />
+        </Toolbar>
+      </AppBar>
+      {isBasketOpen && <Basket onClose={() => setIsBasketOpen(false)} />}
+    </>
   );
 }
