@@ -56,6 +56,16 @@ export interface User {
     role: UserRole;
 }
 
+export interface UserResponse {
+    id: string;
+    name: string;
+    surname: string;
+    patronymic?: string;
+    email: string;
+    birthDate: string;
+    role: UserRole;
+}
+
 export interface EditUserRequest {
     name: string;
     surname: string;
@@ -71,4 +81,9 @@ export interface BasketItem {
     count: number;
     name: string;
     id: number;
+}
+
+export interface IOption {
+    value: number;
+    label: string;
 }

@@ -31,7 +31,7 @@ export const Header: React.FC = () => {
           <Typography>
             Cars Project
           </Typography>
-          <Box sx={{ flexGrow: 1 }}>
+          <Box sx={{ flexGrow: 1, px: 2}}>
             {navMenu}
           </Box>
           {authStore.authData &&

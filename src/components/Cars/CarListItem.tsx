@@ -1,7 +1,7 @@
 import { basketStore } from "../../store/basketStore";
 import { Delete } from "@mui/icons-material";
 import { Car } from "../model";
-import { Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, List, ListItem, ListItemText, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
@@ -33,15 +33,17 @@ export const CarListItem: React.FC<CarListItemProps> = observer(({ car, openDele
     }
 
     return (
-        <Card key={car.carId}>
-            <CardContent>
-                <Typography>
-                    {car.brand.brand} {car.brand.model}
-                </Typography>
-                <Typography>
-                    {car.color}
-                </Typography>
-                <CardActions disableSpacing={true}>
+        <Card key={car.carId} sx={{borderRadius:3, marginTop:1}}>
+            <CardContent sx={{display:"flex", justifyContent:"space-between"}}>
+                <Box>
+                    <Typography variant={"body1"}>
+                        {car.brand.brand} {car.brand.model}
+                    </Typography>
+                    <Typography variant={"body2"}>
+                        {car.color}
+                    </Typography>
+                </Box>
+                <CardActions>
                     {authStore.checkRole([ROLES.Manager, ROLES.Admin, ROLES.SuperUser]) &&
                         <IconButton onClick={() => openEdit(car.carId)}>
                             <EditIcon />

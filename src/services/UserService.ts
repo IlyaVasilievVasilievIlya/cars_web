@@ -1,10 +1,10 @@
 import { AxiosResponse } from "axios";
 import { api } from "../http";
-import { ChangeUserRoleRequest, EditUserRequest, User } from "../components/model";
+import { ChangeUserRoleRequest, EditUserRequest, User, UserResponse } from "../components/model";
 
 export class UserService {
 
-    static formatData(date: Date) {
+    static formatDate(date: Date) {
 
         const y = date.getFullYear();
         const m = date.getMonth() + 1;
@@ -17,7 +17,7 @@ export class UserService {
 
         return api.put(
             `/Users/${id}`,
-            JSON.stringify({...editedUser, birthDate: UserService.formatData(editedUser.birthDate) }))
+            JSON.stringify({...editedUser, birthDate: UserService.formatDate(editedUser.birthDate) }))
     }
 
     static async changeUserRole(id: string, newRole: ChangeUserRoleRequest): Promise<AxiosResponse<void>> {
@@ -25,7 +25,7 @@ export class UserService {
             `/Users/${id}/role`, newRole.role)
     }
 
-    static async fetchUsers(): Promise<AxiosResponse<User[]>> {
+    static async fetchUsers(): Promise<AxiosResponse<UserResponse[]>> {
         return api.get(
             '/Users'
         )

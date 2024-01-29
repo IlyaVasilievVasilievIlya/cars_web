@@ -6,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import { authStore } from "../../store/authStore";
 import { useState } from "react";
+import { UserService } from "../../services/UserService";
 
 
 interface UserListItemProps {
@@ -25,7 +26,7 @@ export const UserListItem: React.FC<UserListItemProps> = ({ user, openEdit }: Us
                     {user.role}
                 </Typography>
                 <Typography>
-                    {user.birthDate.toString()}
+                    {UserService.formatDate(user.birthDate)}
                 </Typography>
                 <CardActions disableSpacing={true}>
                     <IconButton onClick={() => openEdit(user.id)}>

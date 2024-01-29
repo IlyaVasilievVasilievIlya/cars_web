@@ -30,7 +30,7 @@ class UsersStore {
         try {
             await UserService.editUser(id, editedUser);
             this.users = this.users.map((elem:User) => (
-                elem.id == id) ? {...editedUser, id: id, email: elem.email, role: elem.role } : elem);
+                elem.id == id) ? {...editedUser, id: id, email: elem.email, role: elem.role}: elem);
         } catch (e) {
             console.log('edituser error '.concat((e as Error).message));
             this.setActionError((e as Error).message);
@@ -53,7 +53,7 @@ class UsersStore {
         this.setFetchError();
         try {
             const response = await UserService.fetchUsers();
-            this.setUsers(response.data);
+            this.setUsers(response.data.map(elem => ({...elem, birthDate: new Date(elem.birthDate)})));
         } catch (e) {
             console.log('fetchusers error '.concat((e as Error).message));
             this.setFetchError((e as Error).message);

@@ -4,11 +4,12 @@ import '../styles.css';
 import { ErrorMessage } from '../ErrorMessage';
 import { observer } from 'mobx-react-lite';
 import { carsStore } from '../../store/carsStore';
-import { Button, Drawer, List, ListItem, Typography } from '@mui/material';
+import { Box, Button, Drawer, List, ListItem, Typography } from '@mui/material';
 import { authStore } from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { basketStore } from '../../store/basketStore';
 import { BasketListItem } from './BasketListItem';
+import { Close } from '@mui/icons-material';
 
 
 interface BasketProps {
@@ -43,12 +44,17 @@ export const Basket: React.FC<BasketProps> = observer(({ onClose }: BasketProps)
       anchor="right"
       open={true}
       onClose={onClose}>
-        <Typography width={'400px'}>
-          Корзина {carList.length ? '' : 'пуста'}
-        </Typography>
-        { carList.length > 0 && <Button onClick={clear}>
-          Очистить
-        </Button>}
+        <Box display={"flex"}>
+          <Typography width={'300px'}>
+            Корзина {carList.length ? '' : 'пуста'}
+          </Typography>
+          <Button onClick={onClose}>
+            <Close/>
+          </Button>
+          { carList.length > 0 && <Button onClick={clear}>
+            Очистить
+          </Button>}
+        </Box>
         {carList}
     </Drawer>
     );

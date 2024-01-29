@@ -7,9 +7,7 @@ import { observer } from 'mobx-react-lite';
 import { carsStore } from '../../store/carsStore';
 import { Car } from '../model';
 import { AddCar } from './AddCar';
-import { Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, List, ListItem, ListItemText, Typography } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditIcon from '@mui/icons-material/Edit'
+import { List } from '@mui/material';
 import { authStore } from '../../store/authStore';
 import { ROLES } from '../../public/consts';
 import { DeleteCar } from './DeleteCar';
@@ -35,12 +33,12 @@ export const CarList: React.FC = observer(() => {
 
   const navigate = useNavigate();
 
-  if (authStore.errorCode == 401) {
+  if (authStore.errorCode === 401) {
     navigate("/login");
   }
 
   function openDeleteModal(id: number) {
-    const selectedCar = carsStore.cars.find(el => el.carId == id);
+    const selectedCar = carsStore.cars.find(el => el.carId === id);
 
     if (selectedCar) {
       setCar(selectedCar);
@@ -49,7 +47,7 @@ export const CarList: React.FC = observer(() => {
   }
 
   function openEditModal(id: number) {
-    const selectedCar = carsStore.cars.find(el => el.carId == id);
+    const selectedCar = carsStore.cars.find(el => el.carId === id);
 
     if (selectedCar) {
       setCar(selectedCar);
@@ -57,12 +55,11 @@ export const CarList: React.FC = observer(() => {
     }
   }
 
-  const carFilteredList = carsStore.cars.filter(item => ((item.color ?? '').includes(colorSearch ? colorSearch : ''))
+  const carFilteredList = carsStore.cars.filter(item => (((item.color ?? '').toLowerCase()).includes((colorSearch ? colorSearch : '').toLowerCase()))
     && ((item.brand.brand.toLowerCase()).includes((brandSearch ? brandSearch : '').toLowerCase())) 
     && ((item.brand.model.toLowerCase()).includes((modelSearch ? modelSearch : '').toLowerCase())) 
-    && (carSearch == '' 
-      || (item.brand.brand.toLowerCase()).includes(carSearch.toLowerCase()) 
-      || (item.brand.model.toLowerCase()).includes(carSearch.toLowerCase())));
+    && (carSearch === '' 
+      || ((item.brand.brand + ' ' + item.brand.model).toLowerCase()).includes(carSearch.toLowerCase())));
 
 
   const carList = carFilteredList.map(carElem =>

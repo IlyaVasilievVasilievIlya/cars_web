@@ -1,4 +1,4 @@
-import { Box, MenuItem, Select, TextField } from "@mui/material"
+import { Autocomplete, Box, Grid, MenuItem, Select, TextField } from "@mui/material"
 import { brandModelsStore } from "../../store/brandModelsStore";
 import { useState } from "react";
 
@@ -12,46 +12,48 @@ interface CarFiltersProps {
 
 export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, filterBrand, filterModel }) => {
 
-    const modelList = Array.from(new Set(brandModelsStore.brandModels.map(model => model.model))).map((elem, index) =>
+    const modelList = Array.from(new Set(brandModelsStore.brandModels.map(model => model.model)));
 
-        <MenuItem key={index} value={elem}>
-            {elem}
-        </MenuItem>);
-
-    const brandList = Array.from(new Set(brandModelsStore.brandModels.map(model => model.brand))).map((elem, index) =>
-        <MenuItem key={index} value={elem}>
-            {elem}
-        </MenuItem>);
-
-    brandList.unshift(<MenuItem key={-1} value=''>none</MenuItem>)
-
-    modelList.unshift(<MenuItem key={-1} value=''>none</MenuItem>)
-
+    const brandList = Array.from(new Set(brandModelsStore.brandModels.map(model => model.brand)));
 
     return (
-        <Box component="section">
-            <TextField
-                type="search"
-                label="Цвет машины"
-                defaultValue={''}
-                onChange={(e) => filterColor((e.target.value as string))} />
-            <TextField
-                type="search"
-                label="Поиск по машине"
-                defaultValue={''}
-                onChange={(e) => filterCar((e.target.value as string))} />
-            <Select labelId="Бренд" label="Бренд" placeholder="Выберите бренд"
-                id="filter-select1"
-                value={''}
-                onChange={(e) => filterBrand((e.target.value as string))}>
-                {brandList}
-            </Select>
-            <Select labelId="Марка" label="Марка" placeholder="Выберите марку"
-                id="filter-select2"
-                value={''}
-                onChange={(e) => filterModel((e.target.value as string))}>
-                {modelList}
-            </Select>
+        <Box component="section" sx={{p: "6px"}}>
+            <Grid container rowSpacing={3} columnSpacing={2}>
+                <Grid item xs={3}>
+                    <TextField
+                        type="search"
+                        label="Цвет машины"
+                        fullWidth
+                        defaultValue=''
+                        onChange={(e) => filterColor((e.target.value as string))} />
+                </Grid>
+                <Grid item xs={3}>
+                    <TextField
+                        type="search"
+                        label="Поиск по машине"
+                        fullWidth
+                        defaultValue=''
+                        onChange={(e) => filterCar((e.target.value as string))} />
+                </Grid>
+                <Grid item xs={3}>
+                    <Autocomplete
+                        options={brandList}
+                        fullWidth
+                        onInputChange={(_, newInputValue) => {
+                            filterBrand(newInputValue);
+                        }}
+                        renderInput={(params) => <TextField {...params} label="Бренд" />} />
+                </Grid>
+                <Grid item xs={3}>
+                    <Autocomplete
+                        options={modelList}
+                        fullWidth
+                        onInputChange={(_, newInputValue) => {
+                            filterModel(newInputValue);
+                        }}
+                        renderInput={(params) => <TextField {...params} label="Марка" />} />
+                </Grid>
+            </Grid>
         </Box>
     )
 }

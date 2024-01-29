@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from "@mui/material"
+import { Box, Button, Container, Grid, TextField, Typography } from "@mui/material"
 import { LoginRequest } from '../model'
 import { authStore } from '../../store/authStore'
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ const PWD_REGEX = /^.{4,24}$/;
 
 
 export const Login: React.FC = () => {
-    
+
     const location = useLocation();
 
     const fromPage = location.state?.from?.pathname || '/';
@@ -26,8 +26,8 @@ export const Login: React.FC = () => {
         email: string().required('Это обязательное поле').matches(EMAIL_REGEX, 'Некорректный адрес почты'),
         password: string().required('Это обязательное поле').matches(PWD_REGEX, 'Пароль должен содержать заглавные и строчные латинские символы, служебные символы и цифры')
     });
-    
-    const { handleSubmit, formState: {errors}, control } = useForm({
+
+    const { handleSubmit, formState: { errors }, control } = useForm({
         resolver: yupResolver(schema)
     });
 
@@ -45,37 +45,62 @@ export const Login: React.FC = () => {
 
     return (
         <>
-            <Header/>
-            {login && <Navigate to={fromPage} replace={true}/>}
-            {authStore.error}
-            <Box component="form" onSubmit={handleSubmit(tryLogin)}>
-                <Controller
-                    control={control}
-                    name="email"
-                    render={({ field: { onChange, value } }) => (
-                        <TextField
-                            label="Email"
-                            placeholder='Введите email'
-                            value={value}
-                            onChange={onChange}
-                            helperText={errors.email?.message?.toString()}
-                        >
-                        </TextField>)} />
-                <Controller
-                    control={control}
-                    name="password"
-                    render={({ field: { onChange, value } }) => (
-                        <TextField
-                            label="Пароль"
-                            type="password"
-                            value={value}
-                            onChange={onChange}
-                            placeholder='Введите пароль'
-                            helperText={errors.password?.message?.toString()}
-                        />)}
-                />
-                <Button type="submit" onClick={handleSubmit(tryLogin)}>Добавить</Button>
-            </Box>
+            <Header />
+            {login && <Navigate to={fromPage} replace={true} />}
+            <Container component="main" maxWidth="sm" sx={{
+                padding: 4,
+                mt: 3,
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                border: "2px solid #1976d2",
+                boxShadow: "0px 0px 12px -2px",
+                borderRadius: 2
+            }} >
+                <Typography component={"h1"} variant={"h5"}>
+                    Войти
+                </Typography>
+                <Box component="form" noValidate onSubmit={handleSubmit(tryLogin)} sx={{ p: "40px", display: "flex", flexDirection: "column" }}>
+                    <Grid container rowSpacing={3} columnSpacing={2}>
+                        <Grid item xs={12} height={"90px"}>
+                            <Controller
+                                control={control}
+                                name="email"
+                                render={({ field: { onChange, value } }) => (
+                                    <TextField
+                                        label="Email"
+                                        required
+                                        fullWidth
+                                        placeholder='Введите email'
+                                        value={value ?? ''}
+                                        onChange={onChange}
+                                        helperText={errors.email?.message?.toString()}
+                                    >
+                                    </TextField>)} />
+                        </Grid>
+                        <Grid item xs={12} height={"90px"}>
+                            <Controller
+                                control={control}
+                                name="password"
+                                render={({ field: { onChange, value } }) => (
+                                    <TextField
+                                        label="Пароль"
+                                        required
+                                        fullWidth
+                                        type="password"
+                                        value={value ?? ''}
+                                        onChange={onChange}
+                                        placeholder='Введите пароль'
+                                        helperText={errors.password?.message?.toString()}
+                                    />)} />
+                        </Grid>
+                    </Grid>
+                </Box>
+                <Box display={"flex"} flexDirection={"column"} sx={{ height: "50px" }}>
+                    <Button type="submit" onClick={handleSubmit(tryLogin)}>Войти</Button>
+                    {authStore.error}
+                </Box>
+            </Container>
         </>
     )
 }

@@ -52,7 +52,7 @@ class CarsStore {
     async editCar(editedCar: Car) {
         this.setActionError();
         try {
-            await CarsService.editCar(editedCar);
+            await CarsService.editCar({carId: editedCar.carId, carModelId:editedCar.brand.carModelId, color: editedCar.color});
             this.cars = this.cars.map((elem:Car) => (
                 elem.carId == editedCar.carId) ? editedCar : elem);
         } catch (e) {
