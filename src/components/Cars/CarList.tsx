@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 
 import '../styles.css';
 import { EditCar } from './EditCar';
-import { ErrorSnack } from '../ErrorMessage';
+import { ErrorSnack } from '../ErrorSnack';
 import { observer } from 'mobx-react-lite';
 import { carsStore } from '../../store/carsStore';
 import { Car } from '../model';
 import { AddCar } from './AddCar';
-import { List } from '@mui/material';
+import { CircularProgress, LinearProgress, List } from '@mui/material';
 import { authStore } from '../../store/authStore';
 import { ROLES } from '../../public/consts';
 import { DeleteCar } from './DeleteCar';
@@ -64,7 +64,7 @@ export const CarList: React.FC = observer(() => {
 
 
   const carList = carFilteredList.map(carElem =>
-    <CarListItem car={carElem} openEdit={openEditModal} openDelete={openDeleteModal} />
+    <CarListItem car={carElem} openEdit={openEditModal} openDelete={openDeleteModal} key={carElem.carId} />
   );
 
 
@@ -77,13 +77,15 @@ export const CarList: React.FC = observer(() => {
     <>
       <CarFilters filterCar={setCarSearch} filterColor={setColorSearch} filterBrand={setBrandSearch} filterModel={setModelSearch}/>
 
+      {carsStore.loading && <LinearProgress/>}
+
       {brandModelsStore.fetchError && <ErrorSnack error={brandModelsStore.fetchError} />}
   
       {carsStore.fetchError && <ErrorSnack error={carsStore.fetchError} />}
 
       {authStore.checkRole([ROLES.Manager, ROLES.Admin, ROLES.SuperUser]) && <AddCar />}
 
-      {!carsStore.fetchError && <List>
+      {!carsStore.fetchError && !carsStore.loading && <List>
         {carList}
       </List>}
 

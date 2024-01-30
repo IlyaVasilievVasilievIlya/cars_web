@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Container, Grid, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { RegisterRequest } from "../model";
 import { authStore } from "../../store/authStore";
@@ -10,7 +10,7 @@ import { Header } from "../Header";
 import { DateField } from '@mui/x-date-pickers/DateField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { ErrorSnack } from "../ErrorMessage";
+import { ErrorSnack } from "../ErrorSnack";
 
 const EMAIL_REGEX = /^([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)$/;
 const PWD_REGEX = /^.*$/;
@@ -182,7 +182,7 @@ export const Register: React.FC = () => {
                     </Grid>
                 </Box>
                 <Box display={"flex"} flexDirection={"column"} sx={{height:"50px"}}>
-                    <Button type="submit" onClick={handleSubmit(tryRegister)}>Зарегистрироваться</Button>
+                    <Button type="submit" onClick={handleSubmit(tryRegister)}>{authStore.loading ? <CircularProgress/> : 'Зарегистрироваться'}</Button>
                 </Box>
             </Container>
             {authStore.error && <ErrorSnack error={authStore.error}/>}

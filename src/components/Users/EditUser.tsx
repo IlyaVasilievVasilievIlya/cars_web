@@ -1,6 +1,6 @@
 import { BrandModel, User, EditUserRequest, UserRole, ChangeUserRoleRequest } from '../model'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, TextField } from '@mui/material';
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, TextField } from '@mui/material';
 import { useState } from 'react';
 import { MenuItem } from '@mui/material';
 import { ROLES, roleList } from '../../public/consts';
@@ -19,10 +19,6 @@ interface EditUserProps {
 }
 
 export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProps) => {
-
-    const [error, setError] = useState<string | undefined>();
-
-    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -57,7 +53,6 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
         </MenuItem>);
 
     const editUser = async (editedUser: EditUserRequest) => {
-        setLoading(true);
 
         await usersStore.editUser(user.id, editedUser);
 
@@ -69,23 +64,15 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
         if (authStore.errorCode === 401) {
             navigate("/login");
         }
-
-        setError(carsStore.actionError);
-        setLoading(false);
     }
 
     const editRole = async (newRole: ChangeUserRoleRequest) => {
-        setLoading(true);
-
         await usersStore.changeUserRole(user.id, newRole);
 
         if (!usersStore.actionError) {
             closeForm();
             return;
         }
-
-        setError(carsStore.actionError);
-        setLoading(false);
     }
 
     const closeForm = () => {
@@ -171,7 +158,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
                                     </TextField>)} />
                         </DialogContent>
                         <DialogActions sx={{px:2}}>
-                            <Button type="submit" onClick={handleRoleSubmit(editRole)}>Сменить роль</Button>
+                            <Button type="submit" onClick={handleRoleSubmit(editRole)}>{usersStore.loading ? <CircularProgress/> : 'Сменить роль'}</Button>
                         </DialogActions>
                     </Box>}
                 <Button type="reset" onClick={closeForm}>Закрыть</Button>

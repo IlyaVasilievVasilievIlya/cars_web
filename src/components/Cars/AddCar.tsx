@@ -1,12 +1,12 @@
 import { Car, AddCarRequest } from '../model'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { object, string, number } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { carsStore } from '../../store/carsStore';
-import { ErrorSnack } from '../ErrorMessage';
+import { ErrorSnack } from '../ErrorSnack';
 import { authStore } from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,12 +24,7 @@ export const AddCar: React.FC = () => {
         resolver: yupResolver(schema)
     });
 
-    const [error, setError] = useState<string | undefined>();
-
-    const [loading, setLoading] = useState(false);
-
     const [modal, setModal] = useState(false);
-
 
     let brandModelList = brandModelsStore.brandModels.map(model =>
         <MenuItem key={model.carModelId} value={model.carModelId}>
@@ -38,37 +33,27 @@ export const AddCar: React.FC = () => {
 
     const createCar = async (newCar: AddCarRequest) => {
 
-        setLoading(true);
-        setError(undefined);
 
         const brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId === newCar.carModelId);
 
         if (!brandModel) {
-            setError('car model not found');
-            setLoading(false);
+            carsStore.setActionError('car model not found');
             return;
         }
 
         await carsStore.addCar({ ...newCar, brand: brandModel, carId: 0 });
 
-
         if (!carsStore.actionError) {
             closeForm();
-            setLoading(false);
             return;
         }
 
         if (authStore.errorCode === 401) {
             navigate("/login");
         }
-
-        setError(carsStore.actionError);
-        setLoading(false);
     }
 
     const closeForm = () => {
-        setLoading(false);
-        setError(undefined);
         setModal(false);
         reset();
     }
@@ -116,11 +101,11 @@ export const AddCar: React.FC = () => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button type="submit" onClick={handleSubmit(createCar)}>Добавить</Button>
+                    <Button type="submit" onClick={handleSubmit(createCar)}>{carsStore.loading ? <CircularProgress/>: 'Добавить'}</Button>
                     <Button type="reset" onClick={closeForm}>Закрыть</Button>
                 </DialogActions>
             </Dialog>
-            {error && <ErrorSnack error={error} />}
+            {carsStore.actionError && <ErrorSnack error={carsStore.actionError} />}
         </>
     )
 }

@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, Snackbar, TextField, Typography } from "@mui/material"
+import { Box, Button, CircularProgress, Container, Grid, Snackbar, TextField, Typography } from "@mui/material"
 import { LoginRequest } from '../model'
 import { authStore } from '../../store/authStore'
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from "react-hook-form";
 import { Header } from "../Header";
-import { ErrorSnack } from "../ErrorMessage";
+import { ErrorSnack } from "../ErrorSnack";
 
 
 const EMAIL_REGEX = /^([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)$/;
@@ -98,7 +98,7 @@ export const Login: React.FC = () => {
                     </Grid>
                 </Box>
                 <Box display={"flex"} flexDirection={"column"} sx={{ height: "50px" }}>
-                    <Button type="submit" onClick={handleSubmit(tryLogin)}>Войти</Button>
+                    <Button type="submit" onClick={handleSubmit(tryLogin)}>{authStore.loading ? <CircularProgress/>: 'Войти'}</Button>
                 </Box>
             </Container>
             {authStore.error && <ErrorSnack error={authStore.error}/>}

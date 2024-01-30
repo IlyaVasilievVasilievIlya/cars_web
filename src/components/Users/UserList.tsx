@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 
 import '../styles.css';
 import { EditUser } from './EditUser';
-import { ErrorSnack } from '../ErrorMessage';
+import { ErrorSnack } from '../ErrorSnack';
 import { observer } from 'mobx-react-lite';
 import { usersStore } from '../../store/usersStore';
 import { ChangeUserRoleRequest, EditUserRequest, User } from '../model';
-import { Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress, List, ListItem, ListItemText, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit'
 import { useNavigate } from 'react-router-dom';
 import { authStore } from '../../store/authStore';
@@ -25,7 +25,7 @@ export const UserList: React.FC = observer(() => {
     }
 
     function openEditModal(id: string) {
-        const selectedUser = usersStore.users.find(el => el.id == id);
+        const selectedUser = usersStore.users.find(el => el.id === id);
 
         if (selectedUser) {
             setUser(selectedUser);
@@ -43,11 +43,11 @@ export const UserList: React.FC = observer(() => {
 
     return (
         <>
+            {usersStore.loading && <LinearProgress/>}
+
             {usersStore.fetchError && <ErrorSnack error={usersStore.fetchError} />}
 
-            {/* {loading && <Loader />} */}
-
-            {!usersStore.fetchError && <List>
+            {!usersStore.fetchError && !usersStore.loading && <List>
                 {userList}
             </List>}
 

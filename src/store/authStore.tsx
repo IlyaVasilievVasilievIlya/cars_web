@@ -9,6 +9,8 @@ class AuthStore {
 
     errorCode?: number;
 
+    loading: boolean = false;
+
     constructor() {
         const accessToken = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
@@ -25,8 +27,8 @@ class AuthStore {
         if (this.authData) {
             for (const [key, value] of Object.entries(this.authData))
             localStorage.setItem(key, value);
-        } else localStorage.clear();      
-    }
+    } else localStorage.clear();      
+}
 
     setAuth(authInfo: AuthInfo) {
         
@@ -41,31 +43,40 @@ class AuthStore {
         this.error = error;
         this.errorCode = errorCode;
     }
+    
+    setLoading(loading: boolean) {
+        this.loading = loading;
+    }
 
     async login(loginCreds: LoginRequest){
         this.setError();
+        this.setLoading(true);
         try {
             const response = await AuthService.login(loginCreds);
             this.setAuth(response.data);
         } catch (e) {
             console.log('login error '.concat((e as Error).message));
-            this.setError((e as Error).message, this.errorCode);
+        } finally {
+            this.setLoading(false);
         }
     }
 
     async register(registerInfo: RegisterRequest) {
         this.setError();
+        this.setLoading(true);
         try {
             const response = await AuthService.register(registerInfo);
             this.setAuth(response.data);
         } catch (e) {
             console.log('register error '.concat((e as Error).message));
-            this.setError((e as Error).message, this.errorCode);
+        } finally {
+            this.setLoading(false);
         }
     }
 
     async refreshToken() {
         this.setError();
+        this.setLoading(true);
         if (!this.authData)
             return;
         try {
@@ -73,7 +84,8 @@ class AuthStore {
             this.setAuth(response.data);
         } catch (e) {
             console.log('refresh token error '.concat((e as Error).message));
-            this.setError((e as Error).message, this.errorCode);
+        } finally {
+            this.setLoading(false);
         }
     }
 

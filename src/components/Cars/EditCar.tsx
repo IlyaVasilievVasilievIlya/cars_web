@@ -1,14 +1,14 @@
 import { BrandModel, Car, EditCarRequest } from '../model'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Select from 'react-select';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material';
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { MenuItem } from '@mui/material';
 import { number, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { carsStore } from '../../store/carsStore';
-import { ErrorSnack } from '../ErrorMessage';
+import { ErrorSnack } from '../ErrorSnack';
 import { authStore } from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,10 +31,6 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
             resolver: yupResolver(schema)
         });
 
-    const [error, setError] = useState<string | undefined>();
-
-    const [loading, setLoading] = useState(false);
-
     const navigate = useNavigate();
 
     let brandModelList = brandModelsStore.brandModels.map(model =>
@@ -43,14 +39,10 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
         </MenuItem>);
 
     const editCar = async (editedCar: EditCarRequest) => {
-
-        setLoading(true);
-
         const brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId === editedCar.carModelId);
 
         if (!brandModel) {
-            setError('car model not found');
-            setLoading(false);
+            carsStore.setActionError('car model not found');
             return;
         }
 
@@ -64,9 +56,6 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
         if (authStore.errorCode === 401){
             navigate("/login");
         }
-
-        setError(carsStore.actionError);
-        setLoading(false);
     }
 
     const closeForm = () => {
@@ -110,9 +99,9 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
                 />
             </DialogContent>
             <DialogActions>
-                <Button type="submit" onClick={handleSubmit(editCar)}>Сохранить</Button>
+                <Button type="submit" onClick={handleSubmit(editCar)}>{carsStore.loading ? <CircularProgress/> : 'Сохранить'}</Button>
                 <Button type="reset" onClick={closeForm}>Закрыть</Button>
             </DialogActions>
-            {error && <ErrorSnack error={error} />}
+            {carsStore.actionError && <ErrorSnack error={carsStore.actionError} />}
         </Dialog>)
 }
