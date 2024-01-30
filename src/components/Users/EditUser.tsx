@@ -1,15 +1,14 @@
 import { BrandModel, User, EditUserRequest, UserRole, ChangeUserRoleRequest } from '../model'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, TextField } from '@mui/material';
-import { useState } from 'react';
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import { ROLES, roleList } from '../../public/consts';
 import { date, mixed, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { usersStore } from '../../store/usersStore';
-import { carsStore } from '../../store/carsStore';
 import { authStore } from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
+import { ErrorSnack } from '../ErrorSnack';
 
 
 
@@ -162,6 +161,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
                         </DialogActions>
                     </Box>}
                 <Button type="reset" onClick={closeForm}>Закрыть</Button>
+                {usersStore.actionError && <ErrorSnack error={usersStore.actionError} />}
             </Dialog>
         </>
     )

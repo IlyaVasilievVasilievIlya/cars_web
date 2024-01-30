@@ -62,6 +62,7 @@ export const CarList: React.FC = observer(() => {
     && ((item.brand.model.toLowerCase()).includes(modelSearch.toLowerCase())) 
     && (((item.brand.brand + ' ' + item.brand.model).toLowerCase()).includes(carSearch.toLowerCase())));
 
+    console.log('warningincomp' + carsStore.fetchError);
 
   const carList = carFilteredList.map(carElem =>
     <CarListItem car={carElem} openEdit={openEditModal} openDelete={openDeleteModal} key={carElem.carId} />
@@ -69,6 +70,7 @@ export const CarList: React.FC = observer(() => {
 
 
   useEffect(() => {
+    console.log('warning' + carsStore.fetchError);
     carsStore.fetchCars();
     brandModelsStore.fetchBrandModels();
   }, [])
