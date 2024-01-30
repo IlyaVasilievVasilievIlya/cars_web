@@ -1,7 +1,7 @@
 import { BrandModel, Car, EditCarRequest } from '../model'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Select from 'react-select';
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material';
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { MenuItem } from '@mui/material';
@@ -11,6 +11,8 @@ import { carsStore } from '../../store/carsStore';
 import { ErrorSnack } from '../ErrorSnack';
 import { authStore } from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
+import { Close } from '@mui/icons-material';
+import { DialogHeader } from '../ui-kit/DialogHeader';
 
 interface EditCarProps {
     car: Car
@@ -68,7 +70,7 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
             open={true}
             onSubmit={handleSubmit(editCar)}
             onClose={closeForm}>
-            <DialogTitle>Редактирование машины</DialogTitle>
+            <DialogHeader text="Редактирование машины" closeForm={closeForm}/>
             <DialogContent style={{display:'flex', gap: 10, paddingTop: 10}}>
                 <Controller
                     control={control}

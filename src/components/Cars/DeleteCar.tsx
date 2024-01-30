@@ -1,10 +1,12 @@
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material';
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Typography } from '@mui/material';
 import { useState } from 'react';
 import { Car } from '../model';
 import { carsStore } from '../../store/carsStore';
 import { ErrorSnack } from '../ErrorSnack';
 import { authStore } from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
+import { Close } from '@mui/icons-material';
+import { DialogHeader } from '../ui-kit/DialogHeader';
 
 interface DeleteCarProps {
     car: Car
@@ -38,7 +40,13 @@ export const DeleteCar: React.FC<DeleteCarProps> = ({ car, onDone }: DeleteCarPr
         open={true}
         onSubmit={() => deleteCar()}
         onClose={() => closeForm()}>
-        <DialogTitle>Удаление машины</DialogTitle>
+        <DialogHeader text="Удаление машины" closeForm={closeForm}/>
+        <DialogTitle sx={{display: 'flex', justifyContent: 'space-between'}}>
+          Удаление машины
+            <IconButton onClick={closeForm} >
+              <Close />
+            </IconButton>
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
             Вы уверены, что хотите удалить машину "{`${car.brand.brand} ${car.brand.model}`}"?

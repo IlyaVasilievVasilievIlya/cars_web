@@ -1,7 +1,7 @@
 import { Car, AddCarRequest } from '../model'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form';
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { object, string, number } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -9,6 +9,8 @@ import { carsStore } from '../../store/carsStore';
 import { ErrorSnack } from '../ErrorSnack';
 import { authStore } from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
+import { Close } from '@mui/icons-material';
+import { DialogHeader } from '../ui-kit/DialogHeader';
 
 
 export const AddCar: React.FC = () => {
@@ -67,21 +69,21 @@ export const AddCar: React.FC = () => {
                 open={modal}
                 onSubmit={handleSubmit(createCar)}
                 onClose={closeForm}>
-                <DialogTitle>Добавление машины</DialogTitle>
-                <DialogContent style={{display:'flex', gap: 10, paddingTop: 10, alignItems:'flex-start'}} >
+                <DialogHeader text="Добавление машины" closeForm={closeForm}/>
+                <DialogContent style={{ display: 'flex', gap: 10, paddingTop: 10, alignItems: 'flex-start' }} >
                     <Controller
                         control={control}
                         name="carModelId"
                         defaultValue={1}
                         render={({ field }) => (
-                            <Select labelId="Модель машины" 
-                            label="Модель машины" {...field} 
-                            placeholder='Выберите модель машины'
-                            fullWidth sx={{minHeight:'56px', minWidth:"250px"}}
-                            variant="standard" >
+                            <Select labelId="Модель машины"
+                                label="Модель машины" {...field}
+                                placeholder='Выберите модель машины'
+                                fullWidth sx={{ minHeight: '56px', minWidth: "250px" }}
+                                variant="standard" >
                                 {brandModelList}
                             </Select>)
-                                
+
                         } />
                     <Controller
                         control={control}
@@ -93,7 +95,7 @@ export const AddCar: React.FC = () => {
                                 type="text"
                                 fullWidth
                                 value={value}
-                                onChange={onChange} sx={{minHeight:'100px', minWidth:"250px"}}
+                                onChange={onChange} sx={{ minHeight: '100px', minWidth: "250px" }}
                                 placeholder='Введите цвет машины'
                                 helperText={errors.color?.message?.toString()
                                 }
@@ -101,7 +103,7 @@ export const AddCar: React.FC = () => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button type="submit" onClick={handleSubmit(createCar)}>{carsStore.loading ? <CircularProgress/>: 'Добавить'}</Button>
+                    <Button type="submit" onClick={handleSubmit(createCar)}>{carsStore.loading ? <CircularProgress /> : 'Добавить'}</Button>
                     <Button type="reset" onClick={closeForm}>Закрыть</Button>
                 </DialogActions>
             </Dialog>

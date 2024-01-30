@@ -11,19 +11,14 @@ import { DateField } from '@mui/x-date-pickers/DateField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { ErrorSnack } from "../ErrorSnack";
+import { EMAIL_REGEX, PWD_REGEX } from "../../public/consts";
 
-const EMAIL_REGEX = /^([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)$/;
-const PWD_REGEX = /^.*$/;
-//const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8, 24}$/;
-
-
-//pattern: /[A-Za-z]{3}/ либо как pattern в hookform либо внутрь textfield (лучше первое)к
 
 export const Register: React.FC = () => {
 
     const schema = object({
         email: string().required('Это обязательное поле').matches(EMAIL_REGEX, 'Некорректный адрес почты'),
-        password: string().required('Это обязательное поле').matches(PWD_REGEX, 'Пароль должен содержать заглавные и строчные латинские символы, служебные символы и цифры'),
+        password: string().required('Это обязательное поле').matches(PWD_REGEX, 'Пароль должен иметь длину от 8 до 24 символов, содержать заглавные и строчные латинские символы, служебные символы и цифры'),
         confirmPassword: string().required('').oneOf([ref("password")], 'Пароли не совпадают'),
         name: string().required('Это обязательное поле').max(128, 'Имя не должно содержать более 128 символов'),
         surname: string().required('Это обязательное поле').max(128, 'Фамилия не должна содержать более 128 символов'),

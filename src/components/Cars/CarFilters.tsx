@@ -18,23 +18,25 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
     return (
         <Box component="section" sx={{p: 2}}>
             <Grid container rowSpacing={3} columnSpacing={2}>
-                <Grid item xs={3}>
+                <Grid item sm={3} xs={12}>
                     <TextField
                         type="search"
                         label="Цвет машины"
                         fullWidth
+                        autoComplete="false"
                         defaultValue=''
                         onChange={(e) => filterColor((e.target.value as string))} />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item sm={3} xs={12}>
                     <TextField
                         type="search"
                         label="Поиск по машине"
                         fullWidth
+                        autoComplete="false"
                         defaultValue=''
                         onChange={(e) => filterCar((e.target.value as string))} />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item sm={3} xs={12}>
                     <Autocomplete
                         options={brandList}
                         fullWidth
@@ -43,7 +45,7 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
                         }}
                         renderInput={(params) => <TextField {...params} label="Бренд" />} />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item sm={3} xs={12}>
                     <Autocomplete
                         options={modelList}
                         fullWidth

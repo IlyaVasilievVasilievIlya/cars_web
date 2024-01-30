@@ -31,6 +31,10 @@ class CarsStore {
         this.loading = loading;
     }
 
+    addCarAction(car: Car) {
+        this.cars.push(car);
+    }
+
     async deleteCar(id: number) {
         this.setActionError();
         this.setLoading(true);
@@ -50,7 +54,7 @@ class CarsStore {
         this.setLoading(true);
         try {
             const response = await CarsService.addCar(newCar);
-            this.cars.push(response.data);
+            this.addCarAction(response.data);
         } catch (e) {
             console.log('addcar error '.concat((e as Error).message));
             this.setActionError((e as Error).message);

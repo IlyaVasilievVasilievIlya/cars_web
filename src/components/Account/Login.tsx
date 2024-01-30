@@ -8,14 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from "react-hook-form";
 import { Header } from "../Header";
 import { ErrorSnack } from "../ErrorSnack";
-
-
-const EMAIL_REGEX = /^([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)$/;
-//const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8, 24}$/;
-const PWD_REGEX = /^.{4,24}$/;
-
-
-
+import { EMAIL_REGEX, PWD_REGEX } from "../../public/consts";
 
 export const Login: React.FC = () => {
 

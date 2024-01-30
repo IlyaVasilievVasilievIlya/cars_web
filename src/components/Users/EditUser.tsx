@@ -9,6 +9,7 @@ import { usersStore } from '../../store/usersStore';
 import { authStore } from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { ErrorSnack } from '../ErrorSnack';
+import { DialogHeader } from '../ui-kit/DialogHeader';
 
 
 
@@ -85,7 +86,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
             <Dialog
                 open={true}
                 onClose={closeForm}>
-                <DialogTitle>Редактирование данных пользователя</DialogTitle>
+                <DialogHeader text="Редактирование данных пользователя" closeForm={closeForm}/>
                 <DialogContent style={{ paddingTop: "10px" }}>
                     <Grid container rowSpacing={3}>
                         <Grid item xs={12} height={"90px"}>
