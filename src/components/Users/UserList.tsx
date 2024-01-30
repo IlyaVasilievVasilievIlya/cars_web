@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import '../styles.css';
 import { EditUser } from './EditUser';
-import { ErrorMessage } from '../ErrorMessage';
+import { ErrorSnack } from '../ErrorMessage';
 import { observer } from 'mobx-react-lite';
 import { usersStore } from '../../store/usersStore';
 import { ChangeUserRoleRequest, EditUserRequest, User } from '../model';
@@ -20,7 +20,7 @@ export const UserList: React.FC = observer(() => {
 
     const navigate = useNavigate();
 
-    if (authStore.errorCode == 401){
+    if (authStore.errorCode === 401){
         navigate("/login");
     }
 
@@ -43,7 +43,7 @@ export const UserList: React.FC = observer(() => {
 
     return (
         <>
-            {usersStore.fetchError && <ErrorMessage error={usersStore.fetchError} />}
+            {usersStore.fetchError && <ErrorSnack error={usersStore.fetchError} />}
 
             {/* {loading && <Loader />} */}
 

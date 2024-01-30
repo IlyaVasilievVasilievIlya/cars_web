@@ -7,8 +7,8 @@ export function HomePage() {
     <>
       <Header />
       <Box sx={{display:"flex", justifyContent:"center", marginTop:"500px"}}>
-        <Typography variant={"h1"}>
-          Это домашняя страница
+        <Typography variant={"h2"} fontFamily={"fantasy"}>
+          Home Page
         </Typography>
       </Box>
     </>

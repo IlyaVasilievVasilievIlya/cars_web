@@ -35,7 +35,7 @@ export const Header: React.FC = () => {
             {navMenu}
           </Box>
           {authStore.authData &&
-            <IconButton color="inherit" onClick={() => setIsBasketOpen(!isBasketOpen)}>
+            <IconButton color='secondary' onClick={() => setIsBasketOpen(!isBasketOpen)}>
               <ShoppingBasket />
             </IconButton>
           }

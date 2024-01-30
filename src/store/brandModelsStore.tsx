@@ -1,4 +1,4 @@
-import { BrandModel, Car } from '../components/model';
+import { BrandModel } from '../components/model';
 import { makeAutoObservable } from 'mobx';
 import { BrandModelService } from '../services/BrandModelService';
 

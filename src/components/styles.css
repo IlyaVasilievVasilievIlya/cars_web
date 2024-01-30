@@ -1,4 +1,20 @@
+
+a {
+  text-decoration: none;
+  margin-right: 5px;
+}
+
+a:visited {
+  color: var(--background-theme);
+}
+
 .active {
-  color: black;
+  color: black !important;
   cursor: default;
+}
+
+:root {
+  --background-theme: #d5e8e8;
+  --main-theme: #69bfbf;
+  --border-style: 2px solid var(--main-theme)
 }

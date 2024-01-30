@@ -1,6 +1,5 @@
 import { Autocomplete, Box, Grid, MenuItem, Select, TextField } from "@mui/material"
 import { brandModelsStore } from "../../store/brandModelsStore";
-import { useState } from "react";
 
 
 interface CarFiltersProps {
@@ -17,7 +16,7 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
     const brandList = Array.from(new Set(brandModelsStore.brandModels.map(model => model.brand)));
 
     return (
-        <Box component="section" sx={{p: "6px"}}>
+        <Box component="section" sx={{p: 2}}>
             <Grid container rowSpacing={3} columnSpacing={2}>
                 <Grid item xs={3}>
                     <TextField

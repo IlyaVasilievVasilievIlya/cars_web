@@ -23,8 +23,11 @@ authApi.interceptors.request.use( config => {
 authApi.interceptors.response.use( config => {
     return config;
 },  (error => {
-    const errors: string[] = error.response.data;
-    throw new Error(errors[0]);
+    console.log(error);
+    if (error.response) {
+        authStore.setError(error.response.data[0], error.response.status)
+    } else authStore.setError(error.message, error.code)
+    return Promise.reject(error);
 }))
 
 api.interceptors.request.use( config => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import '../styles.css';
 import { EditCar } from './EditCar';
-import { ErrorMessage } from '../ErrorMessage';
+import { ErrorSnack } from '../ErrorMessage';
 import { observer } from 'mobx-react-lite';
 import { carsStore } from '../../store/carsStore';
 import { Car } from '../model';
@@ -14,6 +14,7 @@ import { DeleteCar } from './DeleteCar';
 import { useNavigate } from 'react-router-dom';
 import { CarFilters } from './CarFilters';
 import { CarListItem } from './CarListItem';
+import { brandModelsStore } from '../../store/brandModelsStore';
 
 export const CarList: React.FC = observer(() => {
 
@@ -30,6 +31,7 @@ export const CarList: React.FC = observer(() => {
   const [brandSearch, setBrandSearch] = useState('');
 
   const [modelSearch, setModelSearch] = useState('');
+
 
   const navigate = useNavigate();
 
@@ -55,11 +57,10 @@ export const CarList: React.FC = observer(() => {
     }
   }
 
-  const carFilteredList = carsStore.cars.filter(item => (((item.color ?? '').toLowerCase()).includes((colorSearch ? colorSearch : '').toLowerCase()))
-    && ((item.brand.brand.toLowerCase()).includes((brandSearch ? brandSearch : '').toLowerCase())) 
-    && ((item.brand.model.toLowerCase()).includes((modelSearch ? modelSearch : '').toLowerCase())) 
-    && (carSearch === '' 
-      || ((item.brand.brand + ' ' + item.brand.model).toLowerCase()).includes(carSearch.toLowerCase())));
+  const carFilteredList = carsStore.cars.filter(item => (((item.color ?? '').toLowerCase()).includes(colorSearch.toLowerCase()))
+    && ((item.brand.brand.toLowerCase()).includes(brandSearch.toLowerCase())) 
+    && ((item.brand.model.toLowerCase()).includes(modelSearch.toLowerCase())) 
+    && (((item.brand.brand + ' ' + item.brand.model).toLowerCase()).includes(carSearch.toLowerCase())));
 
 
   const carList = carFilteredList.map(carElem =>
@@ -69,13 +70,16 @@ export const CarList: React.FC = observer(() => {
 
   useEffect(() => {
     carsStore.fetchCars();
+    brandModelsStore.fetchBrandModels();
   }, [])
 
   return (
     <>
       <CarFilters filterCar={setCarSearch} filterColor={setColorSearch} filterBrand={setBrandSearch} filterModel={setModelSearch}/>
 
-      {carsStore.fetchError && <ErrorMessage error={carsStore.fetchError} />}
+      {brandModelsStore.fetchError && <ErrorSnack error={brandModelsStore.fetchError} />}
+  
+      {carsStore.fetchError && <ErrorSnack error={carsStore.fetchError} />}
 
       {authStore.checkRole([ROLES.Manager, ROLES.Admin, ROLES.SuperUser]) && <AddCar />}
 

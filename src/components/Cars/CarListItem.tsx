@@ -33,8 +33,8 @@ export const CarListItem: React.FC<CarListItemProps> = observer(({ car, openDele
     }
 
     return (
-        <Card key={car.carId} sx={{borderRadius:3, marginTop:1}}>
-            <CardContent sx={{display:"flex", justifyContent:"space-between"}}>
+        <Card key={car.carId} sx={{ borderRadius: 3, marginTop: 1 }}>
+            <CardContent sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Box>
                     <Typography variant={"body1"}>
                         {car.brand.brand} {car.brand.model}
@@ -45,15 +45,18 @@ export const CarListItem: React.FC<CarListItemProps> = observer(({ car, openDele
                 </Box>
                 <CardActions>
                     {authStore.checkRole([ROLES.Manager, ROLES.Admin, ROLES.SuperUser]) &&
-                        <IconButton onClick={() => openEdit(car.carId)}>
-                            <EditIcon />
-                        </IconButton> &&
-                        <IconButton onClick={() => openDelete(car.carId)}>
-                            <DeleteIcon />
-                        </IconButton>}
+                        <>
+                            <IconButton onClick={() => openEdit(car.carId)}>
+                                <EditIcon />
+                            </IconButton>
+                            <IconButton onClick={() => openDelete(car.carId)}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </>
+                    }
                     <IconButton onClick={() => toggleAdd()}>
-                         {(basketStore.contains(car.carId)) ? <RemoveShoppingCartIcon/>
-                        : <AddShoppingCartIcon/> }
+                        {(basketStore.contains(car.carId)) ? <RemoveShoppingCartIcon />
+                            : <AddShoppingCartIcon />}
                     </IconButton>
                 </CardActions>
             </CardContent>

@@ -10,6 +10,7 @@ import { Header } from "../Header";
 import { DateField } from '@mui/x-date-pickers/DateField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { ErrorSnack } from "../ErrorMessage";
 
 const EMAIL_REGEX = /^([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)$/;
 const PWD_REGEX = /^.*$/;
@@ -27,7 +28,7 @@ export const Register: React.FC = () => {
         name: string().required('Это обязательное поле').max(128, 'Имя не должно содержать более 128 символов'),
         surname: string().required('Это обязательное поле').max(128, 'Фамилия не должна содержать более 128 символов'),
         patronymic: string().max(128, 'Отчество не должно содержать более 128 символов'),
-        birthDate: date().typeError('').required('Это обязательное поле').min("1923-01-01", 'дата должна быть не ранее 1923.01.01').max(new Date(), `Дата должна быть ранее ${new Date()}`)
+        birthDate: date().typeError('').required('Это обязательное поле').min("1923-01-01", 'дата должна быть не ранее 1923.01.01').max(new Date(), `Некорректная дата`)
     });
 
     const { handleSubmit, formState: { errors }, control } = useForm({
@@ -57,7 +58,7 @@ export const Register: React.FC = () => {
                     display: "flex", 
                     flexDirection: "column", 
                     gap: "10px", 
-                    border: "2px solid #1976d2", 
+                    border: "var(--border-style)", 
                     boxShadow: "0px 0px 12px -2px",
                     borderRadius: 2}} >
                 <Typography component={"h1"} variant={"h5"}>
@@ -123,7 +124,7 @@ export const Register: React.FC = () => {
                                         label="Имя"
                                         required
                                         fullWidth
-                                        value={value ?? ''}
+                                        value={value}
                                         onChange={onChange}
                                         placeholder='Введите имя'
                                         helperText={errors.name?.message?.toString()}
@@ -138,7 +139,7 @@ export const Register: React.FC = () => {
                                         label="Фамилия"
                                         required
                                         fullWidth
-                                        value={value ?? ''}
+                                        value={value}
                                         onChange={onChange}
                                         placeholder='Введите фамилию'
                                         helperText={errors.surname?.message?.toString()}
@@ -153,7 +154,8 @@ export const Register: React.FC = () => {
                                     <TextField
                                         label="Отчество"
                                         fullWidth
-                                        value={value ?? ''}
+                                        defaultValue={''}
+                                        value={value}
                                         onChange={onChange}
                                         placeholder='Введите отчество'
                                         helperText={errors.patronymic?.message?.toString()}
@@ -181,9 +183,9 @@ export const Register: React.FC = () => {
                 </Box>
                 <Box display={"flex"} flexDirection={"column"} sx={{height:"50px"}}>
                     <Button type="submit" onClick={handleSubmit(tryRegister)}>Зарегистрироваться</Button>
-                    {authStore.error}
                 </Box>
             </Container>
+            {authStore.error && <ErrorSnack error={authStore.error}/>}
         </>
     )
 }

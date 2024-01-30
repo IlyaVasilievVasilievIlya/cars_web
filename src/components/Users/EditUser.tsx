@@ -1,9 +1,9 @@
 import { BrandModel, User, EditUserRequest, UserRole, ChangeUserRoleRequest } from '../model'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, TextField } from '@mui/material';
 import { useState } from 'react';
 import { MenuItem } from '@mui/material';
-import { roleList } from '../../public/consts';
+import { ROLES, roleList } from '../../public/consts';
 import { date, mixed, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { usersStore } from '../../store/usersStore';
@@ -19,11 +19,11 @@ interface EditUserProps {
 }
 
 export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProps) => {
-    
+
     const [error, setError] = useState<string | undefined>();
-    
+
     const [loading, setLoading] = useState(false);
-    
+
     const navigate = useNavigate();
 
     const editUserSchema = object({
@@ -39,7 +39,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
 
     const { handleSubmit, formState: { errors }, reset, control } = useForm<EditUserRequest>(
         {
-            defaultValues: {name: user.name, surname: user.name, patronymic: user.patronymic, birthDate: user.birthDate},
+            defaultValues: { name: user.name, surname: user.name, patronymic: user.patronymic, birthDate: user.birthDate },
             resolver: yupResolver(editUserSchema)
         }
     );
@@ -66,14 +66,14 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
             return;
         }
 
-        if (authStore.errorCode == 401){
+        if (authStore.errorCode === 401) {
             navigate("/login");
         }
 
         setError(carsStore.actionError);
         setLoading(false);
     }
-    
+
     const editRole = async (newRole: ChangeUserRoleRequest) => {
         setLoading(true);
 
@@ -100,64 +100,81 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
                 open={true}
                 onClose={closeForm}>
                 <DialogTitle>Редактирование данных пользователя</DialogTitle>
-                <DialogContent>
-                    <Controller
-                        control={control}
-                        name="name"
-                        render={({ field: { onChange, value } }) => (
-                            <TextField
-                                label="Имя"
-                                value={value}
-                                onChange={onChange}
-                                placeholder='Введите имя'
-                                helperText={errors.name?.message?.toString()}
-                            />)} />
-                    <Controller
-                        control={control}
-                        name="surname"
-                        render={({ field: { onChange, value } }) => (
-                            <TextField
-                                label="Фамилия"
-                                value={value}
-                                onChange={onChange}
-                                placeholder='Введите фамилию'
-                                helperText={errors.surname?.message?.toString()}
-                            />)} />
-                    <Controller
-                        control={control}
-                        name="patronymic"
-                        render={({ field: { onChange, value } }) => (
-                            <TextField
-                                label="Отчество"
-                                value={value}
-                                onChange={onChange}
-                                placeholder='Введите отчество'
-                                helperText={errors.patronymic?.message?.toString()}
-                            />)} />
-                </DialogContent>
-                <DialogActions>
-                    <Button type="submit" onClick={handleSubmit(editUser)}>Сохранить</Button>
-                    <Button type="reset" onClick={closeForm}>Закрыть</Button>
-                </DialogActions>
+                <DialogContent style={{ paddingTop: "10px" }}>
+                    <Grid container rowSpacing={3}>
+                        <Grid item xs={12} height={"90px"}>
+                            <Controller
+                                control={control}
+                                name="name"
+                                render={({ field: { onChange, value } }) => (
+                                    <TextField
+                                        label="Имя"
+                                        value={value}
+                                        required
+                                        fullWidth
+                                        onChange={onChange}
+                                        placeholder='Введите имя'
+                                        helperText={errors.name?.message?.toString()}
+                                    />)} />
+                        </Grid>
+                        <Grid item xs={12} height={"90px"}>
 
-                <DialogContent>
-                    <Controller
-                        control={roleControl}
-                        name="role"
-                        render={({ field: { onChange, value } }) => (
-                            <TextField
-                                select
-                                label="Роль пользователя"
-                                placeholder='Выберите роль'
-                                value={value}
-                                onChange={onChange}>
-                                {userRoleList}
-                            </TextField>)} />
-                    <DialogActions>
-                        <Button type="submit" onClick={handleRoleSubmit(editRole)}>Сохранить</Button>
-                        <Button type="reset" onClick={closeForm}>Закрыть</Button>
-                    </DialogActions>
+                            <Controller
+                                control={control}
+                                name="surname"
+                                render={({ field: { onChange, value } }) => (
+                                    <TextField
+                                        label="Фамилия"
+                                        value={value}
+                                        required
+                                        fullWidth
+                                        onChange={onChange}
+                                        placeholder='Введите фамилию'
+                                        helperText={errors.surname?.message?.toString()}
+                                    />)} />
+                        </Grid >
+                        <Grid item xs={12} height={"90px"}>
+                            <Controller
+                                control={control}
+                                name="patronymic"
+                                render={({ field: { onChange, value } }) => (
+                                    <TextField
+                                        label="Отчество"
+                                        value={value}
+                                        onChange={onChange}
+                                        fullWidth
+                                        placeholder='Введите отчество'
+                                        helperText={errors.patronymic?.message?.toString()}
+                                    />)} />
+                        </Grid>
+                    </Grid>
                 </DialogContent>
+                <DialogActions sx={{px:2}}>
+                    <Button type="submit" onClick={handleSubmit(editUser)}>Сохранить</Button>
+                </DialogActions>
+                {authStore.checkRole([ROLES.SuperUser]) &&
+                    <Box>
+                        <DialogContent>
+                            <Controller
+                                control={roleControl}
+                                name="role"
+                                render={({ field: { onChange, value } }) => (
+                                    <TextField
+                                        select
+                                        label="Роль пользователя"
+                                        placeholder='Выберите роль'
+                                        required
+                                        fullWidth
+                                        value={value}
+                                        onChange={onChange}>
+                                        {userRoleList}
+                                    </TextField>)} />
+                        </DialogContent>
+                        <DialogActions sx={{px:2}}>
+                            <Button type="submit" onClick={handleRoleSubmit(editRole)}>Сменить роль</Button>
+                        </DialogActions>
+                    </Box>}
+                <Button type="reset" onClick={closeForm}>Закрыть</Button>
             </Dialog>
         </>
     )

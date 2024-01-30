@@ -2,7 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { useState } from 'react';
 import { Car } from '../model';
 import { carsStore } from '../../store/carsStore';
-import { ErrorMessage } from '../ErrorMessage';
+import { ErrorSnack } from '../ErrorMessage';
 import { authStore } from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
 
@@ -57,7 +57,7 @@ export const DeleteCar: React.FC<DeleteCarProps> = ({ car, onDone }: DeleteCarPr
           </DialogContentText>
         </DialogContent>
         <Typography>
-            {error && <ErrorMessage error={error}/>}
+            {error && <ErrorSnack error={error}/>}
         </Typography>
         <DialogActions>
           <Button type="submit" onClick={deleteCar}>Да</Button>

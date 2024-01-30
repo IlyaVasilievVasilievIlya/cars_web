@@ -8,11 +8,9 @@ import { MenuItem } from '@mui/material';
 import { number, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { carsStore } from '../../store/carsStore';
-import { ErrorMessage } from '../ErrorMessage';
+import { ErrorSnack } from '../ErrorMessage';
 import { authStore } from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
-
-
 
 interface EditCarProps {
     car: Car
@@ -46,11 +44,9 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
 
     const editCar = async (editedCar: EditCarRequest) => {
 
-
-
         setLoading(true);
 
-        const brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId == editedCar.carModelId);
+        const brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId === editedCar.carModelId);
 
         if (!brandModel) {
             setError('car model not found');
@@ -65,7 +61,7 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
             return;
         }
 
-        if (authStore.errorCode == 401){
+        if (authStore.errorCode === 401){
             navigate("/login");
         }
 
@@ -78,24 +74,21 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
         onDone();
     }
 
-    useEffect(() => {
-        brandModelsStore.fetchBrandModels();
-    }, [])
-
     return (
         <Dialog
             open={true}
             onSubmit={handleSubmit(editCar)}
             onClose={closeForm}>
             <DialogTitle>Редактирование машины</DialogTitle>
-            <DialogContent>
+            <DialogContent style={{display:'flex', gap: 10, paddingTop: 10}}>
                 <Controller
                     control={control}
                     name="carModelId"
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             select
-                            label="Модель машины"
+                            label="Модель"
+                            fullWidth
                             placeholder='Выберите модель машины'
                             value={value}
                             onChange={onChange}>
@@ -104,11 +97,11 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
                 <Controller
                     control={control}
                     name="color"
-                    rules={{ maxLength: { value: 128, message: 'Поле не должно содержать более 128 символов' } }}
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             label="Цвет"
                             type="text"
+                            fullWidth
                             value={value}
                             onChange={onChange}
                             placeholder='Введите цвет машины'
@@ -116,12 +109,10 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
                         />)}
                 />
             </DialogContent>
-            <Typography>
-                {error && <ErrorMessage error={error} />}
-            </Typography>
             <DialogActions>
                 <Button type="submit" onClick={handleSubmit(editCar)}>Сохранить</Button>
                 <Button type="reset" onClick={closeForm}>Закрыть</Button>
             </DialogActions>
+            {error && <ErrorSnack error={error} />}
         </Dialog>)
 }

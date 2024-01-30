@@ -8,16 +8,31 @@ import { CarsPage } from './pages/Cars/CarsPage';
 import { HomePage } from './pages/HomePage';
 import { ROLES } from './public/consts';
 import { router } from './public/consts'
+import { ThemeProvider, createTheme } from '@mui/material';
 
 
 export const ThemeContext = React.createContext('tasks');
 
 const App: React.FC = function () {
 
+
+  const theme = createTheme({
+        palette: {
+          primary: {
+            main: "#69bfbf"
+        },
+          secondary: {
+            main: "#d5e8e8"
+          }
+    }
+  });
+
   return (
-    <div className="App">
-      <RouterProvider router={router} />
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className="App">
+        <RouterProvider router={router} />
+      </div>
+    </ThemeProvider>
   );
 }
 

@@ -34,7 +34,6 @@ export const navInfos: NavInfo[] = [
     {path: "/users", text: "Users", element:<UsersPage />, key: "/users", allowedRoles: [ROLES.SuperUser, ROLES.Admin]},
 ];
 
-
 export const router = createBrowserRouter([
     {
         path: "/login",
@@ -79,4 +78,5 @@ export const router = createBrowserRouter([
         ]
     }
 ])
+
 

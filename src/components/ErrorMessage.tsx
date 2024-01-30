@@ -1,13 +1,22 @@
-import { Typography } from "@mui/material"
+import { Box, Snackbar, Typography } from "@mui/material"
+import { useState } from "react";
 
-interface ErrorMessageProps {
+interface ErrorSnackProps {
     error: string
 }
 
-export function ErrorMessage({ error }: ErrorMessageProps) {
+export function ErrorSnack({ error }: ErrorSnackProps) {
+
+    const [isOpen, setIsOpen] = useState(true);
+
     return (
-        <Typography>
-            {error}
-        </Typography>
+        <Box sx={{ width: 500 }}>
+            <Snackbar
+            open={isOpen}
+            autoHideDuration={6000}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                message={error} 
+                onClose={() => setIsOpen(false)}/>
+        </Box>
     )
 }
