@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { AuthInfo, LoginRequest, RegisterRequest } from "../components/model";
-import { authApi } from "../http";
+import { authApi } from "./http";
 import { UserService } from "./UserService";
 
 export class AuthService {

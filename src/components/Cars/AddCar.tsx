@@ -1,15 +1,14 @@
-import { Car, AddCarRequest } from '../model'
-import { useEffect, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form';
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, MenuItem, Select, TextField, Typography } from '@mui/material';
-import { brandModelsStore } from '../../store/brandModelsStore';
-import { object, string, number } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, MenuItem, Select, TextField } from '@mui/material';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { number, object, string } from 'yup';
+import { authStore } from '../../store/authStore';
+import { brandModelsStore } from '../../store/brandModelsStore';
 import { carsStore } from '../../store/carsStore';
 import { ErrorSnack } from '../ErrorSnack';
-import { authStore } from '../../store/authStore';
-import { useNavigate } from 'react-router-dom';
-import { Close } from '@mui/icons-material';
+import { AddCarRequest } from '../model';
 import { DialogHeader } from '../ui-kit/DialogHeader';
 
 
@@ -51,11 +50,12 @@ export const AddCar: React.FC = () => {
         }
 
         if (authStore.errorCode === 401) {
-            navigate("/login");
+            navigate("/logout");
         }
     }
 
     const closeForm = () => {
+        carsStore.setActionError();
         setModal(false);
         reset();
     }
@@ -65,12 +65,16 @@ export const AddCar: React.FC = () => {
             <Button type="button" onClick={() => setModal(true)}>
                 Добавить
             </Button>
-            <Dialog
+            <Dialog 
                 open={modal}
                 onSubmit={handleSubmit(createCar)}
                 onClose={closeForm}>
                 <DialogHeader text="Добавление машины" closeForm={closeForm}/>
-                <DialogContent style={{ display: 'flex', gap: 10, paddingTop: 10, alignItems: 'flex-start' }} >
+                <DialogContent style={{ 
+                        display: 'flex', 
+                        flexDirection:'column', 
+                        gap: 20, 
+                        paddingTop: 10, minWidth: '400px'}}>
                     <Controller
                         control={control}
                         name="carModelId"
@@ -79,7 +83,7 @@ export const AddCar: React.FC = () => {
                             <Select labelId="Модель машины"
                                 label="Модель машины" {...field}
                                 placeholder='Выберите модель машины'
-                                fullWidth sx={{ minHeight: '56px', minWidth: "250px" }}
+                                fullWidth sx={{ minHeight: '56px'}}
                                 variant="standard" >
                                 {brandModelList}
                             </Select>)
@@ -94,8 +98,9 @@ export const AddCar: React.FC = () => {
                                 label="Цвет"
                                 type="text"
                                 fullWidth
+                                autoComplete='off'
                                 value={value}
-                                onChange={onChange} sx={{ minHeight: '100px', minWidth: "250px" }}
+                                onChange={onChange} sx={{ minHeight: '80px' }}
                                 placeholder='Введите цвет машины'
                                 helperText={errors.color?.message?.toString()
                                 }
@@ -103,7 +108,7 @@ export const AddCar: React.FC = () => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button type="submit" onClick={handleSubmit(createCar)}>{carsStore.loading ? <CircularProgress /> : 'Добавить'}</Button>
+                    <Button type="submit" onClick={handleSubmit(createCar)}>{carsStore.loading ? <CircularProgress size={20}/> : 'Добавить'}</Button>
                     <Button type="reset" onClick={closeForm}>Закрыть</Button>
                 </DialogActions>
             </Dialog>

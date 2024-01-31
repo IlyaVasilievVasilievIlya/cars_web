@@ -1,4 +1,4 @@
-import { BrandModel, Car, AuthInfo, LoginRequest, RegisterRequest } from '../components/model';
+import { AuthInfo, LoginRequest, RegisterRequest } from '../components/model';
 import { makeAutoObservable } from 'mobx';
 import { AuthService } from '../services/AuthService';
 
@@ -31,12 +31,9 @@ class AuthStore {
 }
 
     setAuth(authInfo: AuthInfo) {
-        
         const encodedClaims = authInfo.accessToken.split(".")[1];
         const role = JSON.parse(atob(encodedClaims)).role;
         this.setAuthInfo({...authInfo, role: role});
-
-        console.log(this.authData);
     }
 
     setError(error?: string, errorCode?: number) {

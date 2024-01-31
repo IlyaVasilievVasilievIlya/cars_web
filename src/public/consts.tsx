@@ -8,7 +8,7 @@ import { HomePage } from "../pages/HomePage";
 import { UsersPage } from '../pages/Users/UsersPage';
 import { NotFoundPage } from "../pages/NotFoundPage";
 import { Logout } from "../components/Account/Logout";
-import { Unauthorized } from "../components/Account/Unauthorized";
+import { Unauthorized } from "../pages/UnauthorizedPage";
 
 export const EMAIL_REGEX = /^([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)$/;
 export const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,24}$/;

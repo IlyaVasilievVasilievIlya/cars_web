@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-import '../styles.css';
-import { observer } from 'mobx-react-lite';
-import { carsStore } from '../../store/carsStore';
-import { Box, Button, Drawer, List, ListItem, Typography } from '@mui/material';
-import { authStore } from '../../store/authStore';
-import { useNavigate } from 'react-router-dom';
-import { basketStore } from '../../store/basketStore';
-import { BasketListItem } from './BasketListItem';
 import { Close } from '@mui/icons-material';
+import { Box, Button, Drawer, List, Typography } from '@mui/material';
+import { observer } from 'mobx-react-lite';
+import { useNavigate } from 'react-router-dom';
+import { authStore } from '../../store/authStore';
+import { basketStore } from '../../store/basketStore';
+import '../styles.css';
+import { BasketListItem } from './BasketListItem';
 
 
 interface BasketProps {
@@ -21,7 +20,7 @@ export const Basket: React.FC<BasketProps> = observer(({ onClose }: BasketProps)
   const navigate = useNavigate();
 
   if (authStore.errorCode === 401) {
-    navigate("/login");
+    navigate("/logout");
   }
 
   function clear() {
@@ -29,20 +28,19 @@ export const Basket: React.FC<BasketProps> = observer(({ onClose }: BasketProps)
   }
 
   let carList = basketStore.basket.map(item =>
-    <List>
       <BasketListItem 
       
       count={item.count} 
       id={item.id} 
       key={item.id}
       name={item.name}/>
-    </List>);
+    );
 
   return (
     <Drawer
-      anchor="right"
-      open={true}
-      onClose={onClose}>
+    anchor="right"
+    open={true}
+    onClose={onClose}>
         <Box display={"flex"} justifyContent={"space-between"}>
           {carList.length < 1 && <Typography minWidth={'20%'} p={5} fontSize={20}>
              Корзина пуста
@@ -54,7 +52,9 @@ export const Basket: React.FC<BasketProps> = observer(({ onClose }: BasketProps)
             <Close/>
           </Button>
         </Box>
+        <List>
         {carList}
+        </List>
     </Drawer>
     );
 });

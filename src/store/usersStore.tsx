@@ -36,8 +36,8 @@ class UsersStore {
         this.setLoading(true);
         try {
             await UserService.editUser(id, editedUser);
-            this.users = this.users.map((elem:User) => (
-                elem.id === id) ? {...editedUser, id: id, email: elem.email, role: elem.role}: elem);
+            this.setUsers(this.users.map((elem:User) => (
+                elem.id === id) ? {...editedUser, id: id, email: elem.email, role: elem.role}: elem));
         } catch (e) {
             console.log('edituser error '.concat((e as Error).message));
             this.setActionError((e as Error).message);
@@ -51,8 +51,8 @@ class UsersStore {
         this.setLoading(true);
         try {
             await UserService.changeUserRole(id, newRole);
-            this.users = this.users.map((elem:User) => (
-                elem.id === id) ? {...elem, role: newRole.role} : elem);
+            this.setUsers(this.users.map((elem:User) => (
+                elem.id === id) ? {...elem, role: newRole.role} : elem));
         } catch (e) {
             console.log('changerole error '.concat((e as Error).message));
             this.setActionError((e as Error).message);

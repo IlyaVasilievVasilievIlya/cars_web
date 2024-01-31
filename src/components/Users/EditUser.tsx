@@ -1,6 +1,6 @@
-import { BrandModel, User, EditUserRequest, UserRole, ChangeUserRoleRequest } from '../model'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@mui/material';
+import { User, EditUserRequest, UserRole, ChangeUserRoleRequest } from '../model'
+import { Controller, useForm } from 'react-hook-form';
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Grid, TextField } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import { ROLES, roleList } from '../../public/consts';
 import { date, mixed, object, string } from 'yup';
@@ -99,6 +99,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
                                         value={value}
                                         required
                                         fullWidth
+                                        autoComplete='off'
                                         onChange={onChange}
                                         placeholder='Введите имя'
                                         helperText={errors.name?.message?.toString()}
@@ -115,6 +116,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
                                         value={value}
                                         required
                                         fullWidth
+                                        autoComplete='off'
                                         onChange={onChange}
                                         placeholder='Введите фамилию'
                                         helperText={errors.surname?.message?.toString()}
@@ -130,6 +132,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
                                         value={value}
                                         onChange={onChange}
                                         fullWidth
+                                        autoComplete='off'
                                         placeholder='Введите отчество'
                                         helperText={errors.patronymic?.message?.toString()}
                                     />)} />
@@ -158,7 +161,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
                                     </TextField>)} />
                         </DialogContent>
                         <DialogActions sx={{px:2}}>
-                            <Button type="submit" onClick={handleRoleSubmit(editRole)}>{usersStore.loading ? <CircularProgress/> : 'Сменить роль'}</Button>
+                            <Button type="submit" onClick={handleRoleSubmit(editRole)}>{usersStore.loading ? <CircularProgress size={20}/> : 'Сменить роль'}</Button>
                         </DialogActions>
                     </Box>}
                 <Button type="reset" onClick={closeForm}>Закрыть</Button>

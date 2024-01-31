@@ -1,17 +1,13 @@
-import { BrandModel, Car, EditCarRequest } from '../model'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import Select from 'react-select';
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, TextField, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { brandModelsStore } from '../../store/brandModelsStore';
-import { MenuItem } from '@mui/material';
-import { number, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, MenuItem, TextField } from '@mui/material';
+import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { number, object, string } from 'yup';
+import { authStore } from '../../store/authStore';
+import { brandModelsStore } from '../../store/brandModelsStore';
 import { carsStore } from '../../store/carsStore';
 import { ErrorSnack } from '../ErrorSnack';
-import { authStore } from '../../store/authStore';
-import { useNavigate } from 'react-router-dom';
-import { Close } from '@mui/icons-material';
+import { Car, EditCarRequest } from '../model';
 import { DialogHeader } from '../ui-kit/DialogHeader';
 
 interface EditCarProps {
@@ -56,11 +52,12 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
         }
 
         if (authStore.errorCode === 401){
-            navigate("/login");
+            navigate("/logout");
         }
     }
 
     const closeForm = () => {
+        carsStore.setActionError();
         reset();
         onDone();
     }
@@ -71,7 +68,7 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
             onSubmit={handleSubmit(editCar)}
             onClose={closeForm}>
             <DialogHeader text="Редактирование машины" closeForm={closeForm}/>
-            <DialogContent style={{display:'flex', gap: 10, paddingTop: 10}}>
+            <DialogContent style={{display:'flex', flexDirection:'column', gap: 20, paddingTop: 10, minWidth: '400px'}}>
                 <Controller
                     control={control}
                     name="carModelId"
@@ -93,15 +90,16 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
                             label="Цвет"
                             type="text"
                             fullWidth
+                            autoComplete='off'
                             value={value}
-                            onChange={onChange}
+                            onChange={onChange} sx={{ minHeight: '80px' }}
                             placeholder='Введите цвет машины'
                             helperText={errors.color?.message?.toString()}
                         />)}
                 />
             </DialogContent>
             <DialogActions>
-                <Button type="submit" onClick={handleSubmit(editCar)}>{carsStore.loading ? <CircularProgress/> : 'Сохранить'}</Button>
+                <Button type="submit" onClick={handleSubmit(editCar)}>{carsStore.loading ? <CircularProgress size={20}/> : 'Сохранить'}</Button>
                 <Button type="reset" onClick={closeForm}>Закрыть</Button>
             </DialogActions>
             {carsStore.actionError && <ErrorSnack error={carsStore.actionError} />}

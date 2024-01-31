@@ -10,7 +10,7 @@ interface BasketListItemProps {
 
 export const BasketListItem: React.FC<BasketListItemProps> = ({ count, name, id }: BasketListItemProps) => {
     return (
-        <ListItem>
+        <ListItem sx={{display:'flex', justifyContent:'space-between'}}>
             <Typography>
                 {name}
             </Typography>

@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Grid, MenuItem, Select, TextField } from "@mui/material"
+import { Autocomplete, Box, Grid, TextField } from "@mui/material";
 import { brandModelsStore } from "../../store/brandModelsStore";
 
 
@@ -23,7 +23,7 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
                         type="search"
                         label="Цвет машины"
                         fullWidth
-                        autoComplete="false"
+                        autoComplete="off"
                         defaultValue=''
                         onChange={(e) => filterColor((e.target.value as string))} />
                 </Grid>
@@ -32,7 +32,7 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
                         type="search"
                         label="Поиск по машине"
                         fullWidth
-                        autoComplete="false"
+                        autoComplete="off"
                         defaultValue=''
                         onChange={(e) => filterCar((e.target.value as string))} />
                 </Grid>

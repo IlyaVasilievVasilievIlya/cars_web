@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import '../styles.css';
-import { EditUser } from './EditUser';
-import { ErrorSnack } from '../ErrorSnack';
+import { LinearProgress, List } from '@mui/material';
 import { observer } from 'mobx-react-lite';
-import { usersStore } from '../../store/usersStore';
-import { ChangeUserRoleRequest, EditUserRequest, User } from '../model';
-import { Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress, List, ListItem, ListItemText, Typography } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit'
 import { useNavigate } from 'react-router-dom';
 import { authStore } from '../../store/authStore';
+import { usersStore } from '../../store/usersStore';
+import { ErrorSnack } from '../ErrorSnack';
+import { User } from '../model';
+import '../styles.css';
+import { EditUser } from './EditUser';
 import { UserListItem } from './UserListItem';
 
 export const UserList: React.FC = observer(() => {
@@ -21,7 +20,7 @@ export const UserList: React.FC = observer(() => {
     const navigate = useNavigate();
 
     if (authStore.errorCode === 401){
-        navigate("/login");
+        navigate("/logout");
     }
 
     function openEditModal(id: string) {
@@ -34,7 +33,7 @@ export const UserList: React.FC = observer(() => {
     }
 
     let userList = usersStore.users.map(userElem =>
-        <UserListItem user={userElem} openEdit={openEditModal}/>);
+        <UserListItem user={userElem} openEdit={openEditModal} key={userElem.id}/>);
 
     useEffect(() => {
         usersStore.fetchUsers();

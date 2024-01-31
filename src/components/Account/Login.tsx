@@ -1,24 +1,28 @@
-import { Box, Button, CircularProgress, Container, Grid, Snackbar, TextField, Typography } from "@mui/material"
-import { LoginRequest } from '../model'
-import { authStore } from '../../store/authStore'
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { object, string } from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup'
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Box, Button, CircularProgress, Container, Grid, TextField, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Header } from "../Header";
-import { ErrorSnack } from "../ErrorSnack";
+import { Navigate, useLocation } from "react-router-dom";
+import { object, string } from 'yup';
 import { EMAIL_REGEX, PWD_REGEX } from "../../public/consts";
+import { authStore } from '../../store/authStore';
+import { ErrorSnack } from "../ErrorSnack";
+import { Header } from "../Header";
+import { LoginRequest } from '../model';
 
 export const Login: React.FC = () => {
 
     const location = useLocation();
 
+    useEffect(() => {
+        authStore.setError();
+    }, [])
+
     const fromPage = location.state?.from?.pathname || '/';
 
     const schema = object({
         email: string().required('Это обязательное поле').matches(EMAIL_REGEX, 'Некорректный адрес почты'),
-        password: string().required('Это обязательное поле').matches(PWD_REGEX, 'Пароль должен содержать заглавные и строчные латинские символы, служебные символы и цифры')
+        password: string().required('Это обязательное поле').matches(PWD_REGEX, 'Пароль должен иметь длину от 8 до 24 символов, содержать заглавные и строчные латинские символы, служебные символы и цифры')
     });
 
     const { handleSubmit, formState: { errors }, control } = useForm({
@@ -30,7 +34,6 @@ export const Login: React.FC = () => {
     const tryLogin = async (request: LoginRequest) => {
         await authStore.login(request);
 
-        console.log(authStore.authData);
 
         if (!authStore.error) {
             setLogin(true);
@@ -91,7 +94,7 @@ export const Login: React.FC = () => {
                     </Grid>
                 </Box>
                 <Box display={"flex"} flexDirection={"column"} sx={{ height: "50px" }}>
-                    <Button type="submit" onClick={handleSubmit(tryLogin)}>{authStore.loading ? <CircularProgress/>: 'Войти'}</Button>
+                    <Button type="submit" onClick={handleSubmit(tryLogin)}>{authStore.loading ? <CircularProgress />: 'Войти'}</Button>
                 </Box>
             </Container>
             {authStore.error && <ErrorSnack error={authStore.error}/>}

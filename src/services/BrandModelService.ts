@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { api } from "../http";
+import { api } from "./http";
 import { BrandModel } from "../components/model";
 
 export class BrandModelService {

@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
-import { api } from "../http";
-import { ChangeUserRoleRequest, EditUserRequest, User, UserResponse } from "../components/model";
+import { api } from "./http";
+import { ChangeUserRoleRequest, EditUserRequest, UserResponse } from "../components/model";
 
 export class UserService {
 

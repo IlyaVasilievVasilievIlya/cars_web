@@ -32,7 +32,7 @@ class CarsStore {
     }
 
     addCarAction(car: Car) {
-        this.cars.push(car);
+        this.cars.unshift(car);
     }
 
     async deleteCar(id: number) {

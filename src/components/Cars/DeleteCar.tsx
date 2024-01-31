@@ -1,11 +1,9 @@
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Typography } from '@mui/material';
-import { useState } from 'react';
-import { Car } from '../model';
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { authStore } from '../../store/authStore';
 import { carsStore } from '../../store/carsStore';
 import { ErrorSnack } from '../ErrorSnack';
-import { authStore } from '../../store/authStore';
-import { useNavigate } from 'react-router-dom';
-import { Close } from '@mui/icons-material';
+import { Car } from '../model';
 import { DialogHeader } from '../ui-kit/DialogHeader';
 
 interface DeleteCarProps {
@@ -27,11 +25,12 @@ export const DeleteCar: React.FC<DeleteCarProps> = ({ car, onDone }: DeleteCarPr
         }
 
         if (authStore.errorCode === 401) {
-            navigate("/login");
+            navigate("/logout");
         }
     }
 
     const closeForm = () => {
+        carsStore.setActionError();
         onDone();
     }
 
@@ -41,19 +40,13 @@ export const DeleteCar: React.FC<DeleteCarProps> = ({ car, onDone }: DeleteCarPr
         onSubmit={() => deleteCar()}
         onClose={() => closeForm()}>
         <DialogHeader text="Удаление машины" closeForm={closeForm}/>
-        <DialogTitle sx={{display: 'flex', justifyContent: 'space-between'}}>
-          Удаление машины
-            <IconButton onClick={closeForm} >
-              <Close />
-            </IconButton>
-        </DialogTitle>
         <DialogContent>
           <DialogContentText>
             Вы уверены, что хотите удалить машину "{`${car.brand.brand} ${car.brand.model}`}"?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button type="submit" onClick={deleteCar}>{carsStore.loading ? <CircularProgress/> : 'Да'}</Button>
+          <Button type="submit" onClick={deleteCar}>{carsStore.loading ? <CircularProgress size={20}/> : 'Да'}</Button>
           <Button type="reset" onClick={closeForm}>Нет</Button>
         </DialogActions>
             {carsStore.actionError && <ErrorSnack error={carsStore.actionError}/>}

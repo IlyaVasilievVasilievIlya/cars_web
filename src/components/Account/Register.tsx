@@ -2,7 +2,7 @@ import { Box, Button, CircularProgress, Container, Grid, TextField, Typography }
 import { Controller, useForm } from "react-hook-form";
 import { RegisterRequest } from "../model";
 import { authStore } from "../../store/authStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { date, object, ref, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,6 +15,10 @@ import { EMAIL_REGEX, PWD_REGEX } from "../../public/consts";
 
 
 export const Register: React.FC = () => {
+
+    useEffect(() => {
+        authStore.setError();
+    }, [])
 
     const schema = object({
         email: string().required('Это обязательное поле').matches(EMAIL_REGEX, 'Некорректный адрес почты'),
@@ -35,8 +39,6 @@ export const Register: React.FC = () => {
     const tryRegister = async (request: RegisterRequest) => {
 
         await authStore.register(request);
-
-        console.log(authStore.authData);
 
         if (!authStore.error) {
             setRegister(true);
@@ -61,7 +63,7 @@ export const Register: React.FC = () => {
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit(tryRegister)}>
                     <Grid container rowSpacing={3} columnSpacing={2}>
-                        <Grid item xs={12} height={"90px"}>
+                        <Grid item xs={12} height={"100px"}>
                             <Controller
                                 control={control}
                                 name="email"
@@ -78,7 +80,7 @@ export const Register: React.FC = () => {
                                     >
                                     </TextField>)} />
                         </Grid>
-                        <Grid item xs={12} sm={6} height={"90px"}>
+                        <Grid item xs={12} height={"100px"}>
                             <Controller
                                 control={control}
                                 name="password"
@@ -94,7 +96,7 @@ export const Register: React.FC = () => {
                                         helperText={errors.password?.message?.toString()}
                                     />)} />
                         </Grid>
-                        <Grid item xs={12} sm={6} height={"90px"}>
+                        <Grid item xs={12} height={"100px"}>
                             <Controller
                                 control={control}
                                 name="confirmPassword"
@@ -110,7 +112,7 @@ export const Register: React.FC = () => {
                                         helperText={errors.confirmPassword?.message?.toString()}
                                     />)} />
                         </Grid>
-                        <Grid item xs={12} sm={6} height={"90px"}>
+                        <Grid item xs={12} sm={6} height={"100px"}>
                             <Controller
                                 control={control}
                                 name="name"
@@ -125,7 +127,7 @@ export const Register: React.FC = () => {
                                         helperText={errors.name?.message?.toString()}
                                     />)} />
                         </Grid>
-                        <Grid item xs={12} sm={6} height={"90px"}>
+                        <Grid item xs={12} sm={6} height={"100px"}>
                             <Controller
                                 control={control}
                                 name="surname"
@@ -141,7 +143,7 @@ export const Register: React.FC = () => {
                                     />
                                 )} />
                         </Grid>
-                        <Grid item xs={12} sm={6} height={"90px"}>
+                        <Grid item xs={12} sm={6} height={"100px"}>
                             <Controller
                                 control={control}
                                 name="patronymic"
@@ -156,7 +158,7 @@ export const Register: React.FC = () => {
                                         helperText={errors.patronymic?.message?.toString()}
                                     />)} />
                         </Grid>
-                        <Grid item xs={12} sm={6} height={"90px"}>
+                        <Grid item xs={12} sm={6} height={"100px"}>
                             <Controller
                                 control={control}
                                 name="birthDate"

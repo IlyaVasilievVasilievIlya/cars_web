@@ -11,7 +11,7 @@ export const RequireAuth = ({allowedRoles}: RequireAuthProps) => {
     const location = useLocation();
 
     return (
-        (allowedRoles.find(role => {console.log(authStore.authData); return role == authStore.authData?.role})) 
+        (allowedRoles.find(role => role === authStore.authData?.role)) 
             ? <Outlet/>
             : authStore.authData 
                 ? <Navigate to="/unauthorized" />

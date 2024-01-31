@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import '../styles.css';
-import { EditCar } from './EditCar';
-import { ErrorSnack } from '../ErrorSnack';
+import { LinearProgress, List } from '@mui/material';
 import { observer } from 'mobx-react-lite';
-import { carsStore } from '../../store/carsStore';
-import { Car } from '../model';
-import { AddCar } from './AddCar';
-import { CircularProgress, LinearProgress, List } from '@mui/material';
-import { authStore } from '../../store/authStore';
-import { ROLES } from '../../public/consts';
-import { DeleteCar } from './DeleteCar';
 import { useNavigate } from 'react-router-dom';
+import { ROLES } from '../../public/consts';
+import { authStore } from '../../store/authStore';
+import { brandModelsStore } from '../../store/brandModelsStore';
+import { carsStore } from '../../store/carsStore';
+import { ErrorSnack } from '../ErrorSnack';
+import { Car } from '../model';
+import '../styles.css';
+import { AddCar } from './AddCar';
 import { CarFilters } from './CarFilters';
 import { CarListItem } from './CarListItem';
-import { brandModelsStore } from '../../store/brandModelsStore';
+import { DeleteCar } from './DeleteCar';
+import { EditCar } from './EditCar';
 
 export const CarList: React.FC = observer(() => {
 
@@ -36,7 +36,7 @@ export const CarList: React.FC = observer(() => {
   const navigate = useNavigate();
 
   if (authStore.errorCode === 401) {
-    navigate("/login");
+    navigate("/logout");
   }
 
   function openDeleteModal(id: number) {
@@ -62,15 +62,12 @@ export const CarList: React.FC = observer(() => {
     && ((item.brand.model.toLowerCase()).includes(modelSearch.toLowerCase())) 
     && (((item.brand.brand + ' ' + item.brand.model).toLowerCase()).includes(carSearch.toLowerCase())));
 
-    console.log('warningincomp' + carsStore.fetchError);
-
   const carList = carFilteredList.map(carElem =>
     <CarListItem car={carElem} openEdit={openEditModal} openDelete={openDeleteModal} key={carElem.carId} />
   );
 
 
   useEffect(() => {
-    console.log('warning' + carsStore.fetchError);
     carsStore.fetchCars();
     brandModelsStore.fetchBrandModels();
   }, [])
