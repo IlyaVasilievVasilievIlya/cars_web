@@ -1,8 +1,7 @@
 import axios from "axios";
 import { authStore } from "../../store/authStore";
 
-export const API_URL = "https://localhost:7154/api";
-
+export const API_URL = "http://localhost:10000/api";
 
 export const authApi = axios.create({
     baseURL: API_URL
@@ -11,8 +10,6 @@ export const authApi = axios.create({
 export const api = axios.create({
     baseURL: API_URL
 })
-
-let refreshTokenPromise: Promise<void> | null;
 
 authApi.interceptors.request.use(config => {
     if (authStore.authData) {
@@ -38,6 +35,8 @@ api.interceptors.request.use(config => {
     config.headers["Content-Type"] = 'application/json;charset=utf-8';
     return config;
 })
+
+let refreshTokenPromise: Promise<void> | null;
 
 api.interceptors.response.use(config => {
     return config;

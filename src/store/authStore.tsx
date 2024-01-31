@@ -1,6 +1,7 @@
 import { AuthInfo, LoginRequest, RegisterRequest } from '../components/model';
 import { makeAutoObservable } from 'mobx';
 import { AuthService } from '../services/AuthService';
+import { basketStore } from './basketStore';
 
 class AuthStore {
     authData?: AuthInfo;
@@ -27,7 +28,10 @@ class AuthStore {
         if (this.authData) {
             for (const [key, value] of Object.entries(this.authData))
             localStorage.setItem(key, value);
-    } else localStorage.clear();      
+    } else {
+        localStorage.clear();
+        basketStore.clear();
+    };      
 }
 
     setAuth(authInfo: AuthInfo) {
