@@ -12,7 +12,9 @@ export const api = axios.create({
     baseURL: API_URL
 })
 
-authApi.interceptors.request.use( config => {
+let refreshTokenPromise: Promise<void> | null;
+
+authApi.interceptors.request.use(config => {
     if (authStore.authData) {
         config.headers.Authorization = `bearer ${authStore.authData.accessToken}`;
     }
@@ -20,16 +22,16 @@ authApi.interceptors.request.use( config => {
     return config;
 })
 
-authApi.interceptors.response.use( config => {
+authApi.interceptors.response.use(config => {
     return config;
-},  (error => {
+}, (error => {
     if (error.response) {
         authStore.setError(error.response.data[0], error.response.status)
     } else authStore.setError(error.message, error.code)
     return Promise.reject(error);
 }))
 
-api.interceptors.request.use( config => {
+api.interceptors.request.use(config => {
     if (authStore.authData) {
         config.headers.Authorization = `bearer ${authStore.authData.accessToken}`;
     }
@@ -37,19 +39,21 @@ api.interceptors.request.use( config => {
     return config;
 })
 
-api.interceptors.response.use( config => {
+api.interceptors.response.use(config => {
     return config;
-},  (async error =>  {
+}, (async error => {
     const prevRequest = error.config;
     if (error?.response?.status === 401) {
-        if (prevRequest.sent) {
+        if (!refreshTokenPromise) {
+            refreshTokenPromise = authStore.refreshToken();
+        }
+        return refreshTokenPromise.then(() => {
+            refreshTokenPromise = null;
+            return api(prevRequest);
+        }).catch(error => {
             authStore.logout();
             authStore.setError(undefined, 401);
-        } else {
-            prevRequest.sent = true;
-            await authStore.refreshToken();
-            return api(prevRequest);
-        }
+        })
     }
-    return Promise.reject(error); 
+    return Promise.reject(error);
 }))

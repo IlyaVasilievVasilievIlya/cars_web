@@ -16,6 +16,8 @@ export const AddCar: React.FC = () => {
 
     const navigate = useNavigate();
 
+    const [modal, setModal] = useState(false);
+
     const schema = object({
         carModelId: number().required('Это обязательное поле'),
         color: string().max(128, 'Поле не должно содержать более 128 символов')
@@ -25,16 +27,12 @@ export const AddCar: React.FC = () => {
         resolver: yupResolver(schema)
     });
 
-    const [modal, setModal] = useState(false);
-
     let brandModelList = brandModelsStore.brandModels.map(model =>
         <MenuItem key={model.carModelId} value={model.carModelId}>
             {model.brand} {model.model}
         </MenuItem>);
 
     const createCar = async (newCar: AddCarRequest) => {
-
-
         const brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId === newCar.carModelId);
 
         if (!brandModel) {
@@ -43,12 +41,11 @@ export const AddCar: React.FC = () => {
         }
 
         await carsStore.addCar({ ...newCar, brand: brandModel, carId: 0 });
-
         if (!carsStore.actionError) {
             closeForm();
             return;
         }
-
+        
         if (authStore.errorCode === 401) {
             navigate("/logout");
         }

@@ -32,7 +32,6 @@ export const CarList: React.FC = observer(() => {
 
   const [modelSearch, setModelSearch] = useState('');
 
-
   const navigate = useNavigate();
 
   if (authStore.errorCode === 401) {

@@ -23,11 +23,11 @@ class BasketStore {
     }
 
     deleteProduct(id: number) {
-        this.setBasket(this.basket.filter((elem:BasketItem) => elem.id != id)); 
+        this.setBasket(this.basket.filter((elem:BasketItem) => elem.id !== id)); 
     }
 
     decrementCount(id: number) {
-        const product = this.basket.find(product => product.id == id);
+        const product = this.basket.find(product => product.id === id);
         if (product) {
             product.count--;
             this.refreshLocalStorage();
@@ -35,7 +35,7 @@ class BasketStore {
     }
 
     incrementCount(id: number) {
-        const product = this.basket.find(product => product.id == id);
+        const product = this.basket.find(product => product.id === id);
         if (product) {
             product.count++;
             this.refreshLocalStorage();

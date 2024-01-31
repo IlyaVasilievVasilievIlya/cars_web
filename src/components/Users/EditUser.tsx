@@ -33,18 +33,16 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
         role: mixed<UserRole>().required('Это обязательное поле')
     })
 
-    const { handleSubmit, formState: { errors }, reset, control } = useForm<EditUserRequest>(
-        {
-            defaultValues: { name: user.name, surname: user.name, patronymic: user.patronymic, birthDate: user.birthDate },
-            resolver: yupResolver(editUserSchema)
-        }
+    const { handleSubmit, formState: { errors }, reset, control } = useForm<EditUserRequest>({
+        defaultValues: { name: user.name, surname: user.name, patronymic: user.patronymic, birthDate: user.birthDate },
+        resolver: yupResolver(editUserSchema)
+    }
     );
 
-    const { handleSubmit: handleRoleSubmit, reset: roleReset, control: roleControl } = useForm<ChangeUserRoleRequest>(
-        {
-            defaultValues: { role: user.role },
-            resolver: yupResolver(changeRoleSchema)
-        }
+    const { handleSubmit: handleRoleSubmit, reset: roleReset, control: roleControl } = useForm<ChangeUserRoleRequest>({
+        defaultValues: { role: user.role },
+        resolver: yupResolver(changeRoleSchema)
+    }
     );
 
     let userRoleList = roleList.map(model =>
@@ -53,7 +51,6 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
         </MenuItem>);
 
     const editUser = async (editedUser: EditUserRequest) => {
-
         await usersStore.editUser(user.id, editedUser);
 
         if (!usersStore.actionError) {
@@ -86,7 +83,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
             <Dialog
                 open={true}
                 onClose={closeForm}>
-                <DialogHeader text="Редактирование данных пользователя" closeForm={closeForm}/>
+                <DialogHeader text="Редактирование данных пользователя" closeForm={closeForm} />
                 <DialogContent style={{ paddingTop: "10px" }}>
                     <Grid container rowSpacing={3}>
                         <Grid item xs={12} height={"90px"}>
@@ -106,7 +103,6 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
                                     />)} />
                         </Grid>
                         <Grid item xs={12} height={"90px"}>
-
                             <Controller
                                 control={control}
                                 name="surname"
@@ -139,7 +135,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
                         </Grid>
                     </Grid>
                 </DialogContent>
-                <DialogActions sx={{px:2}}>
+                <DialogActions sx={{ px: 2 }}>
                     <Button type="submit" onClick={handleSubmit(editUser)}>Сохранить</Button>
                 </DialogActions>
                 {authStore.checkRole([ROLES.SuperUser]) &&
@@ -160,8 +156,8 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
                                         {userRoleList}
                                     </TextField>)} />
                         </DialogContent>
-                        <DialogActions sx={{px:2}}>
-                            <Button type="submit" onClick={handleRoleSubmit(editRole)}>{usersStore.loading ? <CircularProgress size={20}/> : 'Сменить роль'}</Button>
+                        <DialogActions sx={{ px: 2 }}>
+                            <Button type="submit" onClick={handleRoleSubmit(editRole)}>{usersStore.loading ? <CircularProgress size={20} /> : 'Сменить роль'}</Button>
                         </DialogActions>
                     </Box>}
                 <Button type="reset" onClick={closeForm}>Закрыть</Button>

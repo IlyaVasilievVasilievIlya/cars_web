@@ -1,15 +1,14 @@
-import { basketStore } from "../../store/basketStore";
-import { Delete } from "@mui/icons-material";
-import { Car } from "../model";
-import { Box, Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, List, ListItem, ListItemText, Typography } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditIcon from '@mui/icons-material/Edit'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
-import { authStore } from "../../store/authStore";
-import { ROLES } from "../../public/consts";
-import { useState } from "react";
+import { Box, Card, CardActions, CardContent, IconButton, Typography } from '@mui/material';
 import { observer } from "mobx-react-lite";
+import { useState } from "react";
+import { ROLES } from "../../public/consts";
+import { authStore } from "../../store/authStore";
+import { basketStore } from "../../store/basketStore";
+import { Car } from "../model";
 
 
 interface CarListItemProps {
@@ -52,8 +51,7 @@ export const CarListItem: React.FC<CarListItemProps> = observer(({ car, openDele
                             <IconButton onClick={() => openDelete(car.carId)}>
                                 <DeleteIcon />
                             </IconButton>
-                        </>
-                    }
+                        </>}
                     <IconButton onClick={() => toggleAdd()}>
                         {(basketStore.contains(car.carId)) ? <RemoveShoppingCartIcon />
                             : <AddShoppingCartIcon />}

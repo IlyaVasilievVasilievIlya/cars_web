@@ -1,13 +1,7 @@
-import { basketStore } from "../../store/basketStore";
-import { Delete } from "@mui/icons-material";
-import { User } from "../model";
+import EditIcon from '@mui/icons-material/Edit';
 import { Box, Card, CardActions, CardContent, IconButton, Typography } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditIcon from '@mui/icons-material/Edit'
-import { authStore } from "../../store/authStore";
-import { useState } from "react";
 import { UserService } from "../../services/UserService";
-
+import { User } from "../model";
 
 interface UserListItemProps {
     user: User
@@ -15,7 +9,6 @@ interface UserListItemProps {
 }
 
 export const UserListItem: React.FC<UserListItemProps> = ({ user, openEdit }: UserListItemProps) => {
-
     return (
         <Card key={user.id} sx={{borderRadius:3, marginTop:1}}>
             <CardContent sx={{display:"flex", justifyContent:"space-between"}}>

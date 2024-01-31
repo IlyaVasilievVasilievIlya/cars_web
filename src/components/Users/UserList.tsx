@@ -19,7 +19,7 @@ export const UserList: React.FC = observer(() => {
 
     const navigate = useNavigate();
 
-    if (authStore.errorCode === 401){
+    if (authStore.errorCode === 401) {
         navigate("/logout");
     }
 
@@ -33,7 +33,7 @@ export const UserList: React.FC = observer(() => {
     }
 
     let userList = usersStore.users.map(userElem =>
-        <UserListItem user={userElem} openEdit={openEditModal} key={userElem.id}/>);
+        <UserListItem user={userElem} openEdit={openEditModal} key={userElem.id} />);
 
     useEffect(() => {
         usersStore.fetchUsers();
@@ -42,7 +42,7 @@ export const UserList: React.FC = observer(() => {
 
     return (
         <>
-            {usersStore.loading && <LinearProgress/>}
+            {usersStore.loading && <LinearProgress />}
 
             {usersStore.fetchError && <ErrorSnack error={usersStore.fetchError} />}
 

@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, CircularProgress, Container, Grid, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { object, string } from 'yup';
 import { EMAIL_REGEX, PWD_REGEX } from "../../public/consts";
 import { authStore } from '../../store/authStore';
@@ -12,13 +12,19 @@ import { LoginRequest } from '../model';
 
 export const Login: React.FC = () => {
 
+    const navigate = useNavigate();
     const location = useLocation();
 
-    useEffect(() => {
-        authStore.setError();
-    }, [])
-
     const fromPage = location.state?.from?.pathname || '/';
+
+    useEffect(() => {
+        if (authStore.authData) {
+            navigate(fromPage, {replace: true});
+        }
+        authStore.setError();
+    }, [navigate, fromPage])    
+
+    const [login, setLogin] = useState(false);
 
     const schema = object({
         email: string().required('Это обязательное поле').matches(EMAIL_REGEX, 'Некорректный адрес почты'),
@@ -29,11 +35,9 @@ export const Login: React.FC = () => {
         resolver: yupResolver(schema)
     });
 
-    const [login, setLogin] = useState(false);
 
     const tryLogin = async (request: LoginRequest) => {
         await authStore.login(request);
-
 
         if (!authStore.error) {
             setLogin(true);
@@ -52,8 +56,7 @@ export const Login: React.FC = () => {
                 gap: "10px",
                 border: "var(--border-style)",
                 boxShadow: "0px 0px 12px -2px",
-                borderRadius: 2
-            }} >
+                borderRadius: 2 }} >
                 <Typography component={"h1"} variant={"h5"}>
                     Войти
                 </Typography>
@@ -88,8 +91,7 @@ export const Login: React.FC = () => {
                                         value={value ?? ''}
                                         onChange={onChange}
                                         placeholder='Введите пароль'
-                                        helperText={errors.password?.message?.toString()}
-                                    />)} />
+                                        helperText={errors.password?.message?.toString()}/>)} />
                         </Grid>
                     </Grid>
                 </Box>

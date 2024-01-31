@@ -16,7 +16,6 @@ export const DeleteCar: React.FC<DeleteCarProps> = ({ car, onDone }: DeleteCarPr
     const navigate = useNavigate();
 
     const deleteCar = async () => {
-        
         await carsStore.deleteCar(car.carId);
 
         if (!carsStore.actionError) {
@@ -35,21 +34,21 @@ export const DeleteCar: React.FC<DeleteCarProps> = ({ car, onDone }: DeleteCarPr
     }
 
     return (
-      <Dialog
-        open={true}
-        onSubmit={() => deleteCar()}
-        onClose={() => closeForm()}>
-        <DialogHeader text="Удаление машины" closeForm={closeForm}/>
-        <DialogContent>
-          <DialogContentText>
-            Вы уверены, что хотите удалить машину "{`${car.brand.brand} ${car.brand.model}`}"?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button type="submit" onClick={deleteCar}>{carsStore.loading ? <CircularProgress size={20}/> : 'Да'}</Button>
-          <Button type="reset" onClick={closeForm}>Нет</Button>
-        </DialogActions>
-            {carsStore.actionError && <ErrorSnack error={carsStore.actionError}/>}
-      </Dialog>
+        <Dialog
+            open={true}
+            onSubmit={() => deleteCar()}
+            onClose={() => closeForm()}>
+            <DialogHeader text="Удаление машины" closeForm={closeForm} />
+            <DialogContent>
+                <DialogContentText>
+                    Вы уверены, что хотите удалить машину "{`${car.brand.brand} ${car.brand.model}`}"?
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button type="submit" onClick={deleteCar}>{carsStore.loading ? <CircularProgress size={20} /> : 'Да'}</Button>
+                <Button type="reset" onClick={closeForm}>Нет</Button>
+            </DialogActions>
+            {carsStore.actionError && <ErrorSnack error={carsStore.actionError} />}
+        </Dialog>
     );
 }

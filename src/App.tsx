@@ -10,24 +10,24 @@ export const ThemeContext = React.createContext('tasks');
 const App: React.FC = function () {
 
 
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: "#69bfbf"
-      },
-      secondary: {
-        main: "#d5e8e8"
-      }
-    }
-  });
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: "#69bfbf"
+            },
+            secondary: {
+                main: "#d5e8e8"
+            }
+        }
+    });
 
-  return (
-    <ThemeProvider theme={theme}>
-      <div className="App">
-        <RouterProvider router={router} />
-      </div>
-    </ThemeProvider>
-  );
+    return (
+        <ThemeProvider theme={theme}>
+            <div className="App">
+                <RouterProvider router={router} />
+            </div>
+        </ThemeProvider>
+    );
 }
 
 export default App;

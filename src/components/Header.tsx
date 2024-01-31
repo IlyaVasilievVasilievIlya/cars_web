@@ -10,39 +10,38 @@ import { Basket } from './Basket/Basket';
 
 export const Header: React.FC = () => {
 
-  const navMenu = navInfos.map(link =>
-    (authStore.checkRole(link.allowedRoles)) ?
+    const [isBasketOpen, setIsBasketOpen] = useState(false);
 
-      <NavLink to={link.path} key={link.path}>
-        {link.text}
-      </NavLink>
-      : link.allowedRoles ?
-        null
-        : <NavLink to={link.path} key={link.path}>
-          {link.text}
-        </NavLink>);
+    const navMenu = navInfos.map(link => {
+        const elem = <NavLink to={link.path} key={link.path}>
+            {link.text}
+        </NavLink>;
 
-  const [isBasketOpen, setIsBasketOpen] = useState(false);
+        return (authStore.checkRole(link.allowedRoles)) ?
+            elem
+            : link.allowedRoles ?
+                null
+                : elem;
+    });
 
-  return (
-    <>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography>
-            Cars Project
-          </Typography>
-          <Box sx={{ flexGrow: 1, px: 2}}>
-            {navMenu}
-          </Box>
-          {authStore.authData &&
-            <IconButton color='secondary' onClick={() => setIsBasketOpen(!isBasketOpen)}>
-              <ShoppingBasket />
-            </IconButton>
-          }
-          <AuthActions />
-        </Toolbar>
-      </AppBar>
-      {isBasketOpen && <Basket onClose={() => setIsBasketOpen(false)} />}
-    </>
-  );
+    return (
+        <>
+            <AppBar position="static">
+                <Toolbar>
+                    <Typography>
+                        Cars Project
+                    </Typography>
+                    <Box sx={{ flexGrow: 1, px: 2 }}>
+                        {navMenu}
+                    </Box>
+                    {authStore.authData &&
+                        <IconButton color='secondary' onClick={() => setIsBasketOpen(!isBasketOpen)}>
+                            <ShoppingBasket />
+                        </IconButton>}
+                    <AuthActions />
+                </Toolbar>
+            </AppBar>
+            {isBasketOpen && <Basket onClose={() => setIsBasketOpen(false)} />}
+        </>
+    );
 }

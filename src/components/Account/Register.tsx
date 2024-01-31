@@ -3,7 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import { RegisterRequest } from "../model";
 import { authStore } from "../../store/authStore";
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { date, object, ref, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Header } from "../Header";
@@ -16,9 +16,14 @@ import { EMAIL_REGEX, PWD_REGEX } from "../../public/consts";
 
 export const Register: React.FC = () => {
 
+    const navigate = useNavigate();
+    
     useEffect(() => {
+        if (authStore.authData) {
+            navigate('/', { replace: true });
+        }
         authStore.setError();
-    }, [])
+    }, [navigate])
 
     const schema = object({
         email: string().required('Это обязательное поле').matches(EMAIL_REGEX, 'Некорректный адрес почты'),
@@ -49,15 +54,15 @@ export const Register: React.FC = () => {
         <>
             <Header />
             {register && <Navigate to="/cars" />}
-            <Container component="main" maxWidth="sm" sx={{ 
-                    padding: 4,
-                    mt: 3, 
-                    display: "flex", 
-                    flexDirection: "column", 
-                    gap: "10px", 
-                    border: "var(--border-style)", 
-                    boxShadow: "0px 0px 12px -2px",
-                    borderRadius: 2}} >
+            <Container component="main" maxWidth="sm" sx={{
+                padding: 4,
+                mt: 3,
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                border: "var(--border-style)",
+                boxShadow: "0px 0px 12px -2px",
+                borderRadius: 2 }} >
                 <Typography component={"h1"} variant={"h5"}>
                     Регистрация
                 </Typography>
@@ -93,8 +98,7 @@ export const Register: React.FC = () => {
                                         value={value ?? ''}
                                         onChange={onChange}
                                         placeholder='Введите пароль'
-                                        helperText={errors.password?.message?.toString()}
-                                    />)} />
+                                        helperText={errors.password?.message?.toString()} />)} />
                         </Grid>
                         <Grid item xs={12} height={"100px"}>
                             <Controller
@@ -109,8 +113,7 @@ export const Register: React.FC = () => {
                                         value={value ?? ''}
                                         onChange={onChange}
                                         placeholder='Введите пароль'
-                                        helperText={errors.confirmPassword?.message?.toString()}
-                                    />)} />
+                                        helperText={errors.confirmPassword?.message?.toString()} />)} />
                         </Grid>
                         <Grid item xs={12} sm={6} height={"100px"}>
                             <Controller
@@ -124,8 +127,7 @@ export const Register: React.FC = () => {
                                         value={value}
                                         onChange={onChange}
                                         placeholder='Введите имя'
-                                        helperText={errors.name?.message?.toString()}
-                                    />)} />
+                                        helperText={errors.name?.message?.toString()} />)} />
                         </Grid>
                         <Grid item xs={12} sm={6} height={"100px"}>
                             <Controller
@@ -139,9 +141,7 @@ export const Register: React.FC = () => {
                                         value={value}
                                         onChange={onChange}
                                         placeholder='Введите фамилию'
-                                        helperText={errors.surname?.message?.toString()}
-                                    />
-                                )} />
+                                        helperText={errors.surname?.message?.toString()} /> )}/>
                         </Grid>
                         <Grid item xs={12} sm={6} height={"100px"}>
                             <Controller
@@ -178,11 +178,11 @@ export const Register: React.FC = () => {
                         </Grid>
                     </Grid>
                 </Box>
-                <Box display={"flex"} flexDirection={"column"} sx={{height:"50px"}}>
-                    <Button type="submit" onClick={handleSubmit(tryRegister)}>{authStore.loading ? <CircularProgress/> : 'Зарегистрироваться'}</Button>
+                <Box display={"flex"} flexDirection={"column"} sx={{ height: "50px" }}>
+                    <Button type="submit" onClick={handleSubmit(tryRegister)}>{authStore.loading ? <CircularProgress /> : 'Зарегистрироваться'}</Button>
                 </Box>
             </Container>
-            {authStore.error && <ErrorSnack error={authStore.error}/>}
+            {authStore.error && <ErrorSnack error={authStore.error} />}
         </>
     )
 }

@@ -1,4 +1,4 @@
-import { Box, Snackbar, Typography } from "@mui/material"
+import { Box, Snackbar } from "@mui/material"
 import { useState } from "react";
 
 interface ErrorSnackProps {
@@ -6,7 +6,6 @@ interface ErrorSnackProps {
 }
 
 export function ErrorSnack({ error }: ErrorSnackProps) {
-
     const [isOpen, setIsOpen] = useState(true);
 
     return (

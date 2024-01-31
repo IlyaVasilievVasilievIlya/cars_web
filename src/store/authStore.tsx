@@ -73,7 +73,6 @@ class AuthStore {
 
     async refreshToken() {
         this.setError();
-        this.setLoading(true);
         if (!this.authData)
             return;
         try {
@@ -81,8 +80,7 @@ class AuthStore {
             this.setAuth(response.data);
         } catch (e) {
             console.log('refresh token error '.concat((e as Error).message));
-        } finally {
-            this.setLoading(false);
+            return Promise.reject();
         }
     }
 
