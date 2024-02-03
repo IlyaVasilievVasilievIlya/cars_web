@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
-import { LinearProgress, List } from '@mui/material';
+import { LinearProgress, List, Pagination } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
-import { ROLES } from '../../public/consts';
+import { PAGE_SIZE, ROLES } from '../../public/consts';
 import { authStore } from '../../store/authStore';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { carsStore } from '../../store/carsStore';
@@ -32,6 +32,8 @@ export const CarList: React.FC = observer(() => {
 
   const [modelSearch, setModelSearch] = useState('');
 
+  const [page, setPage] = useState(1);
+
   const navigate = useNavigate();
 
   if (authStore.errorCode === 401) {
@@ -56,15 +58,26 @@ export const CarList: React.FC = observer(() => {
     }
   }
 
-  const carFilteredList = carsStore.cars.filter(item => (((item.color ?? '').toLowerCase()).includes(colorSearch.toLowerCase()))
+  let carFilteredList = carsStore.cars.filter(item => (((item.color ?? '').toLowerCase()).includes(colorSearch.toLowerCase()))
     && ((item.brand.brand.toLowerCase()).includes(brandSearch.toLowerCase())) 
     && ((item.brand.model.toLowerCase()).includes(modelSearch.toLowerCase())) 
     && (((item.brand.brand + ' ' + item.brand.model).toLowerCase()).includes(carSearch.toLowerCase())));
 
+
+  const totalCount = carFilteredList.length;
+  
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
+  if (totalPages < page && totalPages != 0) {
+    setPage(totalPages);
+  }
+  
+  carFilteredList = carFilteredList.slice((page- 1) * PAGE_SIZE, (page) * PAGE_SIZE);
+  console.log(carFilteredList.length);
+
   const carList = carFilteredList.map(carElem =>
     <CarListItem car={carElem} openEdit={openEditModal} openDelete={openDeleteModal} key={carElem.carId} />
   );
-
 
   useEffect(() => {
     carsStore.fetchCars();
@@ -83,9 +96,17 @@ export const CarList: React.FC = observer(() => {
 
       {authStore.checkRole([ROLES.Manager, ROLES.Admin, ROLES.SuperUser]) && <AddCar />}
 
-      {!carsStore.fetchError && !carsStore.loading && <List>
-        {carList}
-      </List>}
+      {!carsStore.fetchError && !carsStore.loading && !!totalCount && 
+        <>
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={(_, num) => setPage(num)}>
+          </Pagination>
+          <List>
+            {carList}
+          </List>
+        </>}
 
       {isOpenDeleteModal && <DeleteCar car={car} onDone={() => setIsOpenDeleteModal(false)} />}
 

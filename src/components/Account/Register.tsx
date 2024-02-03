@@ -124,7 +124,7 @@ export const Register: React.FC = () => {
                                         label="Имя"
                                         required
                                         fullWidth
-                                        value={value}
+                                        value={value ?? ''}
                                         onChange={onChange}
                                         placeholder='Введите имя'
                                         helperText={errors.name?.message?.toString()} />)} />
@@ -138,7 +138,7 @@ export const Register: React.FC = () => {
                                         label="Фамилия"
                                         required
                                         fullWidth
-                                        value={value}
+                                        value={value ?? ''}
                                         onChange={onChange}
                                         placeholder='Введите фамилию'
                                         helperText={errors.surname?.message?.toString()} /> )}/>
@@ -151,8 +151,7 @@ export const Register: React.FC = () => {
                                     <TextField
                                         label="Отчество"
                                         fullWidth
-                                        defaultValue={''}
-                                        value={value}
+                                        value={value ?? ''}
                                         onChange={onChange}
                                         placeholder='Введите отчество'
                                         helperText={errors.patronymic?.message?.toString()}
