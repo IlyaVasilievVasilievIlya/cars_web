@@ -9,6 +9,9 @@ import { authStore } from '../../store/authStore';
 import { ErrorSnack } from "../ErrorSnack";
 import { Header } from "../Header";
 import { LoginRequest } from '../model';
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import axios from 'axios';
+import { API_URL } from '../../services/http';
 
 export const Login: React.FC = () => {
 
@@ -34,7 +37,18 @@ export const Login: React.FC = () => {
     const { handleSubmit, formState: { errors }, control } = useForm({
         resolver: yupResolver(schema)
     });
-
+    
+    const googleLogin = async (response: CredentialResponse) => {
+        console.log(response.credential);
+        if (!response.credential){
+            return;
+        }
+        
+        await authStore.loginWithGoogle(response.credential);
+        if (!authStore.error) {
+            setLogin(true)
+        }
+    }
 
     const tryLogin = async (request: LoginRequest) => {
         await authStore.login(request);
@@ -95,8 +109,10 @@ export const Login: React.FC = () => {
                         </Grid>
                     </Grid>
                 </Box>
-                <Box display={"flex"} flexDirection={"column"} sx={{ height: "50px" }}>
-                    <Button type="submit" onClick={handleSubmit(tryLogin)}>{authStore.loading ? <CircularProgress />: 'Войти'}</Button>
+                <Box display={"flex"} flexDirection={"column"}>
+                    <Button type="submit"  onClick={handleSubmit(tryLogin)} sx={{ height: "50px"}}>{authStore.loading ? <CircularProgress />: 'Войти'}</Button>
+                    <GoogleLogin type="icon"
+                        onSuccess={googleLogin}/>
                 </Box>
             </Container>
             {authStore.error && <ErrorSnack error={authStore.error}/>}

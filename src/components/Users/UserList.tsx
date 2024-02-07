@@ -57,8 +57,7 @@ export const UserList: React.FC = observer(() => {
                     <Pagination
                         count={totalPages}
                         page={page}
-                        onChange={(_, num) => setPage(num)}>
-                    </Pagination>
+                        onChange={(_, num) => setPage(num)}/>
                     <List>
                         {userList}
                     </List>

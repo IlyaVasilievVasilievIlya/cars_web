@@ -10,6 +10,13 @@ export class AuthService {
             JSON.stringify(loginCreds))
     }
 
+    static async loginWithGoogle(token: string): Promise<AxiosResponse<AuthInfo>> {
+        return authApi.post<AuthInfo>(
+            '/Identity/loginWithGoogle',
+            token
+        )
+    }
+
     static async register(registerInfo: RegisterRequest): Promise<AxiosResponse<AuthInfo>> {
         return authApi.post<AuthInfo>(
             '/Identity/signup',

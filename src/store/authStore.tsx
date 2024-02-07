@@ -62,6 +62,19 @@ class AuthStore {
         }
     }
 
+    async loginWithGoogle(token: string) {
+        this.setError();
+        this.setLoading(true);
+        try {
+            const response = await AuthService.loginWithGoogle(token);
+            this.setAuth(response.data);
+        } catch (e) {
+            console.log('login error '.concat((e as Error).message));
+        } finally {
+            this.setLoading(false);
+        }
+    }
+
     async register(registerInfo: RegisterRequest) {
         this.setError();
         this.setLoading(true);
