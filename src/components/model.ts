@@ -1,4 +1,4 @@
-import { roleList } from "../common/consts";
+import { roleList } from "../common/roles";
 
 export interface BrandModel {
     carModelId: number;
@@ -41,7 +41,6 @@ export interface RegisterRequest {
 export interface AuthInfo {
     accessToken: string;
     refreshToken: string;
-    role: string;
 }
 
 export type UserRole = typeof roleList[number]

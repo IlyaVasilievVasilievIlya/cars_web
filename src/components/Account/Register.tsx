@@ -2,7 +2,7 @@ import { Box, Button, CircularProgress, Container, Grid, TextField, Typography }
 import { Controller, useForm } from "react-hook-form";
 import { RegisterRequest } from "../model";
 import { authStore } from "../../store/authStore";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { date, object, ref, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -12,31 +12,24 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { ErrorSnack } from "../ErrorSnack";
 import { EMAIL_REGEX, PWD_REGEX } from "../../common/consts";
+import { registerSchema } from "../../common/schemes";
 
 
 export const Register: React.FC = () => {
 
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
     
-    useEffect(() => {
-        if (authStore.authData) {
-            navigate('/', { replace: true });
-        }
-        authStore.setError();
-    }, [navigate])
+    // useLayoutEffect(() => {
+    //     if (authStore.authData) {
+    //         navigate('/', { replace: true });
+    //     }
+    //     authStore.setError();
+    // }, [navigate])
 
-    const schema = object({
-        email: string().required('Это обязательное поле').matches(EMAIL_REGEX, 'Некорректный адрес почты'),
-        password: string().required('Это обязательное поле').matches(PWD_REGEX, 'Пароль должен иметь длину от 8 до 24 символов, содержать заглавные и строчные латинские символы, служебные символы и цифры'),
-        confirmPassword: string().required('').oneOf([ref("password")], 'Пароли не совпадают'),
-        name: string().required('Это обязательное поле').max(128, 'Имя не должно содержать более 128 символов'),
-        surname: string().required('Это обязательное поле').max(128, 'Фамилия не должна содержать более 128 символов'),
-        patronymic: string().max(128, 'Отчество не должно содержать более 128 символов'),
-        birthDate: date().typeError('').required('Это обязательное поле').min("1923-01-01", 'дата должна быть не ранее 1923.01.01').max(new Date(), `Некорректная дата`)
-    });
+    useEffect(() => authStore.setError());
 
     const { handleSubmit, formState: { errors }, control } = useForm({
-        resolver: yupResolver(schema)
+        resolver: yupResolver(registerSchema)
     });
 
     const [register, setRegister] = useState(false);

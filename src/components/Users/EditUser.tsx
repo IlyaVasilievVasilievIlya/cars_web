@@ -2,7 +2,7 @@ import { User, EditUserRequest, UserRole, ChangeUserRoleRequest } from '../model
 import { Controller, useForm } from 'react-hook-form';
 import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Grid, TextField } from '@mui/material';
 import { MenuItem } from '@mui/material';
-import { ROLES, roleList } from '../../common/consts';
+import { ROLES, roleList } from '../../common/roles';
 import { date, mixed, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { usersStore } from '../../store/usersStore';
@@ -10,6 +10,8 @@ import { authStore } from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { ErrorSnack } from '../ErrorSnack';
 import { DialogHeader } from '../ui-kit/DialogHeader';
+import { LogoutIfExpired } from '../Account/LogoutIfExpired';
+import { changeRoleSchema, editUserSchema } from '../../common/schemes';
 
 
 
@@ -20,30 +22,15 @@ interface EditUserProps {
 
 export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProps) => {
 
-    const navigate = useNavigate();
-
-    const editUserSchema = object({
-        name: string().required('Это обязательное поле'),
-        surname: string().required('Это обязательное поле'),
-        patronymic: string(),
-        birthDate: date().required('Это обязательное поле')
-    })
-
-    const changeRoleSchema = object({
-        role: mixed<UserRole>().required('Это обязательное поле')
-    })
-
     const { handleSubmit, formState: { errors }, reset, control } = useForm<EditUserRequest>({
         defaultValues: { name: user.name, surname: user.name, patronymic: user.patronymic, birthDate: user.birthDate },
         resolver: yupResolver(editUserSchema)
-    }
-    );
+    });
 
     const { handleSubmit: handleRoleSubmit, reset: roleReset, control: roleControl } = useForm<ChangeUserRoleRequest>({
         defaultValues: { role: user.role },
         resolver: yupResolver(changeRoleSchema)
-    }
-    );
+    });
 
     let userRoleList = roleList.map(model =>
         <MenuItem key={model} value={model}>
@@ -56,10 +43,6 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
         if (!usersStore.actionError) {
             closeForm();
             return;
-        }
-
-        if (authStore.errorCode === 401) {
-            navigate("/login");
         }
     }
 
@@ -80,6 +63,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
 
     return (
         <>
+            <LogoutIfExpired/>
             <Dialog
                 open={true}
                 onClose={closeForm}>

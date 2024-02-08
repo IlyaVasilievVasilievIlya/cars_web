@@ -5,15 +5,18 @@ import { carsStore } from '../../store/carsStore';
 import { ErrorSnack } from '../ErrorSnack';
 import { Car } from '../model';
 import { DialogHeader } from '../ui-kit/DialogHeader';
+import { LogoutIfExpired } from '../Account/LogoutIfExpired';
+import { useState } from 'react';
 
 interface DeleteCarProps {
     car: Car
-    onDone: () => void
+    isModalOpen: boolean
+    onClose: () => void
 }
 
-export const DeleteCar: React.FC<DeleteCarProps> = ({ car, onDone }: DeleteCarProps) => {
+export const DeleteCar: React.FC<DeleteCarProps> = ({ car, isModalOpen, onClose }: DeleteCarProps) => {
 
-    const navigate = useNavigate();
+    const [isOpen, setIsOpen] = useState(isModalOpen);
 
     const deleteCar = async () => {
         await carsStore.deleteCar(car.carId);
@@ -22,33 +25,33 @@ export const DeleteCar: React.FC<DeleteCarProps> = ({ car, onDone }: DeleteCarPr
             closeForm();
             return;
         }
-
-        if (authStore.errorCode === 401) {
-            navigate("/logout");
-        }
     }
 
     const closeForm = () => {
         carsStore.setActionError();
-        onDone();
+        setIsOpen(false);
+        onClose();
     }
 
     return (
-        <Dialog
-            open={true}
-            onSubmit={() => deleteCar()}
-            onClose={() => closeForm()}>
-            <DialogHeader text="Удаление машины" closeForm={closeForm} />
-            <DialogContent>
-                <DialogContentText>
-                    Вы уверены, что хотите удалить машину "{`${car.brand.brand} ${car.brand.model}`}"?
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button type="submit" onClick={deleteCar}>{carsStore.loading ? <CircularProgress size={20} /> : 'Да'}</Button>
-                <Button type="reset" onClick={closeForm}>Нет</Button>
-            </DialogActions>
-            {carsStore.actionError && <ErrorSnack error={carsStore.actionError} />}
-        </Dialog>
+        <>
+            <LogoutIfExpired/>
+            <Dialog
+                open={isOpen}
+                onSubmit={() => deleteCar()}
+                onClose={() => closeForm()}>
+                <DialogHeader text="Удаление машины" closeForm={closeForm} />
+                <DialogContent>
+                    <DialogContentText>
+                        Вы уверены, что хотите удалить машину "{`${car.brand.brand} ${car.brand.model}`}"?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button type="submit" onClick={deleteCar}>{carsStore.loading ? <CircularProgress size={20} /> : 'Да'}</Button>
+                    <Button type="reset" onClick={closeForm}>Нет</Button>
+                </DialogActions>
+                {carsStore.actionError && <ErrorSnack error={carsStore.actionError} />}
+            </Dialog>    
+        </>
     );
 }

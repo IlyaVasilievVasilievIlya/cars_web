@@ -5,7 +5,7 @@ import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import { Box, Card, CardActions, CardContent, IconButton, Typography } from '@mui/material';
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
-import { ROLES } from "../../common/consts";
+import { ROLES } from "../../common/roles";
 import { authStore } from "../../store/authStore";
 import { basketStore } from "../../store/basketStore";
 import { Car } from "../model";

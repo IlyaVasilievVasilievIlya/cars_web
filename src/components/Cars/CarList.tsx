@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { LinearProgress, List, Pagination } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
-import { PAGE_SIZE, ROLES } from '../../common/consts';
+import { PAGE_SIZE } from '../../common/consts';
+import { ROLES } from '../../common/roles';
 import { authStore } from '../../store/authStore';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { carsStore } from '../../store/carsStore';
@@ -15,6 +16,8 @@ import { CarFilters } from './CarFilters';
 import { CarListItem } from './CarListItem';
 import { DeleteCar } from './DeleteCar';
 import { EditCar } from './EditCar';
+import { ROUTES } from '../../common/routes';
+import { LogoutIfExpired } from '../Account/LogoutIfExpired';
 
 export const CarList: React.FC = observer(() => {
 
@@ -33,12 +36,6 @@ export const CarList: React.FC = observer(() => {
   const [modelSearch, setModelSearch] = useState('');
 
   const [page, setPage] = useState(1);
-
-  const navigate = useNavigate();
-
-  if (authStore.errorCode === 401) {
-    navigate("/logout");
-  }
 
   function openDeleteModal(id: number) {
     const selectedCar = carsStore.cars.find(el => el.carId === id);
@@ -68,11 +65,11 @@ export const CarList: React.FC = observer(() => {
   
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
-  if (totalPages < page && totalPages != 0) {
+  if (totalPages < page && totalPages !== 0) {
     setPage(totalPages);
   }
   
-  carFilteredList = carFilteredList.slice((page- 1) * PAGE_SIZE, (page) * PAGE_SIZE);
+  carFilteredList = carFilteredList.slice((page - 1) * PAGE_SIZE, (page) * PAGE_SIZE);
   console.log(carFilteredList.length);
 
   const carList = carFilteredList.map(carElem =>
@@ -86,6 +83,8 @@ export const CarList: React.FC = observer(() => {
 
   return (
     <>
+      <LogoutIfExpired/>
+
       <CarFilters filterCar={setCarSearch} filterColor={setColorSearch} filterBrand={setBrandSearch} filterModel={setModelSearch}/>
 
       {carsStore.loading && <LinearProgress/>}
@@ -107,9 +106,9 @@ export const CarList: React.FC = observer(() => {
           </List>
         </>}
 
-      {isOpenDeleteModal && <DeleteCar car={car} onDone={() => setIsOpenDeleteModal(false)} />}
+      <DeleteCar car={car} isModalOpen={isOpenDeleteModal} onClose={() => setIsOpenDeleteModal(false)}/>
 
-      {isOpenEditModal && <EditCar car={car} onDone={() => setIsOpenEditModal(false)} />}
+      <EditCar car={car} isModalOpen={isOpenEditModal} onClose={() => setIsOpenEditModal(false)}/>
     </>
   );
 });

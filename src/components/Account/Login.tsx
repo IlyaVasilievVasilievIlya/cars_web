@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, CircularProgress, Container, Grid, TextField, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { object, string } from 'yup';
@@ -12,30 +12,29 @@ import { LoginRequest } from '../model';
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import axios from 'axios';
 import { API_URL } from '../../services/http';
+import { loginSchema } from '../../common/schemes';
 
 export const Login: React.FC = () => {
 
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
     const location = useLocation();
 
     const fromPage = location.state?.from?.pathname || '/';
 
-    useEffect(() => {
-        if (authStore.authData) {
-            navigate(fromPage, {replace: true});
-        }
-        authStore.setError();
-    }, [navigate, fromPage])    
+    // useLayoutEffect(() => {
+    //     if (authStore.isAuth) {
+    //         navigate(fromPage, {replace: true});
+    //     }
+    //     authStore.setError();
+    // }, [navigate, fromPage])    
+
+
+    useEffect(() => authStore.setError());
 
     const [login, setLogin] = useState(false);
 
-    const schema = object({
-        email: string().required('Это обязательное поле').matches(EMAIL_REGEX, 'Некорректный адрес почты'),
-        password: string().required('Это обязательное поле').matches(PWD_REGEX, 'Пароль должен иметь длину от 8 до 24 символов, содержать заглавные и строчные латинские символы, служебные символы и цифры')
-    });
-
     const { handleSubmit, formState: { errors }, control } = useForm({
-        resolver: yupResolver(schema)
+        resolver: yupResolver(loginSchema)
     });
     
     const tryGoogleLogin = async (response: CredentialResponse) => {

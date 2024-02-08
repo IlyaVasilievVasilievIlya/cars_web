@@ -40,8 +40,8 @@ api.interceptors.request.use(config => {
 
 let refreshTokenPromise: Promise<void> | null;
 
-api.interceptors.response.use(config => {
-    return config;
+api.interceptors.response.use(response => {
+    return response;
 }, (async error => {
     const prevRequest = error.config;
     if (error?.response?.status === 401) {
@@ -50,7 +50,7 @@ api.interceptors.response.use(config => {
         }
         return refreshTokenPromise.then(() => {
             refreshTokenPromise = null;
-            return api(prevRequest);
+            return api.request(prevRequest);
         }).catch(error => {
             authStore.logout();
             authStore.setError(undefined, 401);

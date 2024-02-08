@@ -10,21 +10,20 @@ import { carsStore } from '../../store/carsStore';
 import { ErrorSnack } from '../ErrorSnack';
 import { AddCarRequest } from '../model';
 import { DialogHeader } from '../ui-kit/DialogHeader';
+import { LogoutIfExpired } from '../Account/LogoutIfExpired';
+import { addCarSchema } from '../../common/schemes';
 
 
 export const AddCar: React.FC = () => {
 
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
 
     const [modal, setModal] = useState(false);
 
-    const schema = object({
-        carModelId: number().required('Это обязательное поле'),
-        color: string().max(128, 'Поле не должно содержать более 128 символов')
-    })
+
 
     const { handleSubmit, formState: { errors }, reset, control } = useForm<AddCarRequest>({
-        resolver: yupResolver(schema)
+        resolver: yupResolver(addCarSchema)
     });
 
     let brandModelList = brandModelsStore.brandModels.map(model =>
@@ -45,10 +44,10 @@ export const AddCar: React.FC = () => {
             closeForm();
             return;
         }
-        
-        if (authStore.errorCode === 401) {
-            navigate("/logout");
-        }
+
+        // if (authStore.errorCode === 401) {
+        //     navigate("/logout");
+        // }
     }
 
     const closeForm = () => {
@@ -59,19 +58,21 @@ export const AddCar: React.FC = () => {
 
     return (
         <>
+            <LogoutIfExpired />
             <Button type="button" onClick={() => setModal(true)}>
                 Добавить
             </Button>
-            <Dialog 
+            <Dialog
                 open={modal}
                 onSubmit={handleSubmit(createCar)}
                 onClose={closeForm}>
-                <DialogHeader text="Добавление машины" closeForm={closeForm}/>
-                <DialogContent style={{ 
-                        display: 'flex', 
-                        flexDirection:'column', 
-                        gap: 20, 
-                        paddingTop: 10, minWidth: '400px'}}>
+                <DialogHeader text="Добавление машины" closeForm={closeForm} />
+                <DialogContent style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 20,
+                    paddingTop: 10, minWidth: '400px'
+                }}>
                     <Controller
                         control={control}
                         name="carModelId"
@@ -80,7 +81,7 @@ export const AddCar: React.FC = () => {
                             <Select labelId="Модель машины"
                                 label="Модель машины" {...field}
                                 placeholder='Выберите модель машины'
-                                fullWidth sx={{ minHeight: '56px'}}
+                                fullWidth sx={{ minHeight: '56px' }}
                                 variant="standard" >
                                 {brandModelList}
                             </Select>)
@@ -105,7 +106,7 @@ export const AddCar: React.FC = () => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button type="submit" onClick={handleSubmit(createCar)}>{carsStore.loading ? <CircularProgress size={20}/> : 'Добавить'}</Button>
+                    <Button type="submit" onClick={handleSubmit(createCar)}>{carsStore.loading ? <CircularProgress size={20} /> : 'Добавить'}</Button>
                     <Button type="reset" onClick={closeForm}>Закрыть</Button>
                 </DialogActions>
             </Dialog>

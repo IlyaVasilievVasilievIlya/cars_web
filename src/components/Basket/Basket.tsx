@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Close } from '@mui/icons-material';
 import { Box, Button, Drawer, List, Typography } from '@mui/material';
@@ -11,15 +11,12 @@ import { BasketListItem } from './BasketListItem';
 
 interface BasketProps {
     onClose: () => void
+    isModalOpen: boolean;
 }
 
-export const Basket: React.FC<BasketProps> = observer(({ onClose }: BasketProps) => {
+export const Basket: React.FC<BasketProps> = observer(({ isModalOpen, onClose }: BasketProps) => {
 
-    const navigate = useNavigate();
-
-    if (authStore.errorCode === 401) {
-        navigate("/logout");
-    }
+    const [isOpen, setIsOpen] = useState(isModalOpen);
 
     function clear() {
         basketStore.clear();
@@ -30,14 +27,18 @@ export const Basket: React.FC<BasketProps> = observer(({ onClose }: BasketProps)
             count={item.count}
             id={item.id}
             key={item.id}
-            name={item.name} />
-    );
+            name={item.name} />);
+
+    const closeBasket = () => {
+        setIsOpen(false);
+        onClose();
+    }
 
     return (
         <Drawer
             anchor="right"
-            open={true}
-            onClose={onClose}>
+            open={isOpen}
+            onClose={closeBasket}>
             <Box display={"flex"} justifyContent={"space-between"}>
                 {carList.length < 1 && <Typography minWidth={'20%'} p={5} fontSize={20}>
                     Корзина пуста
@@ -45,7 +46,7 @@ export const Basket: React.FC<BasketProps> = observer(({ onClose }: BasketProps)
                 {carList.length > 0 && <Button onClick={clear}>
                     Очистить
                 </Button>}
-                <Button onClick={onClose}>
+                <Button onClick={closeBasket}>
                     <Close />
                 </Button>
             </Box>

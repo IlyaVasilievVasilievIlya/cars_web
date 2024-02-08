@@ -4,7 +4,7 @@ import { AuthService } from '../services/AuthService';
 import { basketStore } from './basketStore';
 
 class AuthStore {
-    authData?: AuthInfo;
+    isAuth?: boolean;
 
     error?: string;
 
@@ -12,34 +12,43 @@ class AuthStore {
 
     loading: boolean = false;
 
+    userRole?: string;
+
     constructor() {
-        const accessToken = localStorage.getItem('accessToken');
-        const refreshToken = localStorage.getItem('refreshToken');
-        const role = localStorage.getItem('role');
-        if (accessToken && refreshToken && role)
-        {       
-            this.setAuthInfo({refreshToken, accessToken, role});
-        }
         makeAutoObservable(this);
     }
 
-    setAuthInfo(newAuthInfo?: AuthInfo){
-        this.authData = newAuthInfo;
-        if (this.authData) {
-            for (const [key, value] of Object.entries(this.authData))
-            localStorage.setItem(key, value);
-    } else {
-        localStorage.clear();
-        basketStore.clear();
-    };      
-}
-
-    setAuth(authInfo: AuthInfo) {
-        const encodedClaims = authInfo.accessToken.split(".")[1];
-        const role = JSON.parse(atob(encodedClaims)).role;
-        this.setAuthInfo({...authInfo, role: role});
+    setIsAuth(isAuth: boolean = true) {
+        this.isAuth = isAuth;
     }
 
+    setUserRole(role:string) {
+        this.userRole = role;
+    }
+
+    async trySetAuth() { //вызывать при первом запуске
+        try {
+            const response = await this.refreshToken();  
+            if (response) {
+                this.setAuth(response);
+            }
+        } catch { }
+    }
+
+    setAuth(authInfo: AuthInfo) {
+        this.setLocalStorage(authInfo);
+        this.setIsAuth();
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+            this.setUserRole(JSON.parse(atob(token)).role);
+        }
+    }
+    
+    setLocalStorage(authInfo: AuthInfo) {
+        localStorage.setItem('accessToken', authInfo.accessToken);
+        localStorage.setItem('refreshToken', authInfo.refreshToken);
+    }
+    
     setError(error?: string, errorCode?: number) {
         this.error = error;
         this.errorCode = errorCode;
@@ -49,7 +58,11 @@ class AuthStore {
         this.loading = loading;
     }
 
-    async login(loginCreds: LoginRequest){
+    checkRole(roles?: string[]) {
+        return roles?.includes(this.userRole ?? '')
+    }
+
+    async login(loginCreds: LoginRequest) {
         this.setError();
         this.setLoading(true);
         try {
@@ -88,26 +101,24 @@ class AuthStore {
         }
     }
 
-    async refreshToken() {
+    async refreshToken(): Promise<AuthInfo | undefined> {
         this.setError();
-        if (!this.authData)
-            return;
+        let refreshToken : string | null;
+        if (!this.isAuth || !(refreshToken = localStorage.getItem('refreshToken')))
+            return Promise.reject();
         try {
-            const response = await AuthService.refresh(this.authData.refreshToken);
-            this.setAuth(response.data);
+            const response = await AuthService.refresh(refreshToken);
+            return Promise.resolve(response.data);
         } catch (e) {
             console.log('refresh token error '.concat((e as Error).message));
             return Promise.reject();
         }
     }
 
-    checkRole(roles?: string[]) {
-        return roles?.includes(this.authData?.role ?? '')
-    }
-
-
-    logout(){
-        this.setAuthInfo();
+    logout() {
+        localStorage.clear();
+        basketStore.clear();
+        this.setIsAuth(false);
     }
 };
 

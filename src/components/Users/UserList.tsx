@@ -11,6 +11,7 @@ import '../styles.css';
 import { EditUser } from './EditUser';
 import { UserListItem } from './UserListItem';
 import { PAGE_SIZE } from '../../common/consts';
+import { LogoutIfExpired } from '../Account/LogoutIfExpired';
 
 export const UserList: React.FC = observer(() => {
 
@@ -20,11 +21,11 @@ export const UserList: React.FC = observer(() => {
 
     const [page, setPage] = useState(1);
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    if (authStore.errorCode === 401) {
-        navigate("/logout");
-    }
+    // if (authStore.errorCode === 401) {
+    //     navigate("/logout");
+    // }
 
     function openEditModal(id: string) {
         const selectedUser = usersStore.users.find(el => el.id === id);
@@ -48,6 +49,7 @@ export const UserList: React.FC = observer(() => {
 
     return (
         <>
+            <LogoutIfExpired/>
             {usersStore.loading && <LinearProgress />}
 
             {usersStore.fetchError && <ErrorSnack error={usersStore.fetchError} />}

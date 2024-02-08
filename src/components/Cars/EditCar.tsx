@@ -9,25 +9,20 @@ import { carsStore } from '../../store/carsStore';
 import { ErrorSnack } from '../ErrorSnack';
 import { Car, EditCarRequest } from '../model';
 import { DialogHeader } from '../ui-kit/DialogHeader';
+import { LogoutIfExpired } from '../Account/LogoutIfExpired';
+import { editCarSchema } from '../../common/schemes';
 
 interface EditCarProps {
     car: Car
-    onDone: () => void
+    isModalOpen: boolean
+    onClose: () => void
 }
 
-export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) => {
-
-    const navigate = useNavigate();
-
-    const schema = object({
-        carModelId: number().required('Это обязательное поле'),
-        color: string().max(128, 'Поле не должно содержать более 128 символов'),
-        carId: number().required()
-    })
-
+export const EditCar: React.FC<EditCarProps> = ({ car, isModalOpen, onClose }: EditCarProps) => {
+    
     const { handleSubmit, formState: { errors }, reset, control } = useForm<EditCarRequest>({
         defaultValues: { ...car, carModelId: car.brand.carModelId },
-        resolver: yupResolver(schema)
+        resolver: yupResolver(editCarSchema)
     });
 
 
@@ -51,20 +46,22 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
             return;
         }
 
-        if (authStore.errorCode === 401) {
-            navigate("/logout");
-        }
+        // if (authStore.errorCode === 401) {
+        //     navigate("/logout");
+        // }
     }
 
     const closeForm = () => {
         carsStore.setActionError();
         reset();
-        onDone();
+        onClose();
     }
 
     return (
+        <>
+        <LogoutIfExpired/>
         <Dialog
-            open={true}
+            open={isModalOpen}
             onSubmit={handleSubmit(editCar)}
             onClose={closeForm}>
             <DialogHeader text="Редактирование машины" closeForm={closeForm} />
@@ -103,5 +100,6 @@ export const EditCar: React.FC<EditCarProps> = ({ car, onDone }: EditCarProps) =
                 <Button type="reset" onClick={closeForm}>Закрыть</Button>
             </DialogActions>
             {carsStore.actionError && <ErrorSnack error={carsStore.actionError} />}
-        </Dialog>)
+        </Dialog>
+        </>)
 }

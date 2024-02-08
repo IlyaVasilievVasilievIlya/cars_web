@@ -1,5 +1,6 @@
 import { Autocomplete, Box, Grid, TextField } from "@mui/material";
 import { brandModelsStore } from "../../store/brandModelsStore";
+import { debounce } from "../../common/consts";
 
 
 interface CarFiltersProps {
@@ -15,6 +16,11 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
 
     const brandList = Array.from(new Set(brandModelsStore.brandModels.map(model => model.brand)));
 
+    const filterColorDebounce = debounce(filterColor, 200);
+    const filterCarDebounce = debounce(filterCar, 200);
+    const filterBrandDebounce = debounce(filterBrand, 200);
+    const filterModelDebounce = debounce(filterModel, 200);
+
     return (
         <Box component="section" sx={{p: 2}}>
             <Grid container rowSpacing={3} columnSpacing={2}>
@@ -25,7 +31,9 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
                         fullWidth
                         autoComplete="off"
                         defaultValue=''
-                        onChange={(e) => filterColor((e.target.value as string))} />
+                        Cha
+                        value={value}
+                        onChange={(e) => filterColorDebounce(e.target.value as string)} />
                 </Grid>
                 <Grid item sm={3} xs={12}>
                     <TextField
@@ -34,14 +42,14 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
                         fullWidth
                         autoComplete="off"
                         defaultValue=''
-                        onChange={(e) => filterCar((e.target.value as string))} />
+                        onChange={(e) => filterCarDebounce((e.target.value as string))} />
                 </Grid>
                 <Grid item sm={3} xs={12}>
                     <Autocomplete
                         options={brandList}
                         fullWidth
                         onInputChange={(_, newInputValue) => {
-                            filterBrand(newInputValue);
+                            filterBrandDebounce(newInputValue);
                         }}
                         renderInput={(params) => <TextField {...params} label="Бренд" />} />
                 </Grid>
@@ -50,7 +58,7 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
                         options={modelList}
                         fullWidth
                         onInputChange={(_, newInputValue) => {
-                            filterModel(newInputValue);
+                            filterModelDebounce(newInputValue);
                         }}
                         renderInput={(params) => <TextField {...params} label="Марка" />} />
                 </Grid>
