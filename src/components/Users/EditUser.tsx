@@ -2,7 +2,7 @@ import { User, EditUserRequest, UserRole, ChangeUserRoleRequest } from '../model
 import { Controller, useForm } from 'react-hook-form';
 import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Grid, TextField } from '@mui/material';
 import { MenuItem } from '@mui/material';
-import { ROLES, roleList } from '../../public/consts';
+import { ROLES, roleList } from '../../common/consts';
 import { date, mixed, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { usersStore } from '../../store/usersStore';

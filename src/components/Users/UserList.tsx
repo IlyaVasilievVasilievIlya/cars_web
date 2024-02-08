@@ -10,7 +10,7 @@ import { User } from '../model';
 import '../styles.css';
 import { EditUser } from './EditUser';
 import { UserListItem } from './UserListItem';
-import { PAGE_SIZE } from '../../public/consts';
+import { PAGE_SIZE } from '../../common/consts';
 
 export const UserList: React.FC = observer(() => {
 

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { LinearProgress, List, Pagination } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
-import { PAGE_SIZE, ROLES } from '../../public/consts';
+import { PAGE_SIZE, ROLES } from '../../common/consts';
 import { authStore } from '../../store/authStore';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { carsStore } from '../../store/carsStore';
@@ -101,8 +101,7 @@ export const CarList: React.FC = observer(() => {
           <Pagination
             count={totalPages}
             page={page}
-            onChange={(_, num) => setPage(num)}
-            />
+            onChange={(_, num) => setPage(num)}/>
           <List>
             {carList}
           </List>

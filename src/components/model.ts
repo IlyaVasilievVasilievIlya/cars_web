@@ -1,4 +1,4 @@
-import { roleList } from "../public/consts";
+import { roleList } from "../common/consts";
 
 export interface BrandModel {
     carModelId: number;

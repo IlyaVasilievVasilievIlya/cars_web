@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { RouterProvider } from 'react-router-dom';
-import { router } from './public/consts'
+import { router } from './common/consts'
 import { ThemeProvider, createTheme } from '@mui/material';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 

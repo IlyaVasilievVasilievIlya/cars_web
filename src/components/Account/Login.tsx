@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { object, string } from 'yup';
-import { EMAIL_REGEX, PWD_REGEX } from "../../public/consts";
+import { EMAIL_REGEX, PWD_REGEX } from "../../common/consts";
 import { authStore } from '../../store/authStore';
 import { ErrorSnack } from "../ErrorSnack";
 import { Header } from "../Header";
@@ -38,7 +38,7 @@ export const Login: React.FC = () => {
         resolver: yupResolver(schema)
     });
     
-    const googleLogin = async (response: CredentialResponse) => {
+    const tryGoogleLogin = async (response: CredentialResponse) => {
         console.log(response.credential);
         if (!response.credential){
             return;
@@ -112,7 +112,7 @@ export const Login: React.FC = () => {
                 <Box display={"flex"} flexDirection={"column"}>
                     <Button type="submit"  onClick={handleSubmit(tryLogin)} sx={{ height: "50px"}}>{authStore.loading ? <CircularProgress />: 'Войти'}</Button>
                     <GoogleLogin type="icon"
-                        onSuccess={googleLogin}/>
+                        onSuccess={tryGoogleLogin}/>
                 </Box>
             </Container>
             {authStore.error && <ErrorSnack error={authStore.error}/>}

@@ -11,7 +11,7 @@ import { DateField } from '@mui/x-date-pickers/DateField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { ErrorSnack } from "../ErrorSnack";
-import { EMAIL_REGEX, PWD_REGEX } from "../../public/consts";
+import { EMAIL_REGEX, PWD_REGEX } from "../../common/consts";
 
 
 export const Register: React.FC = () => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './styles.css';
 import { NavLink } from 'react-router-dom';
-import { navInfos } from '../public/consts';
+import { navInfos } from '../common/consts';
 import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material';
 import { authStore } from '../store/authStore';
 import { AuthActions } from './Account/AuthActions';
