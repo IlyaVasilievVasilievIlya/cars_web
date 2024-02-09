@@ -1,6 +1,7 @@
 import { Autocomplete, Box, Grid, TextField } from "@mui/material";
 import { brandModelsStore } from "../../store/brandModelsStore";
 import { debounce } from "../../common/consts";
+import { ChangeEvent, useState } from "react";
 
 
 interface CarFiltersProps {
@@ -20,6 +21,21 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
     const filterCarDebounce = debounce(filterCar, 200);
     const filterBrandDebounce = debounce(filterBrand, 200);
     const filterModelDebounce = debounce(filterModel, 200);
+    
+    const [color, setColor] = useState('');
+    const [car, setCar] = useState('');
+
+    function setColorFilter(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+        const value = e.target.value as string;
+        setColor(value);
+        filterColorDebounce(value);
+    }
+
+    function setCarFilter(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+        const value = e.target.value as string;
+        setCar(value);
+        filterCarDebounce(value);
+    }
 
     return (
         <Box component="section" sx={{p: 2}}>
@@ -30,10 +46,8 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
                         label="Цвет машины"
                         fullWidth
                         autoComplete="off"
-                        defaultValue=''
-                        Cha
-                        value={value}
-                        onChange={(e) => filterColorDebounce(e.target.value as string)} />
+                        value={color}
+                        onChange={(e) => setColorFilter(e)} />
                 </Grid>
                 <Grid item sm={3} xs={12}>
                     <TextField
@@ -41,8 +55,8 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
                         label="Поиск по машине"
                         fullWidth
                         autoComplete="off"
-                        defaultValue=''
-                        onChange={(e) => filterCarDebounce((e.target.value as string))} />
+                        value={car}
+                        onChange={(e) => setCarFilter(e)} />
                 </Grid>
                 <Grid item sm={3} xs={12}>
                     <Autocomplete

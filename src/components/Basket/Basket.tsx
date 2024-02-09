@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Close } from '@mui/icons-material';
 import { Box, Button, Drawer, List, Typography } from '@mui/material';
@@ -18,7 +18,11 @@ export const Basket: React.FC<BasketProps> = observer(({ isModalOpen, onClose }:
 
     const [isOpen, setIsOpen] = useState(isModalOpen);
 
-    function clear() {
+    useEffect( () => {
+        setIsOpen(isModalOpen);
+    }, [isModalOpen])
+
+    const clear = () => {
         basketStore.clear();
     }
 

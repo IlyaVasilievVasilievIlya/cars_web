@@ -16,11 +16,8 @@ import { addCarSchema } from '../../common/schemes';
 
 export const AddCar: React.FC = () => {
 
-    //const navigate = useNavigate();
 
     const [modal, setModal] = useState(false);
-
-
 
     const { handleSubmit, formState: { errors }, reset, control } = useForm<AddCarRequest>({
         resolver: yupResolver(addCarSchema)
@@ -44,10 +41,6 @@ export const AddCar: React.FC = () => {
             closeForm();
             return;
         }
-
-        // if (authStore.errorCode === 401) {
-        //     navigate("/logout");
-        // }
     }
 
     const closeForm = () => {

@@ -5,6 +5,6 @@ import { authStore } from "../../store/authStore"
 export const LogoutIfExpired = () => {
 
     return (
-        (authStore.errorCode === 401) ? <Navigate to={ROUTES.Logout} replace={true}/> : null
+        (authStore.isAuth) ?  null : <Navigate to={ROUTES.Logout} replace={true}/>
     )
 }

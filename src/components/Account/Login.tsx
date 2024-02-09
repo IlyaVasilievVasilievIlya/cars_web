@@ -16,18 +16,9 @@ import { loginSchema } from '../../common/schemes';
 
 export const Login: React.FC = () => {
 
-    //const navigate = useNavigate();
     const location = useLocation();
 
     const fromPage = location.state?.from?.pathname || '/';
-
-    // useLayoutEffect(() => {
-    //     if (authStore.isAuth) {
-    //         navigate(fromPage, {replace: true});
-    //     }
-    //     authStore.setError();
-    // }, [navigate, fromPage])    
-
 
     useEffect(() => authStore.setError());
 

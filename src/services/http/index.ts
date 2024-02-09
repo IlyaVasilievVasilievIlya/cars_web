@@ -1,5 +1,6 @@
 import axios from "axios";
 import { authStore } from "../../store/authStore";
+import { AuthInfo } from "../../components/model";
 
 export const API_URL = "http://localhost:5202/api";
 //5202
@@ -14,8 +15,8 @@ export const api = axios.create({
 })
 
 authApi.interceptors.request.use(config => {
-    if (authStore.authData) {
-        config.headers.Authorization = `bearer ${authStore.authData.accessToken}`;
+    if (authStore.isAuth) {
+        config.headers.Authorization = `bearer ${localStorage.getItem('accessToken')}`;
     }
     config.headers["Content-Type"] = 'application/json;charset=utf-8';
     return config;
@@ -31,8 +32,8 @@ authApi.interceptors.response.use(config => {
 }))
 
 api.interceptors.request.use(config => {
-    if (authStore.authData) {
-        config.headers.Authorization = `bearer ${authStore.authData.accessToken}`;
+    if (authStore.isAuth) {
+        config.headers.Authorization = `bearer ${localStorage.getItem('accessToken')}`;
     }
     config.headers["Content-Type"] = 'application/json;charset=utf-8';
     return config;
@@ -46,10 +47,13 @@ api.interceptors.response.use(response => {
     const prevRequest = error.config;
     if (error?.response?.status === 401) {
         if (!refreshTokenPromise) {
-            refreshTokenPromise = authStore.refreshToken();
+            refreshTokenPromise = authStore.refreshToken().then(token => {
+                refreshTokenPromise = null; 
+                if (token) {
+                    authStore.setAuth(token);
+                }})
         }
         return refreshTokenPromise.then(() => {
-            refreshTokenPromise = null;
             return api.request(prevRequest);
         }).catch(error => {
             authStore.logout();

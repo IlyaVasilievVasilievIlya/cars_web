@@ -6,7 +6,7 @@ import { ErrorSnack } from '../ErrorSnack';
 import { Car } from '../model';
 import { DialogHeader } from '../ui-kit/DialogHeader';
 import { LogoutIfExpired } from '../Account/LogoutIfExpired';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface DeleteCarProps {
     car: Car
@@ -17,6 +17,11 @@ interface DeleteCarProps {
 export const DeleteCar: React.FC<DeleteCarProps> = ({ car, isModalOpen, onClose }: DeleteCarProps) => {
 
     const [isOpen, setIsOpen] = useState(isModalOpen);
+
+    useEffect(() => {
+        setIsOpen(isModalOpen);
+    }, [isModalOpen])
+
 
     const deleteCar = async () => {
         await carsStore.deleteCar(car.carId);

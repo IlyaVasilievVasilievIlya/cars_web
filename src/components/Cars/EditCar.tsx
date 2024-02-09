@@ -45,10 +45,6 @@ export const EditCar: React.FC<EditCarProps> = ({ car, isModalOpen, onClose }: E
             closeForm();
             return;
         }
-
-        // if (authStore.errorCode === 401) {
-        //     navigate("/logout");
-        // }
     }
 
     const closeForm = () => {

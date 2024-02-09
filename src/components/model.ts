@@ -86,3 +86,7 @@ export interface IOption {
     value: number;
     label: string;
 }
+
+export interface UserInfo {
+    role: string;
+}

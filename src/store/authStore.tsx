@@ -1,7 +1,8 @@
-import { AuthInfo, LoginRequest, RegisterRequest } from '../components/model';
+import { AuthInfo, LoginRequest, RegisterRequest, UserInfo } from '../components/model';
 import { makeAutoObservable } from 'mobx';
 import { AuthService } from '../services/AuthService';
 import { basketStore } from './basketStore';
+import { JwtDecodeOptions, jwtDecode } from "jwt-decode";
 
 class AuthStore {
     isAuth?: boolean;
@@ -14,6 +15,8 @@ class AuthStore {
 
     userRole?: string;
 
+    authChecked = false;
+
     constructor() {
         makeAutoObservable(this);
     }
@@ -22,17 +25,25 @@ class AuthStore {
         this.isAuth = isAuth;
     }
 
-    setUserRole(role:string) {
+    setUserRole(role?:string) {
         this.userRole = role;
     }
 
     async trySetAuth() { //вызывать при первом запуске
+        if (!localStorage.getItem('refreshToken')) {
+            return;
+        }
         try {
-            const response = await this.refreshToken();  
+            if (!this.authChecked) {
+                const response = await this.refreshToken().then(_ => {
+                    this.authChecked = true;
+                });
+            }
+            console.log('**');
             if (response) {
                 this.setAuth(response);
             }
-        } catch { }
+        } catch { this.logout()}
     }
 
     setAuth(authInfo: AuthInfo) {
@@ -40,7 +51,7 @@ class AuthStore {
         this.setIsAuth();
         const token = localStorage.getItem('accessToken');
         if (token) {
-            this.setUserRole(JSON.parse(atob(token)).role);
+            this.setUserRole(jwtDecode<UserInfo>(token).role);
         }
     }
     
@@ -104,7 +115,7 @@ class AuthStore {
     async refreshToken(): Promise<AuthInfo | undefined> {
         this.setError();
         let refreshToken : string | null;
-        if (!this.isAuth || !(refreshToken = localStorage.getItem('refreshToken')))
+        if (!(refreshToken = localStorage.getItem('refreshToken')))
             return Promise.reject();
         try {
             const response = await AuthService.refresh(refreshToken);
@@ -118,6 +129,7 @@ class AuthStore {
     logout() {
         localStorage.clear();
         basketStore.clear();
+        this.setUserRole();
         this.setIsAuth(false);
     }
 };
