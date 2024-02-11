@@ -54,7 +54,7 @@ class CarsStore {
         this.setLoading(true);
         try {
             const response = await CarsService.addCar(newCar);
-            this.addCarAction(response.data);
+            this.addCarAction({...newCar, carId: response.data});
         } catch (e) {
             console.log('add car error: '.concat((e as Error).message));
             this.setActionError((e as Error).message);

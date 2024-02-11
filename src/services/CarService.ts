@@ -9,7 +9,7 @@ export class CarsService {
         )
     }
 
-    static async addCar(newCar: Car): Promise<AxiosResponse<Car>>  {
+    static async addCar(newCar: Car): Promise<AxiosResponse<number>>  {
         return api.post(
             `/Cars`,
             JSON.stringify({carModelId: newCar.brand.carModelId, color: newCar.color}))
