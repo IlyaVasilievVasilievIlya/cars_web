@@ -1,26 +1,27 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, CircularProgress, Container, Grid, TextField, Typography } from "@mui/material";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { object, string } from 'yup';
-import { EMAIL_REGEX, PWD_REGEX } from "../../common/consts";
+import { Navigate, useLocation } from "react-router-dom";
+import { ROUTES } from '../../common/routes';
+import { loginSchema } from '../../common/schemes';
 import { authStore } from '../../store/authStore';
 import { ErrorSnack } from "../ErrorSnack";
 import { Header } from "../Header";
 import { LoginRequest } from '../model';
-import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import axios from 'axios';
-import { API_URL } from '../../services/http';
-import { loginSchema } from '../../common/schemes';
 
 export const Login: React.FC = () => {
 
     const location = useLocation();
 
-    const fromPage = location.state?.from?.pathname || '/';
 
-    useEffect(() => authStore.setError());
+    let fromPage = location.state?.from?.pathname;
+    if (!fromPage || fromPage === ROUTES.Logout) {
+        fromPage = ROUTES.Home;
+    }
+
+    useEffect(() => authStore.setError(), []);
 
     const [login, setLogin] = useState(false);
 
@@ -29,7 +30,6 @@ export const Login: React.FC = () => {
     });
     
     const tryGoogleLogin = async (response: CredentialResponse) => {
-        console.log(response.credential);
         if (!response.credential){
             return;
         }
@@ -102,7 +102,7 @@ export const Login: React.FC = () => {
                 <Box display={"flex"} flexDirection={"column"}>
                     <Button type="submit"  onClick={handleSubmit(tryLogin)} sx={{ height: "50px"}}>{authStore.loading ? <CircularProgress />: 'Войти'}</Button>
                     <GoogleLogin type="icon"
-                        onSuccess={tryGoogleLogin}/>
+                        onSuccess={tryGoogleLogin} />
                 </Box>
             </Container>
             {authStore.error && <ErrorSnack error={authStore.error}/>}

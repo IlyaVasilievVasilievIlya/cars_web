@@ -1,16 +1,14 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, MenuItem, TextField } from '@mui/material';
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import { number, object, string } from 'yup';
-import { authStore } from '../../store/authStore';
+import { editCarSchema } from '../../common/schemes';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { carsStore } from '../../store/carsStore';
+import { LogoutIfExpired } from '../Account/LogoutIfExpired';
 import { ErrorSnack } from '../ErrorSnack';
 import { Car, EditCarRequest } from '../model';
 import { DialogHeader } from '../ui-kit/DialogHeader';
-import { LogoutIfExpired } from '../Account/LogoutIfExpired';
-import { editCarSchema } from '../../common/schemes';
 
 interface EditCarProps {
     car: Car
@@ -21,10 +19,13 @@ interface EditCarProps {
 export const EditCar: React.FC<EditCarProps> = ({ car, isModalOpen, onClose }: EditCarProps) => {
     
     const { handleSubmit, formState: { errors }, reset, control } = useForm<EditCarRequest>({
-        defaultValues: { ...car, carModelId: car.brand.carModelId },
+        defaultValues: { carId: car.carId, color: car.color, carModelId: car.brand.carModelId },
         resolver: yupResolver(editCarSchema)
     });
 
+    useEffect(() => {
+        reset({ carId: car.carId, color: car.color, carModelId: car.brand.carModelId });
+    }, [reset, car])
 
     let brandModelList = brandModelsStore.brandModels.map(model =>
         <MenuItem key={model.carModelId} value={model.carModelId}>

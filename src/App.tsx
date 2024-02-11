@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import './App.css';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './common/routes'
@@ -14,11 +14,11 @@ const App: React.FC = function () {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect( () => {
-        const tryLogin = async () => {
-            await authStore.trySetAuth();
-        }
-        tryLogin().finally(() => setIsLoading(false));
-    }, [])
+        setTimeout(() => {
+        if (!authStore.authChecked) {
+                authStore.checkAuth().finally(() => setIsLoading(false));
+            };
+        }, 300)}, []) 
 
     return (
         <GoogleOAuthProvider clientId={CLIENT_ID}>

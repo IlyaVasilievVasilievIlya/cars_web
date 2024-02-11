@@ -1,25 +1,22 @@
 import axios from "axios";
 import { authStore } from "../../store/authStore";
-import { AuthInfo } from "../../components/model";
 
-export const API_URL = "http://localhost:5202/api";
+export const API_URL = "http://localhost:10000/api";
 //5202
 //10000
 
 export const authApi = axios.create({
-    baseURL: API_URL
+    baseURL: API_URL,
+    headers: {
+        "Content-Type" : 'application/json;charset=utf-8'
+    }
 })
 
 export const api = axios.create({
-    baseURL: API_URL
-})
-
-authApi.interceptors.request.use(config => {
-    if (authStore.isAuth) {
-        config.headers.Authorization = `bearer ${localStorage.getItem('accessToken')}`;
+    baseURL: API_URL,
+    headers: {
+        "Content-Type" : 'application/json;charset=utf-8'
     }
-    config.headers["Content-Type"] = 'application/json;charset=utf-8';
-    return config;
 })
 
 authApi.interceptors.response.use(config => {
@@ -35,7 +32,6 @@ api.interceptors.request.use(config => {
     if (authStore.isAuth) {
         config.headers.Authorization = `bearer ${localStorage.getItem('accessToken')}`;
     }
-    config.headers["Content-Type"] = 'application/json;charset=utf-8';
     return config;
 })
 
@@ -55,7 +51,7 @@ api.interceptors.response.use(response => {
         }
         return refreshTokenPromise.then(() => {
             return api.request(prevRequest);
-        }).catch(error => {
+        }).catch(_ => {
             authStore.logout();
             authStore.setError(undefined, 401);
         })

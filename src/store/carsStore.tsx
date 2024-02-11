@@ -42,7 +42,7 @@ class CarsStore {
             await CarsService.deleteCar(id);
             this.setCars(this.cars.filter((elem:Car) => elem.carId !== id));          
         } catch (e) {
-           console.log('deletecar error '.concat((e as Error).message));
+           console.log('delete car error: '.concat((e as Error).message));
            this.setActionError((e as Error).message);
         } finally {
             this.setLoading(false);
@@ -56,7 +56,7 @@ class CarsStore {
             const response = await CarsService.addCar(newCar);
             this.addCarAction(response.data);
         } catch (e) {
-            console.log('addcar error '.concat((e as Error).message));
+            console.log('add car error: '.concat((e as Error).message));
             this.setActionError((e as Error).message);
         } finally {
             this.setLoading(false);
@@ -71,7 +71,7 @@ class CarsStore {
             this.setCars(this.cars.map((elem:Car) => (
                 elem.carId === editedCar.carId) ? editedCar : elem));
         } catch (e) {
-            console.log('editcar error '.concat((e as Error).message));
+            console.log('edit car error: '.concat((e as Error).message));
             this.setActionError((e as Error).message);
         } finally {
             this.setLoading(false);
@@ -85,7 +85,7 @@ class CarsStore {
             const response = await CarsService.fetchCars();
             this.setCars(response.data);
         } catch (e) {
-            console.log('fetchcars error '.concat((e as Error).message));
+            console.log('fetch cars error: '.concat((e as Error).message));
             this.setFetchError((e as Error).message);
         } finally {
             this.setLoading(false);

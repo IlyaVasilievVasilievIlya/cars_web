@@ -1,6 +1,6 @@
 import { Autocomplete, Box, Grid, TextField } from "@mui/material";
 import { brandModelsStore } from "../../store/brandModelsStore";
-import { debounce } from "../../common/consts";
+import { debounce } from "../../common/functions";
 import { ChangeEvent, useState } from "react";
 
 

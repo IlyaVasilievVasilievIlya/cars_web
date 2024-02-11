@@ -1,36 +1,40 @@
-import { User, EditUserRequest, UserRole, ChangeUserRoleRequest } from '../model'
-import { Controller, useForm } from 'react-hook-form';
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Grid, TextField } from '@mui/material';
-import { MenuItem } from '@mui/material';
-import { ROLES, roleList } from '../../common/roles';
-import { date, mixed, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { usersStore } from '../../store/usersStore';
-import { authStore } from '../../store/authStore';
-import { useNavigate } from 'react-router-dom';
-import { ErrorSnack } from '../ErrorSnack';
-import { DialogHeader } from '../ui-kit/DialogHeader';
-import { LogoutIfExpired } from '../Account/LogoutIfExpired';
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Grid, MenuItem, TextField } from '@mui/material';
+import { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { ROLES, roleList } from '../../common/roles';
 import { changeRoleSchema, editUserSchema } from '../../common/schemes';
+import { authStore } from '../../store/authStore';
+import { usersStore } from '../../store/usersStore';
+import { LogoutIfExpired } from '../Account/LogoutIfExpired';
+import { ErrorSnack } from '../ErrorSnack';
+import { ChangeUserRoleRequest, EditUserRequest, User } from '../model';
+import { DialogHeader } from '../ui-kit/DialogHeader';
 
 
 
 interface EditUserProps {
-    user: User
-    onDone: () => void
+    user?: User
+    isModalOpen: boolean
+    onClose: () => void
 }
 
-export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProps) => {
+export const EditUser: React.FC<EditUserProps> = ({ user, onClose, isModalOpen }: EditUserProps) => {
 
     const { handleSubmit, formState: { errors }, reset, control } = useForm<EditUserRequest>({
-        defaultValues: { name: user.name, surname: user.name, patronymic: user.patronymic, birthDate: user.birthDate },
+        defaultValues: user,
         resolver: yupResolver(editUserSchema)
     });
 
     const { handleSubmit: handleRoleSubmit, reset: roleReset, control: roleControl } = useForm<ChangeUserRoleRequest>({
-        defaultValues: { role: user.role },
+        defaultValues: { role: user?.role },
         resolver: yupResolver(changeRoleSchema)
     });
+
+    useEffect(() => {
+        reset(user);
+        roleReset({role: user?.role})
+    }, [reset, roleReset, user])
 
     let userRoleList = roleList.map(model =>
         <MenuItem key={model} value={model}>
@@ -38,6 +42,10 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
         </MenuItem>);
 
     const editUser = async (editedUser: EditUserRequest) => {
+        if (!user) {
+            return;
+        }
+        
         await usersStore.editUser(user.id, editedUser);
 
         if (!usersStore.actionError) {
@@ -47,6 +55,10 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
     }
 
     const editRole = async (newRole: ChangeUserRoleRequest) => {
+        if (!user) {
+            return;
+        }
+
         await usersStore.changeUserRole(user.id, newRole);
 
         if (!usersStore.actionError) {
@@ -58,14 +70,14 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onDone }: EditUserProp
     const closeForm = () => {
         reset();
         roleReset();
-        onDone();
+        onClose();
     }
 
     return (
         <>
             <LogoutIfExpired/>
             <Dialog
-                open={true}
+                open={isModalOpen}
                 onClose={closeForm}>
                 <DialogHeader text="Редактирование данных пользователя" closeForm={closeForm} />
                 <DialogContent style={{ paddingTop: "10px" }}>

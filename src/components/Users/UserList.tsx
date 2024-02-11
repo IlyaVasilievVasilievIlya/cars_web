@@ -2,16 +2,14 @@ import React, { useEffect, useState } from 'react';
 
 import { LinearProgress, List, Pagination } from '@mui/material';
 import { observer } from 'mobx-react-lite';
-import { useNavigate } from 'react-router-dom';
-import { authStore } from '../../store/authStore';
+import { PAGE_SIZE } from '../../common/consts';
 import { usersStore } from '../../store/usersStore';
+import { LogoutIfExpired } from '../Account/LogoutIfExpired';
 import { ErrorSnack } from '../ErrorSnack';
 import { User } from '../model';
 import '../styles.css';
 import { EditUser } from './EditUser';
 import { UserListItem } from './UserListItem';
-import { PAGE_SIZE } from '../../common/consts';
-import { LogoutIfExpired } from '../Account/LogoutIfExpired';
 
 export const UserList: React.FC = observer(() => {
 
@@ -20,12 +18,6 @@ export const UserList: React.FC = observer(() => {
     const [isOpenEditModal, setIsOpenEditModal] = useState(false);
 
     const [page, setPage] = useState(1);
-
-    // const navigate = useNavigate();
-
-    // if (authStore.errorCode === 401) {
-    //     navigate("/logout");
-    // }
 
     function openEditModal(id: string) {
         const selectedUser = usersStore.users.find(el => el.id === id);
@@ -64,7 +56,7 @@ export const UserList: React.FC = observer(() => {
                         {userList}
                     </List>
                 </>}
-            {isOpenEditModal && user && <EditUser user={user} onDone={() => setIsOpenEditModal(false)} />}
+            <EditUser user={user} isModalOpen={isOpenEditModal && user !== undefined} onClose={() => setIsOpenEditModal(false)} />
         </>
     );
 });

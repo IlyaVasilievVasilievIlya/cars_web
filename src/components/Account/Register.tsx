@@ -1,32 +1,22 @@
-import { Box, Button, CircularProgress, Container, Grid, TextField, Typography } from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
-import { RegisterRequest } from "../model";
-import { authStore } from "../../store/authStore";
-import { useEffect, useLayoutEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import { date, object, ref, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Header } from "../Header";
-import { DateField } from '@mui/x-date-pickers/DateField';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { Box, Button, CircularProgress, Container, Grid, TextField, Typography } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { ErrorSnack } from "../ErrorSnack";
-import { EMAIL_REGEX, PWD_REGEX } from "../../common/consts";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateField } from '@mui/x-date-pickers/DateField';
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Navigate } from "react-router-dom";
+import { ROUTES } from "../../common/routes";
 import { registerSchema } from "../../common/schemes";
+import { authStore } from "../../store/authStore";
+import { ErrorSnack } from "../ErrorSnack";
+import { Header } from "../Header";
+import { RegisterRequest } from "../model";
 
 
 export const Register: React.FC = () => {
 
-    //const navigate = useNavigate();
-    
-    // useLayoutEffect(() => {
-    //     if (authStore.authData) {
-    //         navigate('/', { replace: true });
-    //     }
-    //     authStore.setError();
-    // }, [navigate])
-
-    useEffect(() => authStore.setError());
+    useEffect(() => authStore.setError(), []);
 
     const { handleSubmit, formState: { errors }, control } = useForm({
         resolver: yupResolver(registerSchema)
@@ -46,7 +36,7 @@ export const Register: React.FC = () => {
     return (
         <>
             <Header />
-            {register && <Navigate to="/cars" />}
+            {register && <Navigate to={ROUTES.Home} />}
             <Container component="main" maxWidth="sm" sx={{
                 padding: 4,
                 mt: 3,

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 
 import { LinearProgress, List, Pagination } from '@mui/material';
 import { observer } from 'mobx-react-lite';
-import { useNavigate } from 'react-router-dom';
 import { PAGE_SIZE } from '../../common/consts';
 import { ROLES } from '../../common/roles';
 import { authStore } from '../../store/authStore';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { carsStore } from '../../store/carsStore';
+import { LogoutIfExpired } from '../Account/LogoutIfExpired';
 import { ErrorSnack } from '../ErrorSnack';
 import { Car } from '../model';
 import '../styles.css';
@@ -16,8 +16,6 @@ import { CarFilters } from './CarFilters';
 import { CarListItem } from './CarListItem';
 import { DeleteCar } from './DeleteCar';
 import { EditCar } from './EditCar';
-import { ROUTES } from '../../common/routes';
-import { LogoutIfExpired } from '../Account/LogoutIfExpired';
 
 export const CarList: React.FC = observer(() => {
 
@@ -70,7 +68,6 @@ export const CarList: React.FC = observer(() => {
   }
   
   carFilteredList = carFilteredList.slice((page - 1) * PAGE_SIZE, (page) * PAGE_SIZE);
-  console.log(carFilteredList.length);
 
   const carList = carFilteredList.map(carElem =>
     <CarListItem car={carElem} openEdit={openEditModal} openDelete={openDeleteModal} key={carElem.carId} />

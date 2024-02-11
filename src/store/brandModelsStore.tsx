@@ -26,7 +26,7 @@ class BrandModelsStore {
             const response = await BrandModelService.fetchBrandModels();
             this.setBrandModels(response.data);
         } catch (e) {
-            console.log('fetchbrandmodels error '.concat((e as Error).message));
+            console.log('fetch brandmodels error: '.concat((e as Error).message));
             this.setFetchError((e as Error).message);
         }
     }

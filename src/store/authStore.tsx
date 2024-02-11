@@ -1,8 +1,8 @@
-import { AuthInfo, LoginRequest, RegisterRequest, UserInfo } from '../components/model';
+import { jwtDecode } from "jwt-decode";
 import { makeAutoObservable } from 'mobx';
+import { AuthInfo, LoginRequest, RegisterRequest, UserInfo } from '../components/model';
 import { AuthService } from '../services/AuthService';
 import { basketStore } from './basketStore';
-import { JwtDecodeOptions, jwtDecode } from "jwt-decode";
 
 class AuthStore {
     isAuth?: boolean;
@@ -29,21 +29,21 @@ class AuthStore {
         this.userRole = role;
     }
 
-    async trySetAuth() { //вызывать при первом запуске
-        if (!localStorage.getItem('refreshToken')) {
+    async checkAuth() { 
+        if (!localStorage.getItem('refreshToken') || this.authChecked) {
             return;
         }
+
+        this.authChecked = true;
         try {
-            if (!this.authChecked) {
-                const response = await this.refreshToken().then(_ => {
-                    this.authChecked = true;
-                });
-            }
-            console.log('**');
-            if (response) {
-                this.setAuth(response);
-            }
-        } catch { this.logout()}
+            await this.refreshToken().then(token => {
+                if (token) {
+                    this.setAuth(token);
+                }
+            });
+        } catch { 
+            this.logout();
+        }
     }
 
     setAuth(authInfo: AuthInfo) {
@@ -70,7 +70,7 @@ class AuthStore {
     }
 
     checkRole(roles?: string[]) {
-        return roles?.includes(this.userRole ?? '')
+        return roles?.includes(this.userRole ?? '');
     }
 
     async login(loginCreds: LoginRequest) {
@@ -80,7 +80,7 @@ class AuthStore {
             const response = await AuthService.login(loginCreds);
             this.setAuth(response.data);
         } catch (e) {
-            console.log('login error '.concat((e as Error).message));
+            console.log('login error: '.concat((e as Error).message));
         } finally {
             this.setLoading(false);
         }
@@ -93,7 +93,8 @@ class AuthStore {
             const response = await AuthService.loginWithGoogle(token);
             this.setAuth(response.data);
         } catch (e) {
-            console.log('login error '.concat((e as Error).message));
+            console.log('*' + authStore.error);
+            console.log('login error: '.concat((e as Error).message));
         } finally {
             this.setLoading(false);
         }
@@ -106,7 +107,7 @@ class AuthStore {
             const response = await AuthService.register(registerInfo);
             this.setAuth(response.data);
         } catch (e) {
-            console.log('register error '.concat((e as Error).message));
+            console.log('register error: '.concat((e as Error).message));
         } finally {
             this.setLoading(false);
         }
@@ -121,7 +122,7 @@ class AuthStore {
             const response = await AuthService.refresh(refreshToken);
             return Promise.resolve(response.data);
         } catch (e) {
-            console.log('refresh token error '.concat((e as Error).message));
+            console.log('refresh token error: '.concat((e as Error).message));
             return Promise.reject();
         }
     }
