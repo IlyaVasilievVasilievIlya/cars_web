@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Close } from '@mui/icons-material';
 import { Box, Button, Drawer, List, Typography } from '@mui/material';
 import { observer } from 'mobx-react-lite';
-import { useNavigate } from 'react-router-dom';
-import { authStore } from '../../store/authStore';
 import { basketStore } from '../../store/basketStore';
 import '../styles.css';
 import { BasketListItem } from './BasketListItem';

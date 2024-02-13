@@ -90,3 +90,20 @@ export interface IOption {
 export interface UserInfo {
     role: string;
 }
+
+export interface QueryParameters {
+    pageNumber?: number;
+    pageSize?: number;
+}
+
+export interface CarQueryParameters extends QueryParameters {
+    carName: string;
+    model: string;
+    brand: string;
+    color: string;
+}
+
+export interface Pagination {
+    TotalCount: number;
+    TotalPages: number;
+}

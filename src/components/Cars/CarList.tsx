@@ -53,30 +53,21 @@ export const CarList: React.FC = observer(() => {
     }
   }
 
-  let carFilteredList = carsStore.cars.filter(item => (((item.color ?? '').toLowerCase()).includes(colorSearch.toLowerCase()))
-    && ((item.brand.brand.toLowerCase()).includes(brandSearch.toLowerCase())) 
-    && ((item.brand.model.toLowerCase()).includes(modelSearch.toLowerCase())) 
-    && (((item.brand.brand + ' ' + item.brand.model).toLowerCase()).includes(carSearch.toLowerCase())));
-
-
-  const totalCount = carFilteredList.length;
-  
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
-
-  if (totalPages < page && totalPages !== 0) {
-    setPage(totalPages);
-  }
-  
-  carFilteredList = carFilteredList.slice((page - 1) * PAGE_SIZE, (page) * PAGE_SIZE);
-
-  const carList = carFilteredList.map(carElem =>
+  const carList = carsStore.cars.map(carElem =>
     <CarListItem car={carElem} openEdit={openEditModal} openDelete={openDeleteModal} key={carElem.carId} />
   );
 
   useEffect(() => {
-    carsStore.fetchCars();
+    carsStore.fetchCars({
+      pageNumber: page, 
+      pageSize: PAGE_SIZE, 
+      carName: carSearch, 
+      color: colorSearch, 
+      model: modelSearch, 
+      brand: brandSearch});
+
     brandModelsStore.fetchBrandModels();
-  }, [])
+  }, [colorSearch, modelSearch, carSearch, brandSearch, page])
 
   return (
     <>
@@ -92,10 +83,11 @@ export const CarList: React.FC = observer(() => {
 
       {authStore.checkRole([ROLES.Manager, ROLES.Admin, ROLES.SuperUser]) && <AddCar />}
 
-      {!carsStore.fetchError && !carsStore.loading && !!totalCount && 
+
+      {!carsStore.fetchError && !carsStore.loading && !!carsStore.pagination?.TotalPages &&
         <>
           <Pagination
-            count={totalPages}
+            count={carsStore.pagination?.TotalPages}
             page={page}
             onChange={(_, num) => setPage(num)}/>
           <List>

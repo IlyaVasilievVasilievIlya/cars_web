@@ -1,4 +1,4 @@
-import { Car } from '../components/model';
+import { Car, CarQueryParameters, Pagination } from '../components/model';
 import { makeAutoObservable } from 'mobx';
 import { CarsService } from '../services/CarService';
 
@@ -11,12 +11,18 @@ class CarsStore {
 
     loading: boolean = false;
 
+    pagination?: Pagination;
+
     constructor(){
         makeAutoObservable(this);
     }
 
     setCars(cars: Car[]) {
         this.cars = cars;
+    }
+
+    setPagination(pagination: Pagination) {
+        this.pagination = pagination;
     }
 
     setFetchError(error?: string) {
@@ -78,11 +84,12 @@ class CarsStore {
         }
     }
 
-    async fetchCars() {
+    async fetchCars(params: CarQueryParameters) {
         this.setFetchError();
         this.setLoading(true);
         try {
-            const response = await CarsService.fetchCars();
+            const response = await CarsService.fetchCars(params);
+            this.setPagination(JSON.parse(response.headers['pagination']));
             this.setCars(response.data);
         } catch (e) {
             console.log('fetch cars error: '.concat((e as Error).message));
@@ -91,6 +98,6 @@ class CarsStore {
             this.setLoading(false);
         }
     }
-};
+}
 
 export const carsStore = new CarsStore();

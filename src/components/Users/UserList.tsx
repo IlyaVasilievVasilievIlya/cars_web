@@ -28,16 +28,15 @@ export const UserList: React.FC = observer(() => {
         }
     }
 
-    const paginatedList = usersStore.users.slice((page - 1) * PAGE_SIZE, (page) * PAGE_SIZE);
-
-    const totalPages = Math.ceil(usersStore.users.length / PAGE_SIZE);
-
-    let userList = paginatedList.map(userElem =>
+    const userList = usersStore.users.map(userElem =>
         <UserListItem user={userElem} openEdit={openEditModal} key={userElem.id} />);
 
     useEffect(() => {
-        usersStore.fetchUsers();
-    }, [])
+        usersStore.fetchUsers({
+            pageNumber: page,
+            pageSize: PAGE_SIZE
+        });
+    }, [page])
 
     return (
         <>
@@ -49,7 +48,7 @@ export const UserList: React.FC = observer(() => {
             {!usersStore.fetchError && !usersStore.loading && !!usersStore.users.length &&
                 <>
                     <Pagination
-                        count={totalPages}
+                        count={usersStore.pagination?.TotalPages}
                         page={page}
                         onChange={(_, num) => setPage(num)}/>
                     <List>

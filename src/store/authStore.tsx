@@ -93,7 +93,6 @@ class AuthStore {
             const response = await AuthService.loginWithGoogle(token);
             this.setAuth(response.data);
         } catch (e) {
-            console.log('*' + authStore.error);
             console.log('login error: '.concat((e as Error).message));
         } finally {
             this.setLoading(false);

@@ -1,10 +1,21 @@
 import { AxiosResponse } from "axios";
 import { api } from "./http";
-import { Car, EditCarRequest } from "../components/model";
+import { Car, CarQueryParameters, EditCarRequest } from "../components/model";
 
 export class CarsService {
+
+    static createParamsObject(parameters: CarQueryParameters) {
+        let k: keyof CarQueryParameters;
+        for (k in parameters) {
+            if (!parameters[k]) {
+                delete parameters[k];
+            }
+        }
+        return parameters;
+    }
+
     static async deleteCar(id: number): Promise<AxiosResponse<void>>  {
-        return api.delete(
+        return api.delete( 
             `/Cars/${id}`,
         )
     }
@@ -21,9 +32,9 @@ export class CarsService {
             JSON.stringify(editedCar))
     }
 
-    static async fetchCars(): Promise<AxiosResponse<Car[]>> {
+    static async fetchCars(parameters: CarQueryParameters): Promise<AxiosResponse<Car[]>> {
         return api.get(
-            '/Cars'
+            '/Cars', {params: {...this.createParamsObject(parameters)}}
         )
     }
 }

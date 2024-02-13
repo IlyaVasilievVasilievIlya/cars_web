@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { api } from "./http";
-import { ChangeUserRoleRequest, EditUserRequest, UserResponse } from "../components/model";
+import { ChangeUserRoleRequest, EditUserRequest, QueryParameters, UserResponse } from "../components/model";
 
 export class UserService {
 
@@ -25,9 +25,9 @@ export class UserService {
             `/Users/${id}/role`, newRole.role)
     }
 
-    static async fetchUsers(): Promise<AxiosResponse<UserResponse[]>> {
+    static async fetchUsers(parameters: QueryParameters): Promise<AxiosResponse<UserResponse[]>> {
         return api.get(
-            '/Users'
+            '/Users', {params: {...parameters}}
         )
     }
 }

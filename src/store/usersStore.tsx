@@ -1,4 +1,4 @@
-import { ChangeUserRoleRequest, EditUserRequest, User } from '../components/model';
+import { ChangeUserRoleRequest, EditUserRequest, Pagination, QueryParameters, User } from '../components/model';
 import { makeAutoObservable } from 'mobx';
 import { UserService } from '../services/UserService';
 
@@ -11,12 +11,18 @@ class UsersStore {
 
     loading: boolean = false;
 
+    pagination?: Pagination;
+
     constructor(){
         makeAutoObservable(this);
     }
 
     setUsers(users: User[]) {
         this.users = users;
+    }
+
+    setPagination(pagination: Pagination) {
+        this.pagination = pagination;
     }
 
     setFetchError(error?: string) {
@@ -61,11 +67,12 @@ class UsersStore {
         }
     }
 
-    async fetchUsers() {
+    async fetchUsers(params: QueryParameters) {
         this.setFetchError();
         this.setLoading(true);
         try {
-            const response = await UserService.fetchUsers();
+            const response = await UserService.fetchUsers(params);
+            this.setPagination(JSON.parse(response.headers['pagination']));
             this.setUsers(response.data.map(elem => ({...elem, birthDate: new Date(elem.birthDate)})));
         } catch (e) {
             console.log('fetchusers error: '.concat((e as Error).message));
