@@ -32,7 +32,7 @@ export const Header: React.FC = () => {
                     <Box sx={{ flexGrow: 1, px: 2 }}>
                         {navMenu}
                     </Box>
-                    {authStore.isAuth &&
+                    {authStore.User &&
                         <IconButton color='secondary' onClick={() => setIsBasketOpen(!isBasketOpen)}>
                             <ShoppingBasket />
                         </IconButton>}

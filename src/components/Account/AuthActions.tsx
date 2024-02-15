@@ -7,7 +7,7 @@ import { ROUTES } from '../../common/routes';
 export const AuthActions: React.FC = () => {
 
     return (
-        authStore.isAuth ? (
+        authStore.User ? (
             <NavLink to={ROUTES.Logout} key={ROUTES.Logout}>
                 Logout
             </NavLink>)

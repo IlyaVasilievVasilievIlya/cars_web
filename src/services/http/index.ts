@@ -1,7 +1,7 @@
 import axios from "axios";
 import { authStore } from "../../store/authStore";
 
-export const API_URL = "http://localhost:10000/api";
+export const API_URL = "http://localhost:5202/api";
 //5202
 //10000
 
@@ -29,7 +29,7 @@ authApi.interceptors.response.use(config => {
 }))
 
 api.interceptors.request.use(config => {
-    if (authStore.isAuth) {
+    if (authStore.User) {
         config.headers.Authorization = `bearer ${localStorage.getItem('accessToken')}`;
     }
     return config;

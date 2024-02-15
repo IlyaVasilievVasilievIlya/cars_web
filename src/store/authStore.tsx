@@ -1,11 +1,10 @@
-import { jwtDecode } from "jwt-decode";
 import { makeAutoObservable } from 'mobx';
 import { AuthInfo, LoginRequest, RegisterRequest, UserInfo } from '../components/model';
 import { AuthService } from '../services/AuthService';
 import { basketStore } from './basketStore';
 
 class AuthStore {
-    isAuth?: boolean;
+    User?: UserInfo;
 
     error?: string;
 
@@ -13,51 +12,35 @@ class AuthStore {
 
     loading: boolean = false;
 
-    userRole?: string;
-
     authChecked = false;
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    setIsAuth(isAuth: boolean = true) {
-        this.isAuth = isAuth;
-    }
-
-    setUserRole(role?:string) {
-        this.userRole = role;
+    setUser(user?: UserInfo) {
+        this.User = user;
     }
 
     async checkAuth() { 
-        if (!localStorage.getItem('refreshToken') || this.authChecked) {
-            return;
-        }
-
-        this.authChecked = true;
         try {
             await this.refreshToken().then(token => {
                 if (token) {
                     this.setAuth(token);
                 }
             });
-        } catch { 
-            this.logout();
+        } catch (e) { 
+            console.log('cannot refresh token: '.concat((e as Error).message));
         }
     }
 
     setAuth(authInfo: AuthInfo) {
-        this.setLocalStorage(authInfo);
-        this.setIsAuth();
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-            this.setUserRole(jwtDecode<UserInfo>(token).role);
-        }
+        this.setLocalStorage(authInfo.accessToken);
+        this.setUser(authInfo.userInfo);
     }
     
-    setLocalStorage(authInfo: AuthInfo) {
-        localStorage.setItem('accessToken', authInfo.accessToken);
-        localStorage.setItem('refreshToken', authInfo.refreshToken);
+    setLocalStorage(accessToken: string) {
+        localStorage.setItem('accessToken', accessToken);
     }
     
     setError(error?: string, errorCode?: number) {
@@ -70,7 +53,7 @@ class AuthStore {
     }
 
     checkRole(roles?: string[]) {
-        return roles?.includes(this.userRole ?? '');
+        return roles?.includes(this.User?.role ?? '');
     }
 
     async login(loginCreds: LoginRequest) {
@@ -114,23 +97,19 @@ class AuthStore {
 
     async refreshToken(): Promise<AuthInfo | undefined> {
         this.setError();
-        let refreshToken : string | null;
-        if (!(refreshToken = localStorage.getItem('refreshToken')))
-            return Promise.reject();
         try {
-            const response = await AuthService.refresh(refreshToken);
+            const response = await AuthService.refresh();
             return Promise.resolve(response.data);
         } catch (e) {
             console.log('refresh token error: '.concat((e as Error).message));
-            return Promise.reject();
+            return Promise.reject(e);
         }
     }
 
     logout() {
         localStorage.clear();
         basketStore.clear();
-        this.setUserRole();
-        this.setIsAuth(false);
+        this.setUser(undefined);
     }
 };
 

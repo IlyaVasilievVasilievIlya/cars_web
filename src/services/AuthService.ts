@@ -23,10 +23,9 @@ export class AuthService {
             JSON.stringify({...registerInfo, birthDate: UserService.formatDate(registerInfo.birthDate)}))
     }
 
-    static async refresh(refreshToken: string): Promise<AxiosResponse<AuthInfo>> {
+    static async refresh(): Promise<AxiosResponse<AuthInfo>> {
         return authApi.post<AuthInfo>(
-            '/Identity/token/refreshing',
-            JSON.stringify({refreshToken: refreshToken})
+            '/Identity/token/refreshing'
         )
     }
 }

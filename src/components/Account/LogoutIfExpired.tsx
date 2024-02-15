@@ -7,6 +7,6 @@ export const LogoutIfExpired = () => {
     const location = useLocation();
 
     return (
-        (authStore.isAuth) ?  null : <Navigate to={ROUTES.Logout} state={{from: location}}/>
+        (authStore.User) ?  null : <Navigate to={ROUTES.Logout} state={{from: location}}/>
     )
 }

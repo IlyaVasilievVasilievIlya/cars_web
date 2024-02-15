@@ -12,13 +12,13 @@ export const RequireAuth = ({allowedRoles}: RequireAuthProps) => {
     const location = useLocation();
 
     const resolveAuth = () => {
-        if (authStore.checkRole(allowedRoles)) {
-            return <Outlet/>
+        if (!authStore.User) {
+            return <Navigate to={ROUTES.Login} state={{from: location}} replace={true}/>
         }
-        if (authStore.isAuth){
+        if (!authStore.checkRole(allowedRoles)){
             return <Navigate to={ROUTES.Unauthorized} />
         }
-        return <Navigate to={ROUTES.Login} state={{from: location}} replace={true}/>
+        return <Outlet/>
     }
 
     return (

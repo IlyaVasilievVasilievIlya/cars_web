@@ -40,7 +40,7 @@ export interface RegisterRequest {
 
 export interface AuthInfo {
     accessToken: string;
-    refreshToken: string;
+    userInfo: UserInfo;
 }
 
 export type UserRole = typeof roleList[number]
