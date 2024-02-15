@@ -9,7 +9,8 @@ export const authApi = axios.create({
     baseURL: API_URL,
     headers: {
         "Content-Type" : 'application/json;charset=utf-8'
-    }
+    },
+    withCredentials: true
 })
 
 export const api = axios.create({
@@ -52,7 +53,7 @@ api.interceptors.response.use(response => {
         return refreshTokenPromise.then(() => {
             return api.request(prevRequest);
         }).catch(_ => {
-            authStore.logout();
+            authStore.logOut();
             authStore.setError(undefined, 401);
         })
     }

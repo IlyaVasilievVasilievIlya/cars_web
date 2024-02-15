@@ -106,10 +106,17 @@ class AuthStore {
         }
     }
 
-    logout() {
-        localStorage.clear();
-        basketStore.clear();
-        this.setUser(undefined);
+    async logOut(): Promise<void> {
+        this.setError();
+        try {
+            await AuthService.logOut();
+            localStorage.clear();
+            basketStore.clear();
+            this.setUser(undefined);
+        } catch (e) {
+            console.log('refresh token error: '.concat((e as Error).message));
+            return Promise.reject(e);
+        }
     }
 };
 

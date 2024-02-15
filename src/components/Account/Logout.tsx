@@ -9,7 +9,7 @@ export const Logout: React.FC = () => {
     const location = useLocation();
 
     useLayoutEffect(() => {
-        authStore.logout();
+        await authStore.logOut();
     }, [])
     
     return <Navigate to={ROUTES.Login} replace={true} state={{from: location.state?.from?.pathname}}/>

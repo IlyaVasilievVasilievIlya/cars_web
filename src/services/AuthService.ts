@@ -17,6 +17,12 @@ export class AuthService {
         )
     }
 
+    static async logOut(): Promise<AxiosResponse<void>> {
+        return authApi.post<void>(
+            '/Identity/logout'
+        )
+    }
+
     static async register(registerInfo: RegisterRequest): Promise<AxiosResponse<AuthInfo>> {
         return authApi.post<AuthInfo>(
             '/Identity/signup',
