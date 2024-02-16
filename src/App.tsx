@@ -1,13 +1,10 @@
-import { ThemeProvider } from '@mui/material';
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import { CircularProgress, LinearProgress, ThemeProvider } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import './App.css';
-import { CLIENT_ID } from './common/externalAuthConfig';
 import { router } from './common/routes';
 import { mainTheme } from './common/themes';
 import { authStore } from './store/authStore';
-
 
 const App: React.FC = function () {
 
@@ -20,13 +17,11 @@ const App: React.FC = function () {
     }, [])
 
     return (
-        <GoogleOAuthProvider clientId={CLIENT_ID}>
-            <ThemeProvider theme={mainTheme}>
-                {!isLoading && <div className="App">
-                    <RouterProvider router={router} />
-                </div>}
-            </ThemeProvider>
-        </GoogleOAuthProvider>
+        <ThemeProvider theme={mainTheme}>
+            {isLoading ? <LinearProgress/> : <div className="App">
+                <RouterProvider router={router} />
+            </div>}
+        </ThemeProvider>
     );
 }
 

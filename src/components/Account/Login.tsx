@@ -1,6 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, CircularProgress, Container, Grid, TextField, Typography } from "@mui/material";
-import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Navigate, useLocation } from "react-router-dom";
@@ -10,6 +9,8 @@ import { authStore } from '../../store/authStore';
 import { ErrorSnack } from "../ErrorSnack";
 import { Header } from "../Header";
 import { LoginRequest } from '../model';
+import { google } from '../..';
+import { CLIENT_ID } from '../../common/externalAuthConfig';
 
 export const Login: React.FC = () => {
 
@@ -21,6 +22,14 @@ export const Login: React.FC = () => {
     }
 
     useEffect(() => {
+        google.accounts.id.initialize({
+            client_id: CLIENT_ID,
+            callback: tryGoogleLogin });
+        google.accounts.id.renderButton(
+            document.getElementById("signInDiv"),
+            {theme: "outline", type: "icon"}
+        );
+
         return () => authStore.setError(undefined)
     }, []);
 
@@ -30,7 +39,7 @@ export const Login: React.FC = () => {
         resolver: yupResolver(loginSchema)
     });
 
-    const tryGoogleLogin = async (response: CredentialResponse) => {
+    const tryGoogleLogin = async (response: any) => {
         if (!response.credential) {
             return;
         }
@@ -103,8 +112,7 @@ export const Login: React.FC = () => {
                 </Box>
                 <Box display={"flex"} flexDirection={"column"}>
                     <Button type="submit" onClick={handleSubmit(tryLogin)} sx={{ height: "50px" }}>{authStore.loading ? <CircularProgress /> : 'Войти'}</Button>
-                    <GoogleLogin type="icon"
-                        onSuccess={tryGoogleLogin} />
+                    <Container id="signInDiv"></Container>
                 </Box>
             </Container>
             {authStore.error && <ErrorSnack error={authStore.error} />}
