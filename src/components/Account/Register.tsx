@@ -16,7 +16,9 @@ import { RegisterRequest } from "../model";
 
 export const Register: React.FC = () => {
 
-    useEffect(() => authStore.setError(), []);
+    useEffect(() => {
+        return () => authStore.setError(undefined)
+    }, []);
 
     const { handleSubmit, formState: { errors }, control } = useForm({
         resolver: yupResolver(registerSchema)

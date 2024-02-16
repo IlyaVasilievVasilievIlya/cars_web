@@ -107,3 +107,8 @@ export interface Pagination {
     TotalCount: number;
     TotalPages: number;
 }
+
+export type PromiseCallback = {
+    resolve: () => void
+    reject: (e: unknown) => void
+}

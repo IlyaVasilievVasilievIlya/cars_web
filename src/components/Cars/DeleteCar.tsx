@@ -1,12 +1,10 @@
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { authStore } from '../../store/authStore';
+import { useEffect, useState } from 'react';
 import { carsStore } from '../../store/carsStore';
+import { LogoutIfExpired } from '../Account/LogoutIfExpired';
 import { ErrorSnack } from '../ErrorSnack';
 import { Car } from '../model';
 import { DialogHeader } from '../ui-kit/DialogHeader';
-import { LogoutIfExpired } from '../Account/LogoutIfExpired';
-import { useEffect, useState } from 'react';
 
 interface DeleteCarProps {
     car: Car

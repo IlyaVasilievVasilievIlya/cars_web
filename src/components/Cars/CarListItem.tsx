@@ -19,8 +19,7 @@ interface CarListItemProps {
 
 export const CarListItem: React.FC<CarListItemProps> = observer(({ car, openDelete, openEdit }: CarListItemProps) => {
 
-    const [isInBasket, setInBasket] = useState(false);
-
+    const [isInBasket, setInBasket] = useState(basketStore.contains(car.carId));
 
     function toggleAdd() {
         setInBasket(!isInBasket);

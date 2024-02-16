@@ -1,16 +1,22 @@
-import { Navigate, useLocation } from "react-router-dom"
-import { authStore } from "../../store/authStore"
 import { useLayoutEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../common/routes";
+import { authStore } from "../../store/authStore";
 
 
 export const Logout: React.FC = () => {
     
     const location = useLocation();
 
+    const navigate = useNavigate();
+
+    const fromPage = location.state?.from?.pathname ?? ROUTES.Home;
+
     useLayoutEffect(() => {
-        await authStore.logOut();
-    }, [])
+        authStore.logOut()
+            .then(() => navigate(ROUTES.Login, {replace: true, state:{from: fromPage}}))
+            .catch(() => navigate(fromPage, {replace: true}));
+    }, [fromPage, navigate])
     
-    return <Navigate to={ROUTES.Login} replace={true} state={{from: location.state?.from?.pathname}}/>
+    return null;
 }

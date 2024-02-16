@@ -30,6 +30,7 @@ class AuthStore {
                 }
             });
         } catch (e) { 
+            authStore.setError(undefined);
             console.log('cannot refresh token: '.concat((e as Error).message));
         }
     }

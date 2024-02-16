@@ -1,14 +1,15 @@
 import axios from "axios";
 import { authStore } from "../../store/authStore";
+import { PromiseCallback } from "../../components/model";
 
-export const API_URL = "http://localhost:5202/api";
+export const API_URL = "http://localhost:10000/api";
 //5202
 //10000
 
 export const authApi = axios.create({
     baseURL: API_URL,
     headers: {
-        "Content-Type" : 'application/json;charset=utf-8'
+        "Content-Type": 'application/json;charset=utf-8'
     },
     withCredentials: true
 })
@@ -16,7 +17,7 @@ export const authApi = axios.create({
 export const api = axios.create({
     baseURL: API_URL,
     headers: {
-        "Content-Type" : 'application/json;charset=utf-8'
+        "Content-Type": 'application/json;charset=utf-8'
     }
 })
 
@@ -36,25 +37,43 @@ api.interceptors.request.use(config => {
     return config;
 })
 
-let refreshTokenPromise: Promise<void> | null;
+let isRefreshing = false;
+
+let refreshQueue: PromiseCallback[] = [];
 
 api.interceptors.response.use(response => {
     return response;
 }, (async error => {
     const prevRequest = error.config;
     if (error?.response?.status === 401) {
-        if (!refreshTokenPromise) {
-            refreshTokenPromise = authStore.refreshToken().then(token => {
-                refreshTokenPromise = null; 
+        if (!isRefreshing) {
+            isRefreshing = true;
+
+            authStore.refreshToken().then(token => {
                 if (token) {
                     authStore.setAuth(token);
-                }})
+                    refreshQueue.forEach((v) => v.resolve())
+                    refreshQueue = [];
+                }
+            }).catch(error => {
+                authStore.logOut();
+                authStore.setError(undefined, 401);
+                refreshQueue.forEach((v) => v.reject(error))
+                refreshQueue = [];
+            }).finally(() => {
+                    isRefreshing = false
+            })
         }
-        return refreshTokenPromise.then(() => {
-            return api.request(prevRequest);
-        }).catch(_ => {
-            authStore.logOut();
-            authStore.setError(undefined, 401);
+
+        return new Promise((resolve, reject) => {
+            refreshQueue.push({
+                resolve: () => {
+                    resolve(api.request(prevRequest))
+                },
+                reject: (err: unknown) => {
+                    reject(err)
+                }
+            })
         })
     }
     return Promise.reject(error);
