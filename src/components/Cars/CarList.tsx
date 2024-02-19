@@ -19,7 +19,7 @@ import { EditCar } from './EditCar';
 
 export const CarList: React.FC = observer(() => {
 
-  const [car, setCar] = useState<Car>({ carId: 0, brand: { carModelId: 0, brand: '', model: '' } });
+  const [car, setCar] = useState<Car>({ carId: 0, brand: { carModelId: 0, brand: '', model: '',}, image:'' });
 
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
 

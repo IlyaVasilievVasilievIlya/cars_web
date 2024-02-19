@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, MenuItem, Select, TextField } from '@mui/material';
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, Input, MenuItem, Select, TextField } from '@mui/material';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { brandModelsStore } from '../../store/brandModelsStore';
@@ -33,7 +33,7 @@ export const AddCar: React.FC = () => {
             return;
         }
 
-        await carsStore.addCar({ ...newCar, brand: brandModel, carId: 0 });
+        await carsStore.addCar({ ...newCar, brand: brandModel, carId: 0, image: newCar.image.text });
         if (!carsStore.actionError) {
             closeForm();
             return;
@@ -94,6 +94,18 @@ export const AddCar: React.FC = () => {
                                 }
                             />)}
                     />
+                    <Controller
+                        control={control}
+                        name="image"
+                        render={({field: {value, onChange, ...field }}) => 
+                                (
+                                    <Input
+                                    {...field}
+                                    onChange={(event) => {
+                                        onChange((event.currentTarget as HTMLInputElement)?.files[0]);
+                                    }}
+                                    type="file" />
+                                )}/>
                 </DialogContent>
                 <DialogActions>
                     <Button type="submit" onClick={handleSubmit(createCar)}>{carsStore.loading ? <CircularProgress size={20} /> : 'Добавить'}</Button>

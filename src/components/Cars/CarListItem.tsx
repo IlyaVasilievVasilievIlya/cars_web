@@ -2,7 +2,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
-import { Box, Card, CardActions, CardContent, IconButton, Typography } from '@mui/material';
+import { Box, Card, CardActions, CardContent, CardMedia, IconButton, Typography } from '@mui/material';
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import { ROLES } from "../../common/roles";
@@ -40,6 +40,11 @@ export const CarListItem: React.FC<CarListItemProps> = observer(({ car, openDele
                     <Typography variant={"body2"}>
                         {car.color}
                     </Typography>
+                    {car.image && 
+                    <CardMedia
+                        component="img"
+                        src={`data:image/jpeg;base64, ${car.image}`}
+                        alt="car image"/>}
                 </Box>
                 <CardActions>
                     {authStore.checkRole([ROLES.Manager, ROLES.Admin, ROLES.SuperUser]) &&

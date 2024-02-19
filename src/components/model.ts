@@ -10,11 +10,13 @@ export interface Car {
     carId: number;
     brand: BrandModel;
     color?: string;
+    image?: string;
 }
 
 export interface AddCarRequest {
     carModelId: number;
     color?: string;
+    image: File;
 }
 
 export interface EditCarRequest {
