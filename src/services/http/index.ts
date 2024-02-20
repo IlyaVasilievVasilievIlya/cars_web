@@ -2,7 +2,7 @@ import axios from "axios";
 import { authStore } from "../../store/authStore";
 import { PromiseCallback } from "../../components/model";
 
-export const API_URL = "http://localhost:5202/api";
+export const API_URL = "http://localhost:10000/api";
 //5202
 //10000
 

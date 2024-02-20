@@ -1,7 +1,7 @@
 import { Autocomplete, Box, Grid, TextField } from "@mui/material";
 import { brandModelsStore } from "../../store/brandModelsStore";
 import { debounce } from "../../common/functions";
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
 
 interface CarFiltersProps {
@@ -17,7 +17,7 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
 
     const brandList = Array.from(new Set(brandModelsStore.brandModels.map(model => model.brand)));
 
-    const filterColorDebounce = useMemo(() => debounce(filterColor, 200), [filterColor]);
+    const filterColorDebounce = useCallback(debounce(filterColor, 200), [filterColor]);
     const filterCarDebounce = useMemo(() => debounce(filterCar, 200), [filterCar]);
     const filterBrandDebounce = useMemo(() => debounce(filterBrand, 200), [filterBrand]);
     const filterModelDebounce = useMemo(() => debounce(filterModel, 200), [filterModel]);

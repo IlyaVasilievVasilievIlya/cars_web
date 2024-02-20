@@ -1,6 +1,9 @@
-import { Car, CarQueryParameters, Pagination } from '../components/model';
+import { AddCarRequest, Car, CarQueryParameters, EditCarRequest, Pagination } from '../components/model';
 import { makeAutoObservable } from 'mobx';
 import { CarsService } from '../services/CarService';
+import { brandModelsStore } from './brandModelsStore';
+import { getBase64 } from '../common/functions';
+import { basketStore } from './basketStore';
 
 class CarsStore {
     cars: Car[] = [];
@@ -46,7 +49,8 @@ class CarsStore {
         this.setLoading(true);
         try{
             await CarsService.deleteCar(id);
-            this.setCars(this.cars.filter((elem:Car) => elem.carId !== id));          
+            this.setCars(this.cars.filter((elem:Car) => elem.carId !== id));
+            basketStore.deleteIfContains(id);          
         } catch (e) {
            console.log('delete car error: '.concat((e as Error).message));
            this.setActionError((e as Error).message);
@@ -55,12 +59,25 @@ class CarsStore {
         }
     }
 
-    async addCar(newCar: Car) {
+    async addCar(newCar: AddCarRequest) {
         this.setActionError();
         this.setLoading(true);
+
+        const brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId === newCar.carModelId);
+        if (!brandModel) {
+            carsStore.setActionError('car model not found');
+            this.setLoading(false);
+            return;
+        }
         try {
             const response = await CarsService.addCar(newCar);
-            this.addCarAction({...newCar, carId: response.data});
+            let imageBase64: string | undefined;
+            try {
+                imageBase64 = await getBase64(newCar.image[0]);
+            } catch {
+                imageBase64 = undefined;
+            }
+            this.addCarAction({color: newCar.color, carId: response.data, image: imageBase64, brand: brandModel});
         } catch (e) {
             console.log('add car error: '.concat((e as Error).message));
             this.setActionError((e as Error).message);
@@ -69,13 +86,28 @@ class CarsStore {
         }
     }
 
-    async editCar(editedCar: Car) {
+    async editCar(editedCar: EditCarRequest) {
         this.setActionError();
         this.setLoading(true);
+
+        const brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId === editedCar.carModelId);
+        if (!brandModel) {
+            carsStore.setActionError('car model not found');
+            this.setLoading(false);
+            return;
+        }
         try {
-            await CarsService.editCar({carId: editedCar.carId, carModelId:editedCar.brand.carModelId, color: editedCar.color});
+            let imageBase64: string | undefined;
+            try {
+                imageBase64 = await getBase64(editedCar.image[0]);
+            } catch {
+                imageBase64 = undefined;
+            }
+            await CarsService.editCar(editedCar);
+            const editedCarView: Car = {...editedCar, image: imageBase64, brand: brandModel}
             this.setCars(this.cars.map((elem:Car) => (
-                elem.carId === editedCar.carId) ? editedCar : elem));
+                elem.carId === editedCar.carId) ? editedCarView : elem));
+            basketStore.deleteIfContains(editedCar.carId);
         } catch (e) {
             console.log('edit car error: '.concat((e as Error).message));
             this.setActionError((e as Error).message);

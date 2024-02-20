@@ -16,7 +16,7 @@ export const AddCar: React.FC = () => {
 
     const [modal, setModal] = useState(false);
 
-    const { handleSubmit, formState: { errors }, reset, control } = useForm<AddCarRequest>({
+    const { handleSubmit, formState: { errors }, reset, control, register } = useForm<AddCarRequest>({
         resolver: yupResolver(addCarSchema)
     });
 
@@ -26,14 +26,8 @@ export const AddCar: React.FC = () => {
         </MenuItem>);
 
     const createCar = async (newCar: AddCarRequest) => {
-        const brandModel = brandModelsStore.brandModels.find(elem => elem.carModelId === newCar.carModelId);
 
-        if (!brandModel) {
-            carsStore.setActionError('car model not found');
-            return;
-        }
-
-        await carsStore.addCar({ ...newCar, brand: brandModel, carId: 0, image: newCar.image.text });
+        await carsStore.addCar(newCar);
         if (!carsStore.actionError) {
             closeForm();
             return;
@@ -94,18 +88,9 @@ export const AddCar: React.FC = () => {
                                 }
                             />)}
                     />
-                    <Controller
-                        control={control}
-                        name="image"
-                        render={({field: {value, onChange, ...field }}) => 
-                                (
-                                    <Input
-                                    {...field}
-                                    onChange={(event) => {
-                                        onChange((event.currentTarget as HTMLInputElement)?.files[0]);
-                                    }}
-                                    type="file" />
-                                )}/>
+                    <Input
+                        {...register("image")}
+                        type="file" />
                 </DialogContent>
                 <DialogActions>
                     <Button type="submit" onClick={handleSubmit(createCar)}>{carsStore.loading ? <CircularProgress size={20} /> : 'Добавить'}</Button>

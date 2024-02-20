@@ -16,13 +16,14 @@ export interface Car {
 export interface AddCarRequest {
     carModelId: number;
     color?: string;
-    image: File;
+    image: FileList;
 }
 
 export interface EditCarRequest {
     carId: number;
     carModelId: number;
     color?: string;
+    image: FileList;
 }
 
 export interface LoginRequest {

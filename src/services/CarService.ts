@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { api } from "./http";
-import { Car, CarQueryParameters, EditCarRequest } from "../components/model";
+import { AddCarRequest, Car, CarQueryParameters, EditCarRequest } from "../components/model";
 
 export class CarsService {
 
@@ -20,16 +20,16 @@ export class CarsService {
         )
     }
 
-    static async addCar(newCar: Car): Promise<AxiosResponse<number>>  {
+    static async addCar(newCar: AddCarRequest): Promise<AxiosResponse<number>>  {
         return api.post(
             `/Cars`,
-            JSON.stringify({carModelId: newCar.brand.carModelId, color: newCar.color}))
+            {...newCar, image: newCar.image[0]}, {headers: { "Content-Type": "multipart/form-data"}})
     }
 
     static async editCar(editedCar: EditCarRequest): Promise<AxiosResponse<void>> {
         return api.put(
             `/Cars/${editedCar.carId}`,
-            JSON.stringify(editedCar))
+            {...editedCar, image: editedCar.image[0]}, {headers: { "Content-Type": "multipart/form-data"}})
     }
 
     static async fetchCars(parameters: CarQueryParameters): Promise<AxiosResponse<Car[]>> {

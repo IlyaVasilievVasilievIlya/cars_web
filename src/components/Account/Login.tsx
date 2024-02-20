@@ -112,7 +112,7 @@ export const Login: React.FC = () => {
                 </Box>
                 <Box display={"flex"} flexDirection={"column"}>
                     <Button type="submit" onClick={handleSubmit(tryLogin)} sx={{ height: "50px" }}>{authStore.loading ? <CircularProgress /> : 'Войти'}</Button>
-                    <Container id="signInDiv"></Container>
+                    {/* <Container id="signInDiv"></Container> */}
                 </Box>
             </Container>
             {authStore.error && <ErrorSnack error={authStore.error} />}

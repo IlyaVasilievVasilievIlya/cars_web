@@ -30,11 +30,13 @@ export const changeRoleSchema = object({
 
 export const addCarSchema = object({
     carModelId: number().required('Это обязательное поле'),
-    color: string().max(128, 'Поле не должно содержать более 128 символов')
+    color: string().max(128, 'Поле не должно содержать более 128 символов'),
+    image: mixed<FileList>().required('Файл обязателен')
 })
 
 export const editCarSchema = object({
     carModelId: number().required('Это обязательное поле'),
     color: string().max(128, 'Поле не должно содержать более 128 символов'),
-    carId: number().required()
+    carId: number().required(),
+    image: mixed<FileList>().required('Файл обязателен')
 })
