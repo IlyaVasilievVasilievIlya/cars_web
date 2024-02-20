@@ -1,7 +1,6 @@
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { carsStore } from '../../store/carsStore';
-import { LogoutIfExpired } from '../Account/LogoutIfExpired';
 import { ErrorSnack } from '../ErrorSnack';
 import { Car } from '../model';
 import { DialogHeader } from '../ui-kit/DialogHeader';
@@ -38,7 +37,6 @@ export const DeleteCar: React.FC<DeleteCarProps> = ({ car, isModalOpen, onClose 
 
     return (
         <>
-            <LogoutIfExpired/>
             <Dialog
                 open={isOpen}
                 onSubmit={() => deleteCar()}

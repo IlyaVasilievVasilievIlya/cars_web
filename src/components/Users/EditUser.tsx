@@ -6,7 +6,6 @@ import { ROLES, roleList } from '../../common/roles';
 import { changeRoleSchema, editUserSchema } from '../../common/schemes';
 import { authStore } from '../../store/authStore';
 import { usersStore } from '../../store/usersStore';
-import { LogoutIfExpired } from '../Account/LogoutIfExpired';
 import { ErrorSnack } from '../ErrorSnack';
 import { ChangeUserRoleRequest, EditUserRequest, User } from '../model';
 import { DialogHeader } from '../ui-kit/DialogHeader';
@@ -75,7 +74,6 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onClose, isModalOpen }
 
     return (
         <>
-            <LogoutIfExpired/>
             <Dialog
                 open={isModalOpen}
                 onClose={closeForm}>

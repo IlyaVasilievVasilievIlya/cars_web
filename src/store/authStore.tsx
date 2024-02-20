@@ -2,6 +2,8 @@ import { makeAutoObservable } from 'mobx';
 import { AuthInfo, LoginRequest, RegisterRequest, UserInfo } from '../components/model';
 import { AuthService } from '../services/AuthService';
 import { basketStore } from './basketStore';
+import { redirect } from "react-router-dom";
+import { ROUTES } from '../common/routes';
 
 class AuthStore {
     User?: UserInfo;

@@ -13,7 +13,6 @@ export const Header: React.FC = () => {
     const [isBasketOpen, setIsBasketOpen] = useState(false);
 
     const navMenu = navInfos.map(link => {
-
         if (authStore.checkRole(link.allowedRoles) || !link.allowedRoles) {
             return <NavLink to={link.path} key={link.path}>
                 {link.text}

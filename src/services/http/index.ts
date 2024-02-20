@@ -1,8 +1,9 @@
 import axios from "axios";
 import { authStore } from "../../store/authStore";
 import { PromiseCallback } from "../../components/model";
+import { ROUTES } from "../../common/routes";
 
-export const API_URL = "http://localhost:10000/api";
+export const API_URL = "http://localhost:5202/api";
 //5202
 //10000
 
@@ -56,7 +57,7 @@ api.interceptors.response.use(response => {
                     refreshQueue = [];
                 }
             }).catch(error => {
-                authStore.logOut();
+                authStore.logOut().then(() => window.location.href = ROUTES.Login);
                 authStore.setError(undefined, 401);
                 refreshQueue.forEach((v) => v.reject(error))
                 refreshQueue = [];

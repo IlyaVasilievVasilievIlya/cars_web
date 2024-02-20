@@ -16,10 +16,7 @@ export const Login: React.FC = () => {
 
     const location = useLocation();
 
-    let fromPage = location.state?.from?.pathname;
-    if (!fromPage || fromPage === ROUTES.Logout) {
-        fromPage = ROUTES.Home;
-    }
+    let fromPage = location.state?.from?.pathname ?? ROUTES.Home;
 
     useEffect(() => {
         google.accounts.id.initialize({

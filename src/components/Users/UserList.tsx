@@ -4,7 +4,6 @@ import { LinearProgress, List, Pagination } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { PAGE_SIZE } from '../../common/consts';
 import { usersStore } from '../../store/usersStore';
-import { LogoutIfExpired } from '../Account/LogoutIfExpired';
 import { ErrorSnack } from '../ErrorSnack';
 import { User } from '../model';
 import '../styles.css';
@@ -40,7 +39,6 @@ export const UserList: React.FC = observer(() => {
 
     return (
         <>
-            <LogoutIfExpired/>
             {usersStore.loading && <LinearProgress />}
 
             {usersStore.fetchError && <ErrorSnack error={usersStore.fetchError} />}
