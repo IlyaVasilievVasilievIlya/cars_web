@@ -5,10 +5,10 @@ import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
 
 interface CarFiltersProps {
-    filterCar: (car: string) => void;
-    filterColor: (color: string) => void;
-    filterBrand: (brand: string) => void;
-    filterModel: (model: string) => void;
+    filterCar: React.MutableRefObject<(car: string) => void>;
+    filterColor: React.MutableRefObject<(color: string) => void>;
+    filterBrand: React.MutableRefObject<(brand: string) => void>;
+    filterModel: React.MutableRefObject<(model: string) => void>;
 }
 
 export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, filterBrand, filterModel }) => {
@@ -16,11 +16,6 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
     const modelList = Array.from(new Set(brandModelsStore.brandModels.map(model => model.model)));
 
     const brandList = Array.from(new Set(brandModelsStore.brandModels.map(model => model.brand)));
-
-    const filterColorDebounce = useCallback(debounce(filterColor, 200), [filterColor]);
-    const filterCarDebounce = useMemo(() => debounce(filterCar, 200), [filterCar]);
-    const filterBrandDebounce = useMemo(() => debounce(filterBrand, 200), [filterBrand]);
-    const filterModelDebounce = useMemo(() => debounce(filterModel, 200), [filterModel]);
     
     const [color, setColor] = useState('');
     const [car, setCar] = useState('');
@@ -28,13 +23,13 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
     function setColorFilter(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const value = e.target.value as string;
         setColor(value);
-        filterColorDebounce(value);
+        filterColor.current(value);
     }
 
     function setCarFilter(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const value = e.target.value as string;
         setCar(value);
-        filterCarDebounce(value);
+        filterCar.current(value);
     }
 
     return (
@@ -63,7 +58,7 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
                         options={brandList}
                         fullWidth
                         onInputChange={(_, newInputValue) => {
-                            filterBrandDebounce(newInputValue);
+                            filterBrand.current(newInputValue);
                         }}
                         renderInput={(params) => <TextField {...params} label="Бренд" />} />
                 </Grid>
@@ -72,7 +67,7 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
                         options={modelList}
                         fullWidth
                         onInputChange={(_, newInputValue) => {
-                            filterModelDebounce(newInputValue);
+                            filterModel.current(newInputValue);
                         }}
                         renderInput={(params) => <TextField {...params} label="Марка" />} />
                 </Grid>

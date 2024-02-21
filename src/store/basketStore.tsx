@@ -2,9 +2,9 @@ import { BasketItem } from '../components/model';
 import { makeAutoObservable } from 'mobx';
 
 class BasketStore {
-    basket: BasketItem[]; 
+    basket: BasketItem[];
 
-    constructor(){
+    constructor() {
         this.basket = JSON.parse(localStorage.getItem('basket') || '[]') || [];
         makeAutoObservable(this);
     }
@@ -18,12 +18,18 @@ class BasketStore {
         this.refreshLocalStorage();
     }
 
-    contains(id: number){
+    contains(id: number) {
         return this.basket.find(elem => elem.id === id) ? true : false;
     }
 
     deleteProduct(id: number) {
-        this.setBasket(this.basket.filter((elem:BasketItem) => elem.id !== id)); 
+        this.setBasket(this.basket.filter((elem: BasketItem) => elem.id !== id));
+    }
+
+    deleteIfContains(id: number) {
+        if (this.contains(id)) {
+            this.deleteProduct(id);
+        }
     }
 
     deleteIfContains(id: number) {

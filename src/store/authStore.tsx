@@ -24,9 +24,9 @@ class AuthStore {
 
     async checkAuth() { 
         try {
-            await this.refreshToken().then(token => {
-                if (token) {
-                    this.setAuth(token);
+            await AuthService.checkAuth().then(userInfo => {
+                if (userInfo) {
+                    this.setUser(userInfo.data);
                 }
             });
         } catch (e) { 

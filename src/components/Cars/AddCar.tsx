@@ -7,7 +7,6 @@ import { carsStore } from '../../store/carsStore';
 import { ErrorSnack } from '../ErrorSnack';
 import { AddCarRequest } from '../model';
 import { DialogHeader } from '../ui-kit/DialogHeader';
-import { LogoutIfExpired } from '../Account/LogoutIfExpired';
 import { addCarSchema } from '../../common/schemes';
 
 
@@ -42,7 +41,6 @@ export const AddCar: React.FC = () => {
 
     return (
         <>
-            <LogoutIfExpired />
             <Button type="button" onClick={() => setModal(true)}>
                 Добавить
             </Button>

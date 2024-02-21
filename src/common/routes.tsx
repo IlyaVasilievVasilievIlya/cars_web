@@ -6,7 +6,6 @@ import { Register } from "../components/Account/Register";
 import { RequireAuth } from "../components/Account/RequireAuth";
 import { HomePage } from "../pages/HomePage";
 import { NotFoundPage } from "../pages/NotFoundPage";
-import { Logout } from "../components/Account/Logout";
 import { Unauthorized } from "../pages/UnauthorizedPage";
 import { ROLES } from "./roles";
 
@@ -20,7 +19,6 @@ interface NavInfo {
 
 export const ROUTES = {
     'Login': "/login",
-    'Logout': "/logout",
     'Register': "/register",
     'Cars': "/cars",
     'Users': '/users',
@@ -66,10 +64,6 @@ export const router = createBrowserRouter([
             {
                 path: "*",
                 element: <NotFoundPage/>
-            },
-            {
-                path: ROUTES.Logout,
-                element: <Logout/>
             },
             {
                 path: ROUTES.Unauthorized,

@@ -5,7 +5,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { editCarSchema } from '../../common/schemes';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { carsStore } from '../../store/carsStore';
-import { LogoutIfExpired } from '../Account/LogoutIfExpired';
 import { ErrorSnack } from '../ErrorSnack';
 import { Car, EditCarRequest } from '../model';
 import { DialogHeader } from '../ui-kit/DialogHeader';
@@ -56,7 +55,6 @@ export const EditCar: React.FC<EditCarProps> = ({ car, isModalOpen, onClose }: E
 
     return (
         <>
-            <LogoutIfExpired />
             <Dialog
                 open={isModalOpen}
                 onSubmit={handleSubmit(editCar)}

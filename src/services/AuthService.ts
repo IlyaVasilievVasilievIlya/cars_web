@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { AuthInfo, LoginRequest, RegisterRequest } from "../components/model";
+import { AuthInfo, LoginRequest, RegisterRequest, UserInfo } from "../components/model";
 import { authApi } from "./http";
 import { UserService } from "./UserService";
 
@@ -32,6 +32,12 @@ export class AuthService {
     static async refresh(): Promise<AxiosResponse<AuthInfo>> {
         return authApi.post<AuthInfo>(
             '/Identity/token/refreshing'
+        )
+    }
+
+    static async checkAuth(): Promise<AxiosResponse<UserInfo>> {
+        return authApi.get<UserInfo>(
+            '/Identity/checkingAuth'
         )
     }
 }

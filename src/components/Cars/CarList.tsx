@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { LinearProgress, List, Pagination } from '@mui/material';
 import { observer } from 'mobx-react-lite';
@@ -7,7 +7,6 @@ import { ROLES } from '../../common/roles';
 import { authStore } from '../../store/authStore';
 import { brandModelsStore } from '../../store/brandModelsStore';
 import { carsStore } from '../../store/carsStore';
-import { LogoutIfExpired } from '../Account/LogoutIfExpired';
 import { ErrorSnack } from '../ErrorSnack';
 import { Car } from '../model';
 import '../styles.css';
@@ -16,6 +15,7 @@ import { CarFilters } from './CarFilters';
 import { CarListItem } from './CarListItem';
 import { DeleteCar } from './DeleteCar';
 import { EditCar } from './EditCar';
+import { debounce } from '../../common/functions';
 
 export const CarList: React.FC = observer(() => {
 
@@ -32,6 +32,11 @@ export const CarList: React.FC = observer(() => {
   const [brandSearch, setBrandSearch] = useState('');
 
   const [modelSearch, setModelSearch] = useState('');
+
+  const filterColor = useRef(debounce(setColorSearch, 200));
+  const filterCar = useRef(debounce(setCarSearch, 200));
+  const filterBrand = useRef(debounce(setBrandSearch, 200));
+  const filterModel = useRef(debounce(setModelSearch, 200));
 
   const [page, setPage] = useState(1);
 
@@ -71,9 +76,7 @@ export const CarList: React.FC = observer(() => {
 
   return (
     <>
-      <LogoutIfExpired/>
-
-      <CarFilters filterCar={setCarSearch} filterColor={setColorSearch} filterBrand={setBrandSearch} filterModel={setModelSearch}/>
+      <CarFilters filterCar={filterCar} filterColor={filterColor} filterBrand={filterBrand} filterModel={filterModel}/>
 
       {carsStore.loading && <LinearProgress/>}
 
