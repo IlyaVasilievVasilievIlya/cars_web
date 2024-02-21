@@ -18,12 +18,12 @@ interface EditCarProps {
 export const EditCar: React.FC<EditCarProps> = ({ car, isModalOpen, onClose }: EditCarProps) => {
 
     const { handleSubmit, formState: { errors }, reset, control, register } = useForm<EditCarRequest>({
-        defaultValues: { carId: car.carId, color: car.color, carModelId: car.brand.carModelId },
+        defaultValues: { carId: car.carId, color: car.color ?? '', carModelId: car.brand.carModelId },
         resolver: yupResolver(editCarSchema)
     });
 
     useEffect(() => {
-        reset({ carId: car.carId, color: car.color, carModelId: car.brand.carModelId });
+        reset({ carId: car.carId, color: car.color ?? '', carModelId: car.brand.carModelId });
     }, [reset, car])
 
     let brandModelList = brandModelsStore.brandModels.map(model =>
@@ -83,15 +83,17 @@ export const EditCar: React.FC<EditCarProps> = ({ car, isModalOpen, onClose }: E
                                 type="text"
                                 fullWidth
                                 autoComplete='off'
-                                value={value}
+                                value={value ?? ''}
                                 onChange={onChange} sx={{ minHeight: '80px' }}
                                 placeholder='Введите цвет машины'
                                 helperText={errors.color?.message?.toString()}
                             />)}
                     />
-                    <Input
+                    <TextField
                         {...register("image")}
-                        type="file" />
+                        type="file" inputProps={{ accept: ".jpg" }}
+                        helperText={errors.image?.message?.toString()}>
+                    </TextField>
                 </DialogContent>
                 <DialogActions>
                     <Button type="submit" onClick={handleSubmit(editCar)}>{carsStore.loading ? <CircularProgress size={20} /> : 'Сохранить'}</Button>

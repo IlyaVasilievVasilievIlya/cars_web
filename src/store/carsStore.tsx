@@ -98,15 +98,17 @@ class CarsStore {
         }
         try {
             let imageBase64: string | undefined;
-            try {
-                imageBase64 = await getBase64(editedCar.image[0]);
-            } catch {
-                imageBase64 = undefined;
+            if (editedCar.image[0]) {
+                try {
+                    imageBase64 = await getBase64(editedCar.image[0]);
+                } catch {
+                    imageBase64 = undefined;
+                }
             }
             await CarsService.editCar(editedCar);
             const editedCarView: Car = {...editedCar, image: imageBase64, brand: brandModel}
             this.setCars(this.cars.map((elem:Car) => (
-                elem.carId === editedCar.carId) ? editedCarView : elem));
+                elem.carId === editedCar.carId) ? {...editedCarView, image: editedCar.image[0] ? imageBase64 : elem.image} : elem));
             basketStore.deleteIfContains(editedCar.carId);
         } catch (e) {
             console.log('edit car error: '.concat((e as Error).message));
