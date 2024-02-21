@@ -11,7 +11,8 @@ const App: React.FC = function () {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        authStore.checkAuth().finally(() => setIsLoading(false));
+        if (!authStore.authChecked)
+            authStore.checkAuth().finally(() => setIsLoading(false));
     }, [])
 
     return (

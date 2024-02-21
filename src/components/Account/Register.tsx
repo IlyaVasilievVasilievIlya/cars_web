@@ -3,7 +3,7 @@ import { Box, Button, CircularProgress, Container, Grid, TextField, Typography }
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateField } from '@mui/x-date-pickers/DateField';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Navigate } from "react-router-dom";
 import { ROUTES } from "../../common/routes";
@@ -16,9 +16,7 @@ import { RegisterRequest } from "../model";
 
 export const Register: React.FC = () => {
 
-    useEffect(() => {
-        return () => authStore.setError(undefined)
-    }, []);
+    const [error, setError] = useState<string | undefined>()
 
     const { handleSubmit, formState: { errors }, control } = useForm({
         resolver: yupResolver(registerSchema)
@@ -32,6 +30,8 @@ export const Register: React.FC = () => {
 
         if (!authStore.error) {
             setRegister(true);
+        } else {
+            setError(authStore.error);
         }
     }
 
@@ -166,7 +166,7 @@ export const Register: React.FC = () => {
                     <Button type="submit" onClick={handleSubmit(tryRegister)}>{authStore.loading ? <CircularProgress /> : 'Зарегистрироваться'}</Button>
                 </Box>
             </Container>
-            {authStore.error && <ErrorSnack error={authStore.error} />}
+            {error && <ErrorSnack error={error} />}
         </>
     )
 }

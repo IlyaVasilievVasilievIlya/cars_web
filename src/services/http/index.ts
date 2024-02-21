@@ -3,7 +3,7 @@ import { authStore } from "../../store/authStore";
 import { PromiseCallback } from "../../components/model";
 import { ROUTES } from "../../common/routes";
 
-export const API_URL = "http://localhost:5202/api";
+export const API_URL = "http://localhost:10000/api";
 //5202
 //10000
 

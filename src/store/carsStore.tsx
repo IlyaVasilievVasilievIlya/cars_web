@@ -1,6 +1,7 @@
 import { Car, CarQueryParameters, Pagination } from '../components/model';
 import { makeAutoObservable } from 'mobx';
 import { CarsService } from '../services/CarService';
+import { basketStore } from './basketStore';
 
 class CarsStore {
     cars: Car[] = [];
@@ -46,7 +47,8 @@ class CarsStore {
         this.setLoading(true);
         try{
             await CarsService.deleteCar(id);
-            this.setCars(this.cars.filter((elem:Car) => elem.carId !== id));          
+            this.setCars(this.cars.filter((elem:Car) => elem.carId !== id));
+            basketStore.deleteIfContains(id);          
         } catch (e) {
            console.log('delete car error: '.concat((e as Error).message));
            this.setActionError((e as Error).message);
@@ -76,6 +78,7 @@ class CarsStore {
             await CarsService.editCar({carId: editedCar.carId, carModelId:editedCar.brand.carModelId, color: editedCar.color});
             this.setCars(this.cars.map((elem:Car) => (
                 elem.carId === editedCar.carId) ? editedCar : elem));
+            basketStore.deleteIfContains(editedCar.carId);
         } catch (e) {
             console.log('edit car error: '.concat((e as Error).message));
             this.setActionError((e as Error).message);

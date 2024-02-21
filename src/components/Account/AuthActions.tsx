@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { authStore } from '../../store/authStore';
-import { ROUTES } from '../../common/routes';
 import { Button, LinearProgress } from '@mui/material';
+import React, { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../common/routes';
+import { authStore } from '../../store/authStore';
 
 export const AuthActions: React.FC = () => {
 
     const navigate = useNavigate();
-    const location = useLocation();
     const [loading, setLoading] = useState(false);
 
     const logOut = () => {
         setLoading(true);
         authStore.logOut()
-            .then(() => navigate(ROUTES.Login, { state: { from: location } }))
+            .then(() => navigate(ROUTES.Login))
             .catch(_ => { })
             .finally(() => setLoading(false));
     }
@@ -26,7 +25,7 @@ export const AuthActions: React.FC = () => {
             }
             else return (
                 authStore.User ? (
-                    <Button variant="text" onClick={logOut}>
+                    <Button variant="text" onClick={logOut} sx={{color: "var(--background-theme)", '&:hover': {color: 'white'}}  }>
                         Logout
                     </Button>)
                     : (

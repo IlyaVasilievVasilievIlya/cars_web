@@ -2,21 +2,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, CircularProgress, Container, Grid, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { google } from '../..';
+import { CLIENT_ID } from '../../common/externalAuthConfig';
 import { ROUTES } from '../../common/routes';
 import { loginSchema } from '../../common/schemes';
 import { authStore } from '../../store/authStore';
 import { ErrorSnack } from "../ErrorSnack";
 import { Header } from "../Header";
 import { LoginRequest } from '../model';
-import { google } from '../..';
-import { CLIENT_ID } from '../../common/externalAuthConfig';
 
 export const Login: React.FC = () => {
-
-    const location = useLocation();
-
-    let fromPage = location.state?.from?.pathname ?? ROUTES.Home;
 
     useEffect(() => {
         google.accounts.id.initialize({
@@ -27,10 +23,11 @@ export const Login: React.FC = () => {
             {theme: "outline", type: "icon"}
         );
 
-        return () => authStore.setError(undefined)
     }, []);
 
     const [login, setLogin] = useState(false);
+
+    const [error, setError] = useState<string | undefined>();
 
     const { handleSubmit, formState: { errors }, control } = useForm({
         resolver: yupResolver(loginSchema)
@@ -44,6 +41,8 @@ export const Login: React.FC = () => {
         await authStore.loginWithGoogle(response.credential);
         if (!authStore.error) {
             setLogin(true)
+        } else {
+            setError(authStore.error);
         }
     }
 
@@ -52,13 +51,15 @@ export const Login: React.FC = () => {
 
         if (!authStore.error) {
             setLogin(true);
+        } else {
+            setError(authStore.error);
         }
     }
 
     return (
         <>
             <Header />
-            {login && <Navigate to={fromPage} replace={true} />}
+            {login && <Navigate to={ROUTES.Home} replace={true} />}
             <Container component="main" maxWidth="sm" sx={{
                 padding: 4,
                 mt: 3,
@@ -112,7 +113,7 @@ export const Login: React.FC = () => {
                     <Container id="signInDiv"></Container>
                 </Box>
             </Container>
-            {authStore.error && <ErrorSnack error={authStore.error} />}
+            {error && <ErrorSnack error={error} />}
         </>
     )
 }
