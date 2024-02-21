@@ -1,26 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
+import { LinearProgress, ThemeProvider } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { RouterProvider } from 'react-router-dom';
 import './App.css';
+import { router } from './common/routes';
+import { mainTheme } from './common/themes';
+import { authStore } from './store/authStore';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App: React.FC = function () {
+
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        authStore.checkAuth().finally(() => setIsLoading(false));
+    }, [])
+
+    return (
+        <ThemeProvider theme={mainTheme}>
+            {isLoading ? <LinearProgress/> : <div className="App">
+                <RouterProvider router={router} />
+            </div>}
+        </ThemeProvider>
+    );
 }
 
 export default App;

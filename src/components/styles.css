@@ -1,0 +1,32 @@
+
+a {
+  text-decoration: none;
+  margin-right: 5px;
+  color: var(--background-theme);
+}
+
+a:visited {
+  color: var(--background-theme);
+}
+
+a:hover {
+  color: white;
+}
+
+.active {
+  color: black !important;
+  cursor: default;
+}
+
+:root {
+  --background-theme: #d5e8e8;
+  --main-theme: #69bfbf;
+  --border-style: 2px solid var(--main-theme)
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+   -webkit-box-shadow: 0 0 0 30px var(--background-theme) inset !important;
+}
