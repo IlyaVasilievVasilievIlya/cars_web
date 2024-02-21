@@ -30,3 +30,10 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active{
    -webkit-box-shadow: 0 0 0 30px var(--background-theme) inset !important;
 }
+
+.carImage {
+  height: auto;
+  max-height: 150px;
+  width: auto;
+  max-width: 250px;
+}

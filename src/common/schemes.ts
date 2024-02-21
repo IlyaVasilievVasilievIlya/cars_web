@@ -31,12 +31,23 @@ export const changeRoleSchema = object({
 export const addCarSchema = object({
     carModelId: number().required('Это обязательное поле'),
     color: string().max(128, 'Поле не должно содержать более 128 символов'),
-    image: mixed<FileList>().required('Файл обязателен')
+    image: mixed<FileList>().required("Файл не выбран")
+        .test('Файл не выбран', 'Файл не выбран', (list) => {
+            if (!list || !list[0]) return false;
+            return true;
+        })
+        .test('Некорретный размер файла', 'Некорретный размер файла', (list) => { 
+            if (!list || !list[0]) return true;
+            if (list![0].size === 0 || list![0].size > 2000000) return false;
+            return true;
+        })
+        .test('Некорректное расширение файла', 'Некорректное расширение файла', (list) => {
+            if (!list || !list[0]) return true;
+            if (list![0].type !== "image/jpeg") return false;
+            return true;
+        })
 })
 
-export const editCarSchema = object({
-    carModelId: number().required('Это обязательное поле'),
-    color: string().max(128, 'Поле не должно содержать более 128 символов'),
-    carId: number().required(),
-    image: mixed<FileList>().required('Файл обязателен')
+export const editCarSchema = addCarSchema.shape({
+    carId: number().required()
 })

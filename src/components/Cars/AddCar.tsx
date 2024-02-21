@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, Input, MenuItem, Select, TextField } from '@mui/material';
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Input, MenuItem, Select, TextField } from '@mui/material';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { brandModelsStore } from '../../store/brandModelsStore';
@@ -86,9 +86,11 @@ export const AddCar: React.FC = () => {
                                 }
                             />)}
                     />
-                    <Input
-                        {...register("image")}
-                        type="file" />
+                        <TextField 
+                            {...register("image")}
+                            type="file" inputProps={{accept:".jpg"}}
+                            helperText={errors.image?.message?.toString()}>
+                        </TextField>                     
                 </DialogContent>
                 <DialogActions>
                     <Button type="submit" onClick={handleSubmit(createCar)}>{carsStore.loading ? <CircularProgress size={20} /> : 'Добавить'}</Button>

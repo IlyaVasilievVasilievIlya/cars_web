@@ -32,12 +32,6 @@ class BasketStore {
         }
     }
 
-    deleteIfContains(id: number) {
-        if (this.contains(id)) {
-            this.deleteProduct(id);
-        }
-    }
-
     decrementCount(id: number) {
         const product = this.basket.find(product => product.id === id);
         if (product) {

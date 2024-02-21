@@ -44,6 +44,7 @@ export const CarListItem: React.FC<CarListItemProps> = observer(({ car, openDele
                     <CardMedia
                         component="img"
                         src={car.image}
+                        className="carImage"
                         alt="car image"/>}
                 </Box>
                 <CardActions>
