@@ -74,6 +74,10 @@ export const CarList: React.FC = observer(() => {
     brandModelsStore.fetchBrandModels();
   }, [colorSearch, modelSearch, carSearch, brandSearch, page])
 
+  if (carsStore.pagination?.TotalPages! !== 0 && carsStore.pagination?.TotalPages! < page){
+    setPage(1);
+  }
+
   return (
     <>
       <CarFilters filterCar={filterCar} filterColor={filterColor} filterBrand={filterBrand} filterModel={filterModel}/>
@@ -85,7 +89,6 @@ export const CarList: React.FC = observer(() => {
       {carsStore.fetchError && <ErrorSnack error={carsStore.fetchError} />}
 
       {authStore.checkRole([ROLES.Manager, ROLES.Admin, ROLES.SuperUser]) && <AddCar />}
-
 
       {!carsStore.fetchError && !carsStore.loading && !!carsStore.pagination?.TotalPages &&
         <>
