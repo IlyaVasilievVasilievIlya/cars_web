@@ -116,7 +116,13 @@ export const Login: React.FC = () => {
                     </Grid>
                 </Box>
                 <Box display={"flex"} flexDirection={"column"}>
-                    <Button type="submit" onClick={handleSubmit(tryLogin)} sx={{ height: "50px" }}>{authStore.loading ? <CircularProgress /> : 'Войти'}</Button>
+                    <Button 
+                        type="submit" 
+                        onClick={handleSubmit(tryLogin)} 
+                        sx={{ height: "50px" }} 
+                        disabled={authStore.loading}>
+                            {authStore.loading ? <CircularProgress /> : 'Войти'}
+                    </Button>
                     <Container id="signInDiv"></Container>
                 </Box>
             </Container>

@@ -175,7 +175,12 @@ export const Register: React.FC = () => {
                     </Grid>
                 </Box>
                 <Box display={"flex"} flexDirection={"column"} sx={{ height: "50px" }}>
-                    <Button type="submit" onClick={handleSubmit(tryRegister)}>{authStore.loading ? <CircularProgress /> : 'Зарегистрироваться'}</Button>
+                    <Button 
+                        type="submit" 
+                        onClick={handleSubmit(tryRegister)} 
+                        disabled={authStore.loading}>
+                            {authStore.loading ? <CircularProgress /> : 'Зарегистрироваться'}
+                    </Button>
                 </Box>
             </Container>
             {error && <ErrorSnack error={error} />}

@@ -159,7 +159,12 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onClose, isModalOpen }
                                     </TextField>)} />
                         </DialogContent>
                         <DialogActions sx={{ px: 2 }}>
-                            <Button type="submit" onClick={handleRoleSubmit(editRole)}>{usersStore.loading ? <CircularProgress size={20} /> : 'Сменить роль'}</Button>
+                            <Button 
+                                type="submit" 
+                                onClick={handleRoleSubmit(editRole)} 
+                                disabled={usersStore.loading}>
+                                    {usersStore.loading ? <CircularProgress size={20} /> : 'Сменить роль'}
+                            </Button>
                         </DialogActions>
                     </Box>}
                 <Button type="reset" onClick={closeForm}>Закрыть</Button>

@@ -104,7 +104,12 @@ export const AddCar: React.FC = () => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button type="submit" onClick={handleSubmit(createCar)}>{carsStore.loading ? <CircularProgress size={20} /> : 'Добавить'}</Button>
+                    <Button
+                        type="submit" 
+                        onClick={handleSubmit(createCar)} 
+                        disabled={carsStore.loading}>
+                            {carsStore.loading ? <CircularProgress size={20} /> : 'Добавить'}
+                    </Button>
                     <Button type="reset" onClick={closeForm}>Закрыть</Button>
                 </DialogActions>
             </Dialog>

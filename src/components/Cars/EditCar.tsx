@@ -100,7 +100,12 @@ export const EditCar: React.FC<EditCarProps> = ({ car, isModalOpen, onClose }: E
                 />
             </DialogContent>
             <DialogActions>
-                <Button type="submit" onClick={handleSubmit(editCar)}>{carsStore.loading ? <CircularProgress size={20} /> : 'Сохранить'}</Button>
+                <Button 
+                    type="submit" 
+                    onClick={handleSubmit(editCar)} 
+                    disabled={carsStore.loading}>
+                        {carsStore.loading ? <CircularProgress size={20} /> : 'Сохранить'}
+                </Button>
                 <Button type="reset" onClick={closeForm}>Закрыть</Button>
             </DialogActions>
             {carsStore.actionError && <ErrorSnack error={carsStore.actionError} />}

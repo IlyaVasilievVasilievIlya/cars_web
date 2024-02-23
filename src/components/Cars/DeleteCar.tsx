@@ -47,7 +47,9 @@ export const DeleteCar: React.FC<DeleteCarProps> = ({ car, isModalOpen, onClose 
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button type="submit" autoFocus onClick={deleteCar}>{carsStore.loading ? <CircularProgress size={20} /> : 'Да'}</Button>
+                    <Button type="submit" autoFocus onClick={deleteCar} disabled={carsStore.loading}>
+                        {carsStore.loading ? <CircularProgress size={20} /> : 'Да'}
+                    </Button>
                     <Button type="reset" onClick={closeForm}>Нет</Button>
                 </DialogActions>
                 {carsStore.actionError && <ErrorSnack error={carsStore.actionError} />}
