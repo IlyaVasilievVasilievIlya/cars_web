@@ -18,12 +18,12 @@ interface EditCarProps {
 export const EditCar: React.FC<EditCarProps> = ({ car, isModalOpen, onClose }: EditCarProps) => {
     
     const { handleSubmit, formState: { errors }, reset, control } = useForm<EditCarRequest>({
-        defaultValues: { carId: car.carId, color: car.color, carModelId: car.brand.carModelId },
+        defaultValues: { carId: car.carId, color: car.color ?? undefined, carModelId: car.brand.carModelId },
         resolver: yupResolver(editCarSchema)
     });
 
     useEffect(() => {
-        reset({ carId: car.carId, color: car.color, carModelId: car.brand.carModelId });
+        reset({ carId: car.carId, color: car.color ?? undefined, carModelId: car.brand.carModelId });
     }, [reset, car])
 
 
@@ -91,7 +91,7 @@ export const EditCar: React.FC<EditCarProps> = ({ car, isModalOpen, onClose }: E
                             type="text"
                             fullWidth
                             autoComplete='off'
-                            value={value}
+                            value={value ?? ''}
                             onKeyUp={enterSubmit}
                             onChange={onChange} sx={{ minHeight: '80px' }}
                             placeholder='Введите цвет машины'
