@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, CircularProgress, Container, Grid, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { google } from '../..';
 import { CLIENT_ID } from '../../common/externalAuthConfig';
 import { ROUTES } from '../../common/routes';
@@ -14,18 +14,18 @@ import { LoginRequest } from '../model';
 
 export const Login: React.FC = () => {
 
+    const navigate = useNavigate();
+
     useEffect(() => {
-        google.accounts.id.initialize({
+        google?.accounts.id.initialize({
             client_id: CLIENT_ID,
-            callback: tryGoogleLogin });
-        google.accounts.id.renderButton(
+            callback: tryGoogleLogin
+        });
+        google?.accounts.id.renderButton(
             document.getElementById("signInDiv"),
-            {theme: "outline", type: "icon"}
+            { theme: "outline", type: "icon" }
         );
-
     }, []);
-
-    const [login, setLogin] = useState(false);
 
     const [error, setError] = useState<string | undefined>();
 
@@ -40,7 +40,7 @@ export const Login: React.FC = () => {
 
         await authStore.loginWithGoogle(response.credential);
         if (!authStore.error) {
-            setLogin(true)
+            navigate(ROUTES.Home);
         } else {
             setError(authStore.error);
         }
@@ -50,16 +50,21 @@ export const Login: React.FC = () => {
         await authStore.login(request);
 
         if (!authStore.error) {
-            setLogin(true);
+            navigate(ROUTES.Home, { replace: true });
         } else {
             setError(authStore.error);
+        }
+    }
+
+    const enterSubmit = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.code === 'Enter') {
+            handleSubmit(tryLogin)();
         }
     }
 
     return (
         <>
             <Header />
-            {login && <Navigate to={ROUTES.Home} replace={true} />}
             <Container component="main" maxWidth="sm" sx={{
                 padding: 4,
                 mt: 3,
@@ -87,6 +92,7 @@ export const Login: React.FC = () => {
                                         placeholder='Введите email'
                                         value={value ?? ''}
                                         onChange={onChange}
+                                        onKeyUp={enterSubmit}
                                         helperText={errors.email?.message?.toString()}
                                     >
                                     </TextField>)} />
@@ -103,6 +109,7 @@ export const Login: React.FC = () => {
                                         type="password"
                                         value={value ?? ''}
                                         onChange={onChange}
+                                        onKeyUp={enterSubmit}
                                         placeholder='Введите пароль'
                                         helperText={errors.password?.message?.toString()} />)} />
                         </Grid>

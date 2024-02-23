@@ -26,6 +26,7 @@ export const EditCar: React.FC<EditCarProps> = ({ car, isModalOpen, onClose }: E
         reset({ carId: car.carId, color: car.color, carModelId: car.brand.carModelId });
     }, [reset, car])
 
+
     let brandModelList = brandModelsStore.brandModels.map(model =>
         <MenuItem key={model.carModelId} value={model.carModelId}>
             {model.brand} {model.model}
@@ -53,6 +54,12 @@ export const EditCar: React.FC<EditCarProps> = ({ car, isModalOpen, onClose }: E
         onClose();
     }
 
+    const enterSubmit = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.code === 'Enter') {
+            handleSubmit(editCar)();
+        }
+    }
+
     return (
         <>
         <Dialog
@@ -71,6 +78,7 @@ export const EditCar: React.FC<EditCarProps> = ({ car, isModalOpen, onClose }: E
                             fullWidth
                             placeholder='Выберите модель машины'
                             value={value}
+                            onKeyUp={enterSubmit}
                             onChange={onChange}>
                             {brandModelList}
                         </TextField>)} />
@@ -84,6 +92,7 @@ export const EditCar: React.FC<EditCarProps> = ({ car, isModalOpen, onClose }: E
                             fullWidth
                             autoComplete='off'
                             value={value}
+                            onKeyUp={enterSubmit}
                             onChange={onChange} sx={{ minHeight: '80px' }}
                             placeholder='Введите цвет машины'
                             helperText={errors.color?.message?.toString()}

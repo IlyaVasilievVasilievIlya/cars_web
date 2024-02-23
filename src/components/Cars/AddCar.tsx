@@ -9,7 +9,6 @@ import { AddCarRequest } from '../model';
 import { DialogHeader } from '../ui-kit/DialogHeader';
 import { addCarSchema } from '../../common/schemes';
 
-
 export const AddCar: React.FC = () => {
 
 
@@ -45,6 +44,12 @@ export const AddCar: React.FC = () => {
         reset();
     }
 
+    const enterSubmit = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.code === 'Enter') {
+            handleSubmit(createCar)();
+        }
+    }
+
     return (
         <>
             <Button type="button" onClick={() => setModal(true)}>
@@ -53,7 +58,12 @@ export const AddCar: React.FC = () => {
             <Dialog
                 open={modal}
                 onSubmit={handleSubmit(createCar)}
-                onClose={closeForm}>
+                onClose={closeForm}
+                onKeyUp={e => {
+                    if (e.key === 'Enter') {
+                        handleSubmit(createCar);
+                    }
+                }}>
                 <DialogHeader text="Добавление машины" closeForm={closeForm} />
                 <DialogContent style={{
                     display: 'flex',
@@ -73,7 +83,6 @@ export const AddCar: React.FC = () => {
                                 variant="standard" >
                                 {brandModelList}
                             </Select>)
-
                         } />
                     <Controller
                         control={control}
@@ -87,6 +96,7 @@ export const AddCar: React.FC = () => {
                                 autoComplete='off'
                                 value={value}
                                 onChange={onChange} sx={{ minHeight: '80px' }}
+                                onKeyUp={enterSubmit}
                                 placeholder='Введите цвет машины'
                                 helperText={errors.color?.message?.toString()
                                 }

@@ -19,7 +19,6 @@ export const DeleteCar: React.FC<DeleteCarProps> = ({ car, isModalOpen, onClose 
         setIsOpen(isModalOpen);
     }, [isModalOpen])
 
-
     const deleteCar = async () => {
         await carsStore.deleteCar(car.carId);
 
@@ -48,7 +47,7 @@ export const DeleteCar: React.FC<DeleteCarProps> = ({ car, isModalOpen, onClose 
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button type="submit" onClick={deleteCar}>{carsStore.loading ? <CircularProgress size={20} /> : 'Да'}</Button>
+                    <Button type="submit" autoFocus onClick={deleteCar}>{carsStore.loading ? <CircularProgress size={20} /> : 'Да'}</Button>
                     <Button type="reset" onClick={closeForm}>Нет</Button>
                 </DialogActions>
                 {carsStore.actionError && <ErrorSnack error={carsStore.actionError} />}

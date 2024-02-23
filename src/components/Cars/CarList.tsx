@@ -74,9 +74,13 @@ export const CarList: React.FC = observer(() => {
     brandModelsStore.fetchBrandModels();
   }, [colorSearch, modelSearch, carSearch, brandSearch, page])
 
+  if (carsStore.pagination?.TotalPages! !== 0 && carsStore.pagination?.TotalPages! < page){
+    setPage(1);
+  }
+
   return (
     <>
-      <CarFilters filterCar={filterCar} filterColor={filterColor} filterBrand={filterBrand} filterModel={filterModel}/>
+      <CarFilters filterCar={filterCar.current} filterColor={filterColor.current} filterBrand={filterBrand.current} filterModel={filterModel.current}/>
 
       {carsStore.loading && <LinearProgress/>}
 

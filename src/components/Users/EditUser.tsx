@@ -32,7 +32,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onClose, isModalOpen }
 
     useEffect(() => {
         reset(user);
-        roleReset({role: user?.role})
+        roleReset({ role: user?.role })
     }, [reset, roleReset, user])
 
     let userRoleList = roleList.map(model =>
@@ -44,7 +44,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onClose, isModalOpen }
         if (!user) {
             return;
         }
-        
+
         await usersStore.editUser(user.id, editedUser);
 
         if (!usersStore.actionError) {
@@ -72,6 +72,12 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onClose, isModalOpen }
         onClose();
     }
 
+    const enterSubmit = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.code === 'Enter') {
+            handleSubmit(editUser)();
+        }
+    }
+
     return (
         <>
             <Dialog
@@ -92,6 +98,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onClose, isModalOpen }
                                         fullWidth
                                         autoComplete='off'
                                         onChange={onChange}
+                                        onKeyUp={enterSubmit}
                                         placeholder='Введите имя'
                                         helperText={errors.name?.message?.toString()}
                                     />)} />
@@ -108,6 +115,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, onClose, isModalOpen }
                                         fullWidth
                                         autoComplete='off'
                                         onChange={onChange}
+                                        onKeyUp={enterSubmit}
                                         placeholder='Введите фамилию'
                                         helperText={errors.surname?.message?.toString()}
                                     />)} />

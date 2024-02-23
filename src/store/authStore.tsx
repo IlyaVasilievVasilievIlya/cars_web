@@ -12,8 +12,6 @@ class AuthStore {
 
     loading: boolean = false;
 
-    authChecked = false;
-
     constructor() {
         makeAutoObservable(this);
     }

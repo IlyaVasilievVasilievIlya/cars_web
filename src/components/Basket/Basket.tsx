@@ -16,20 +16,13 @@ export const Basket: React.FC<BasketProps> = observer(({ isModalOpen, onClose }:
 
     const [isOpen, setIsOpen] = useState(isModalOpen);
 
-    useEffect( () => {
+    useEffect(() => {
         setIsOpen(isModalOpen);
     }, [isModalOpen])
 
     const clear = () => {
         basketStore.clear();
     }
-
-    let carList = basketStore.basket.map(item =>
-        <BasketListItem
-            count={item.count}
-            id={item.id}
-            key={item.id}
-            name={item.name} />);
 
     const closeBasket = () => {
         setIsOpen(false);
@@ -42,10 +35,10 @@ export const Basket: React.FC<BasketProps> = observer(({ isModalOpen, onClose }:
             open={isOpen}
             onClose={closeBasket}>
             <Box display={"flex"} justifyContent={"space-between"}>
-                {carList.length < 1 && <Typography minWidth={'20%'} p={5} fontSize={20}>
+                {basketStore.basket.length < 1 && <Typography minWidth={'20%'} p={5} fontSize={20}>
                     Корзина пуста
                 </Typography>}
-                {carList.length > 0 && <Button onClick={clear}>
+                {basketStore.basket.length > 0 && <Button onClick={clear}>
                     Очистить
                 </Button>}
                 <Button onClick={closeBasket}>
@@ -53,7 +46,12 @@ export const Basket: React.FC<BasketProps> = observer(({ isModalOpen, onClose }:
                 </Button>
             </Box>
             <List>
-                {carList}
+                {basketStore.basket.map(item =>
+                    <BasketListItem
+                        count={item.count}
+                        id={item.id}
+                        key={item.id}
+                        name={item.name} />)}
             </List>
         </Drawer>
     );

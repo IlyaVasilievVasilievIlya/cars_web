@@ -1,14 +1,13 @@
 import { Autocomplete, Box, Grid, TextField } from "@mui/material";
+import { ChangeEvent, useState } from "react";
 import { brandModelsStore } from "../../store/brandModelsStore";
-import { debounce } from "../../common/functions";
-import { ChangeEvent, useMemo, useState } from "react";
 
 
 interface CarFiltersProps {
-    filterCar: React.MutableRefObject<(car: string) => void>;
-    filterColor: React.MutableRefObject<(color: string) => void>;
-    filterBrand: React.MutableRefObject<(brand: string) => void>;
-    filterModel: React.MutableRefObject<(model: string) => void>;
+    filterCar: (car: string) => void;
+    filterColor: (color: string) => void;
+    filterBrand: (brand: string) => void;
+    filterModel: (model: string) => void;
 }
 
 export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, filterBrand, filterModel }) => {
@@ -23,13 +22,13 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
     function setColorFilter(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const value = e.target.value as string;
         setColor(value);
-        filterColor.current(value);
+        filterColor(value);
     }
 
     function setCarFilter(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const value = e.target.value as string;
         setCar(value);
-        filterCar.current(value);
+        filterCar(value);
     }
 
     return (
@@ -58,7 +57,7 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
                         options={brandList}
                         fullWidth
                         onInputChange={(_, newInputValue) => {
-                            filterBrand.current(newInputValue);
+                            filterBrand(newInputValue);
                         }}
                         renderInput={(params) => <TextField {...params} label="Бренд" />} />
                 </Grid>
@@ -67,7 +66,7 @@ export const CarFilters: React.FC<CarFiltersProps> = ({ filterCar, filterColor, 
                         options={modelList}
                         fullWidth
                         onInputChange={(_, newInputValue) => {
-                            filterModel.current(newInputValue);
+                            filterModel(newInputValue);
                         }}
                         renderInput={(params) => <TextField {...params} label="Марка" />} />
                 </Grid>

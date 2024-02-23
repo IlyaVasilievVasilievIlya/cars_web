@@ -8,6 +8,7 @@ import { HomePage } from "../pages/HomePage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 import { Unauthorized } from "../pages/UnauthorizedPage";
 import { ROLES } from "./roles";
+import { RequireNotAuth } from "../components/Account/RequireNotAuth";
 
 interface NavInfo {
     path: string;
@@ -34,12 +35,17 @@ export const navInfos: NavInfo[] = [
 
 export const router = createBrowserRouter([
     {
-        path: ROUTES.Login,
-        element: <Login/>
-    },
-    {
-        path: ROUTES.Register,
-        element: <Register/>
+        element: <RequireNotAuth/>,
+        children: [
+            {
+                path: ROUTES.Login,
+                element: <Login/>
+            },
+            {
+                path: ROUTES.Register,
+                element: <Register/>
+            },       
+        ]
     },
     {
         element: <RequireAuth allowedRoles={[ROLES.User, ROLES.SuperUser, ROLES.Admin, ROLES.Manager]}/>,
